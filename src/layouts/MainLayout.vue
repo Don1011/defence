@@ -65,7 +65,7 @@
     </q-drawer>
 
     <q-page-container>
-        <Watermark class="q-mx-auto" />
+        <Watermark v-if="this.$router.currentRoute.value.path !== '/' && this.$router.currentRoute.value.path !== '/admin'" class="q-mx-auto" />
       <router-view >  </router-view>
     </q-page-container>
   </q-layout>
