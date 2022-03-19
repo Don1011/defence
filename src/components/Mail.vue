@@ -28,7 +28,7 @@
                  <div class="text-subtitle2 text-secondary">
                 <!-- Incomings -->
                  <q-list separator v-for="item in inbox" :key="item._id" >
-                  <q-item clickable class="row text-center q-mb-sm bg-white" to="/message" style="border-radius: 4px">
+                  <q-item clickable class="row text-center q-mb-sm bg-white" :to="'/mail-message/'+item._id" style="border-radius: 4px">
                       <q-item-section  >Message from {{item.from.username}}</q-item-section>
                       <q-item-section>{{item.title}}</q-item-section>
                       <q-item-section>{{item.createdAt.split("T")[0]}}, {{item.createdAt.split("T")[1].split(".")[0]}}</q-item-section>
@@ -43,7 +43,7 @@
                 <div class="text-subtitle2 text-secondary">
                   <!-- Outgoings -->
                   <q-list separator v-for="item in sent" :key="item._id" >
-                    <q-item clickable class="row text-center q-mb-sm bg-white" to="/message" style="border-radius: 4px">
+                    <q-item clickable class="row text-center q-mb-sm bg-white" :to="'/mail-message/'+item._id" style="border-radius: 4px">
                         <q-item-section  >Message from {{item.from.username}}</q-item-section>
                         <q-item-section>{{item.title}}</q-item-section>
                         <q-item-section>{{item.createdAt.split("T")[0]}}, {{item.createdAt.split("T")[1].split(".")[0]}}</q-item-section>

@@ -12,6 +12,7 @@ const routes = [
       { path: '/sample', component: () => import('components/Sample.vue') },
       // { path: '/login', component: () => import('components/Login.vue') },
       { path: '/request-message/:id', component: () => import('components/Message.vue') },
+      { path: '/mail-message/:id', component: () => import('components/SingleMail.vue') },
       { path: '/admin', component: () => import('components/admin-pages/Login.vue') },
       { path: '/admin/users', component: () => import('components/admin-pages/Users.vue') },
       { path: '/admin/departments', component: () => import('components/admin-pages/Departments.vue') },
