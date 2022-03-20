@@ -29,12 +29,8 @@
                <q-scroll-area style="height: 59vh;">
                  <div class="text-subtitle2 text-secondary">
                 <!-- Incomings -->
-                  <q-list v-show="!(incomingRequests.length>0)" separator >
-                    <q-item clickable class="row justify-center q-mb-sm bg-white" style="border-radius: 4px">
-                        {{incomingText}}
-                    </q-item>
-                  </q-list>
-                  <q-list v-show="(incomingRequests.length>0)" separator v-for="incomingRequest in incomingRequests" :key="incomingRequest._id" >
+                  <EmptyList :itemList="incomingRequests" :message="incomingText" />
+                  <q-list separator v-for="incomingRequest in incomingRequests" :key="incomingRequest._id" >
                     <q-item clickable class="row text-center q-mb-sm bg-white" style="border-radius: 4px">
                       <div class="row col-9" @click="this.$router.push(`/request-message/${incomingRequest._id}`)">
                         <q-item-section  >Request from {{incomingRequest.from.abbr}}</q-item-section>
@@ -58,13 +54,9 @@
               <q-scroll-area style="height: 59vh;">
                 <div class="text-subtitle2 text-secondary">
                   <!-- Outgoings -->
-                  <q-list v-show="!(outgoingRequests.length>0)" separator >
-                    <q-item clickable class="row justify-center q-mb-sm bg-white" style="border-radius: 4px">
-                        {{outgoingText}}
-                    </q-item>
-                  </q-list>
+                  <EmptyList :itemList="outgoingRequests" :message="outgoingText"/>
                   <q-list v-show="(outgoingRequests.length>0)" separator v-for="outgoingRequest in outgoingRequests" :key="outgoingRequest._id" >
-                    <q-item clickable class="row text-center q-mb-sm bg-white" style="border-radius: 4px">
+                    <q-item class="row text-center q-mb-sm bg-white" style="border-radius: 4px">
                       <div class="row col-9" @click="this.$router.push(`/request-message/${outgoingRequest._id}`)">
                         <q-item-section  >Request to {{outgoingRequest.to.abbr}}</q-item-section>
                         <q-item-section>{{outgoingRequest.title}} </q-item-section>
@@ -170,9 +162,11 @@
 <script>
 import { ref } from 'vue'
 // import Watermark from 'components/Watermark.vue'
+import EmptyList from './EmptyList';
 
 export default {
   components:{
+    EmptyList
     // Watermark
   },
   setup () {

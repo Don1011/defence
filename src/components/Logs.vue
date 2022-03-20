@@ -10,6 +10,7 @@
   </div>
   <q-scroll-area style="height: 70vh;">
     <div class="text-subtitle2 text-secondary" >
+        <EmptyList :itemList="logs" message="No logs to show" />
         <q-list separator v-for="log in logs" :key="log._id" >
           <Log :log="log" />
       </q-list>
@@ -22,12 +23,14 @@
 <script>
 import Log from 'components/Log.vue'
 import Watermark from 'components/Watermark.vue'
+import EmptyList from 'components/EmptyList.vue'
 
 export default {
   name: 'Logs',
   components:{
     Log,
-    Watermark
+    Watermark,
+    EmptyList
   },
   data(){
     return{
