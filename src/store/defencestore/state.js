@@ -8,7 +8,7 @@ export default function () {
     inbox: [],
     sent: [],
     logs: [],
-    usersInDept: []
-
+    usersInDept: [],
+    usersInDeptForForward: []
   }
 }

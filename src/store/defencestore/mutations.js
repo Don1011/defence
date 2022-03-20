@@ -38,12 +38,17 @@ export function setMails (state, payload) {
 
 export function getUsersInDepartment (state, payload) {
   let arr = [];
+  let arrForForward=[];
   let username = localStorage.getItem("username");
   payload.users.forEach(item => {
     username !== item.username && arr.push(item.username)
+    username !== item.username && arrForForward.push(item)
+
   })
   console.log(arr)
+  console.log(arrForForward)
   state.usersInDept = arr;
+  state.usersInDeptForForward = arrForForward;
 }
 
 export function setLogs (state, payload) {
