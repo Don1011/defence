@@ -334,6 +334,43 @@ export function sendSupportMessage (context, data) {
 
 }
 
+
+export function loginSupport (context, data) {
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "POST",
+      url: baseurl + '/problem',
+      data
+      // headers: {
+      //   'Authorization': 'Bearer '+localStorage.getItem('userToken')
+      // }
+    })
+    .then(response => {
+      if(response.status === 201){
+        Notify.create({
+            message: "Message successfully sent.",
+            color: 'blue'
+        })
+        resolve();
+      }else{
+          Notify.create({
+              message: "Error sending message. Please retry.",
+              color: 'red'
+          })
+          reject();
+      }
+    })
+    .catch(err => {
+        Notify.create({
+            message: 'Error sending message. Please retry.',
+            color: 'red'
+        })
+        reject();
+    })
+  })
+
+}
+
 export function getUsersInDepartment (context, data) {
   return new Promise((resolve, reject) => {
     axios({
