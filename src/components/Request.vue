@@ -29,7 +29,12 @@
                <q-scroll-area style="height: 59vh;">
                  <div class="text-subtitle2 text-secondary">
                 <!-- Incomings -->
-                  <q-list separator v-for="incomingRequest in incomingRequests" :key="incomingRequest._id" >
+                  <q-list v-show="!(incomingRequests.length>0)" separator >
+                    <q-item clickable class="row justify-center q-mb-sm bg-white" style="border-radius: 4px">
+                        {{incomingText}}
+                    </q-item>
+                  </q-list>
+                  <q-list v-show="(incomingRequests.length>0)" separator v-for="incomingRequest in incomingRequests" :key="incomingRequest._id" >
                     <q-item clickable class="row text-center q-mb-sm bg-white" style="border-radius: 4px">
                       <div class="row col-9" @click="this.$router.push(`/request-message/${incomingRequest._id}`)">
                         <q-item-section  >Request from {{incomingRequest.from.abbr}}</q-item-section>
@@ -53,7 +58,12 @@
               <q-scroll-area style="height: 59vh;">
                 <div class="text-subtitle2 text-secondary">
                   <!-- Outgoings -->
-                  <q-list separator v-for="outgoingRequest in outgoingRequests" :key="outgoingRequest._id" >
+                  <q-list v-show="!(outgoingRequests.length>0)" separator >
+                    <q-item clickable class="row justify-center q-mb-sm bg-white" style="border-radius: 4px">
+                        {{outgoingText}}
+                    </q-item>
+                  </q-list>
+                  <q-list v-show="(outgoingRequests.length>0)" separator v-for="outgoingRequest in outgoingRequests" :key="outgoingRequest._id" >
                     <q-item clickable class="row text-center q-mb-sm bg-white" style="border-radius: 4px">
                       <div class="row col-9" @click="this.$router.push(`/request-message/${outgoingRequest._id}`)">
                         <q-item-section  >Request to {{outgoingRequest.to.abbr}}</q-item-section>
@@ -229,6 +239,13 @@ export default {
       this.$store.dispatch('defencestore/getRequests')
       .then(()=>{
         let req = this.$store.getters['defencestore/getRequests'];
+        if(req.incoming.length===0){
+          this.incomingText = "No Incoming Request.";
+        }
+        if(req.outgoing.length===0){
+          this.outgoingText = "No Outgoing Request.";
+        }
+        
         this.incomingRequests = req.incoming;
         this.outgoingRequests = req.outgoing;
         this.$q.loading.hide();
