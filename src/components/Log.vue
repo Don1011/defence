@@ -1,9 +1,9 @@
 <template>
-    <q-item clickable class="row text-center q-mb-sm bg-white" style="border-radius: 4px">
+    <q-item clickable class="row text-center q-mb-sm bg-white" style="border-radius: 4px" @click="this.$router.push(`/log-message/${log._id}`)">
       <div class="row col-9">
-        <q-item-section  >Request to DDA</q-item-section>
-        <q-item-section>Network is not working and the windows </q-item-section>
-        <q-item-section>Oct /13/2021 : 10:30am.</q-item-section>
+        <q-item-section  >Request from {{log.from.abbr}} to {{log.to.abbr}}</q-item-section>
+        <q-item-section>{{log.title}} </q-item-section>
+        <q-item-section>{{log.createdAt.split("T")[0]}}, {{log.createdAt.split("T")[1].split(".")[0]}}</q-item-section>
       </div>
       <q-item-section >
         <div class="row justify-evenly text-subtitle2">
@@ -26,6 +26,7 @@ export default {
       logs: []
     }
   },
+  props: ['log'],
   methods: {
     fetchLogs(){
       this.$store.dispatch('defencestore/getLogs')

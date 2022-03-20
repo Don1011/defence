@@ -28,7 +28,7 @@
                  <div class="text-subtitle2 text-secondary">
                 <!-- Incomings -->
                  <q-list separator v-for="item in inbox" :key="item._id" >
-                  <q-item clickable class="row text-center q-mb-sm bg-white" to="/message" style="border-radius: 4px">
+                  <q-item clickable class="row text-center q-mb-sm bg-white" :to="'/mail-message/'+item._id" style="border-radius: 4px">
                       <q-item-section  >Message from {{item.from.username}}</q-item-section>
                       <q-item-section>{{item.title}}</q-item-section>
                       <q-item-section>{{item.createdAt.split("T")[0]}}, {{item.createdAt.split("T")[1].split(".")[0]}}</q-item-section>
@@ -43,8 +43,8 @@
                 <div class="text-subtitle2 text-secondary">
                   <!-- Outgoings -->
                   <q-list separator v-for="item in sent" :key="item._id" >
-                    <q-item clickable class="row text-center q-mb-sm bg-white" to="/message" style="border-radius: 4px">
-                        <q-item-section  >Message from {{item.from.username}}</q-item-section>
+                    <q-item clickable class="row text-center q-mb-sm bg-white" :to="'/mail-message/'+item._id" style="border-radius: 4px">
+                        <q-item-section  >Message to {{item.to.username}}</q-item-section>
                         <q-item-section>{{item.title}}</q-item-section>
                         <q-item-section>{{item.createdAt.split("T")[0]}}, {{item.createdAt.split("T")[1].split(".")[0]}}</q-item-section>
                     </q-item>
@@ -168,6 +168,7 @@ export default {
       this.selectedFile = null;
     },
     submitMail(){
+      this.$q.loading.show();
       if(this.to !== "" && this.title !== "" && this.comments !== ""){
         this.$store.dispatch('defencestore/sendMail', {
           to: this.to,
@@ -177,8 +178,10 @@ export default {
         })
         .then(()=>{
           window.location.reload();
+        this.$q.loading.hide();
         })
       }else{
+        this.$q.loading.hide();
         Notify.create({
           message: 'You can\'t leave the "to", "title" and "Comments" fields empty.',
           color: 'red'
@@ -186,11 +189,13 @@ export default {
       }
     },
     fetchMails(){
+      this.$q.loading.show();
       this.$store.dispatch('defencestore/getMails')
       .then(()=>{
         let req = this.$store.getters['defencestore/getMails'];
         this.inbox = req.inbox;
         this.sent = req.sent;
+        this.$q.loading.hide();
         // console.log(this.inbox)
         // console.log(this.sent)
       })

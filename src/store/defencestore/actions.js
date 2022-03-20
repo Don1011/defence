@@ -181,6 +181,39 @@ export function getDepartments (context, data) {
 
 }
 
+export function getAllUserDepartments (context, data) {
+
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "GET",
+      url: baseurl + '/user/department',
+      headers: {
+        'Authorization': 'Bearer '+localStorage.getItem('userToken')
+      }
+    })
+    .then(response => {
+      // console.log(response.data.doc);
+      if(response.status === 201 || response.status === 200){
+          context.commit('getAllUserDepartments', {departments: response.data.doc})
+          resolve();
+      }else{
+          Notify.create({
+              message: "Error fetching departments.",
+              color: 'red'
+          })
+          reject();
+      }
+    })
+    .catch(err => {
+        Notify.create({
+            message: 'Error fetching departments.',
+            color: 'red'
+        })
+    })
+  })
+
+}
+
 export function getRequests (context, data) {
     return new Promise((resolve, reject) => {
       axios({
@@ -265,6 +298,42 @@ export function sendMail (context, data) {
 
 }
 
+export function sendSupportMessage (context, data) {
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "POST",
+      url: baseurl + '/user/support',
+      data,
+      headers: {
+        'Authorization': 'Bearer '+localStorage.getItem('userToken')
+      }
+    })
+    .then(response => {
+      if(response.status === 201){
+        Notify.create({
+            message: "Message successfully sent.",
+            color: 'blue'
+        })
+        resolve();
+      }else{
+          Notify.create({
+              message: "Error sending message. Please retry.",
+              color: 'red'
+          })
+          reject();
+      }
+    })
+    .catch(err => {
+        Notify.create({
+            message: 'Error sending message. Please retry.',
+            color: 'red'
+        })
+        reject();
+    })
+  })
+
+}
+
 export function getUsersInDepartment (context, data) {
   return new Promise((resolve, reject) => {
     axios({
@@ -332,7 +401,7 @@ export function getMails (context, data) {
       })
       .catch(err => {
           Notify.create({
-              message: 'Error fetching requests.',
+              message: 'Error fetching mails.',
               color: 'red'
           })
       })

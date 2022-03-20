@@ -36,10 +36,12 @@ export default {
   },
   methods: {
     fetchRequests(){
+      this.$q.loading.show();
       this.$store.dispatch('defencestore/getLogs')
       .then(()=>{
         let req = this.$store.getters['defencestore/getLogs'];
         this.logs = req;
+        this.$q.loading.hide();
       })
     }
   },
