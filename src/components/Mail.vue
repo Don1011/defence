@@ -27,6 +27,7 @@
                <q-scroll-area style="height: 59vh;">
                  <div class="text-subtitle2 text-secondary">
                 <!-- Incomings -->
+                <EmptyList :itemList="inbox" message="No message to display" />
                  <q-list separator v-for="item in inbox" :key="item._id" >
                   <q-item clickable class="row text-center q-mb-sm bg-white" :to="'/mail-message/'+item._id" style="border-radius: 4px">
                       <q-item-section  >Message from {{item.from.username}}</q-item-section>
@@ -42,6 +43,7 @@
               <q-scroll-area style="height: 59vh">
                 <div class="text-subtitle2 text-secondary">
                   <!-- Outgoings -->
+                  <EmptyList :itemList="sent" message="No sent message to display" />
                   <q-list separator v-for="item in sent" :key="item._id" >
                     <q-item clickable class="row text-center q-mb-sm bg-white" :to="'/mail-message/'+item._id" style="border-radius: 4px">
                         <q-item-section  >Message to {{item.to.username}}</q-item-section>
@@ -131,11 +133,12 @@
 <script>
 import { ref } from 'vue'
 import Watermark from 'components/Watermark.vue'
+import EmptyList from 'components/EmptyList.vue'
 
 
 export default {
    components:{
-    Watermark
+    Watermark, EmptyList
   },
   data () {
     return {
