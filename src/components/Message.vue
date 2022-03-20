@@ -23,7 +23,7 @@
                         <q-list v-for="user in users" :key="user._id">
                               <q-item clickable v-close-popup @click="onItemClick">
                                 <q-item-section>
-                                  <q-item-label clickable @click="()=>forwardTo(user._id)" >{{user.username}}</q-item-label>
+                                  <q-item-label clickable @click="forwardTo(user._id)" >{{user.username}}</q-item-label>
                                 </q-item-section>
                               </q-item>
                         </q-list>
