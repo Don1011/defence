@@ -440,3 +440,42 @@ export function getLogs (context, data) {
     })
 
 }
+
+export function forwardRequest (context, data) {
+  // const { to, text, reference, title } = data;
+  console.log(data);
+  const { userId, requestId } = data;
+
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "GET",
+      url: baseurl + `/user/request/forward/${userId}/${requestId}`,
+      headers: {
+        'Authorization': 'Bearer '+localStorage.getItem('userToken')
+      }
+    })
+    .then(response => {
+      if(response.status === 201 || response.status === 200){
+        Notify.create({
+            message: "Request successfully forwarded.",
+            color: 'blue'
+        })
+        resolve();
+      }else{
+          Notify.create({
+              message: "Error forwarding request. Please retry.",
+              color: 'red'
+          })
+          reject();
+      }
+    })
+    .catch(err => {
+        Notify.create({
+          message: "Error forwarding request. Please retry.",
+          color: 'red'
+        })
+        reject();
+    })
+  })
+
+}

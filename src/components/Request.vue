@@ -29,7 +29,7 @@
                <q-scroll-area style="height: 59vh;">
                  <div class="text-subtitle2 text-secondary">
                 <!-- Incomings -->
-                  <EmptyList :itemList="incomingRequests" :message="incomingText" />
+                  <EmptyList :itemList="incomingRequests" message="No incoming request" />
                   <q-list separator v-for="incomingRequest in incomingRequests" :key="incomingRequest._id" >
                     <q-item clickable class="row text-center q-mb-sm bg-white" style="border-radius: 4px">
                       <div class="row col-9" @click="this.$router.push(`/request-message/${incomingRequest._id}`)">
@@ -54,7 +54,7 @@
               <q-scroll-area style="height: 59vh;">
                 <div class="text-subtitle2 text-secondary">
                   <!-- Outgoings -->
-                  <EmptyList :itemList="outgoingRequests" :message="outgoingText"/>
+                  <EmptyList :itemList="outgoingRequests" message="No outgoing message"/>
                   <q-list v-show="(outgoingRequests.length>0)" separator v-for="outgoingRequest in outgoingRequests" :key="outgoingRequest._id" >
                     <q-item class="row text-center q-mb-sm bg-white" style="border-radius: 4px">
                       <div class="row col-9" @click="this.$router.push(`/request-message/${outgoingRequest._id}`)">
@@ -184,9 +184,6 @@ export default {
       departments: [],
       incomingRequests: [],
       outgoingRequests: [],
-
-      incomingText: "",
-      outgoingText: ""
 
     }
   },

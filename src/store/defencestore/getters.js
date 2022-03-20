@@ -16,6 +16,10 @@ export function usersInDept (state) {
   return state.usersInDept;
 }
 
+export function usersInDeptForForward (state) {
+  return state.usersInDeptForForward;
+}
+
 export function getLogs (state) {
   return state.logs;
 }
