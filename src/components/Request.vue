@@ -181,6 +181,9 @@ export default {
       incomingRequests: [],
       outgoingRequests: [],
 
+      incomingText: "",
+      outgoingText: ""
+
     }
   },
  methods: {

@@ -16,16 +16,6 @@
 
         <q-input filled  v-model="title"  label="What problem do you have? *"  :rules="[ val => val && val.length > 0 || 'Please type something']" class="bg-white q-pa-none" />
 
-        <!-- <q-select  v-model="dept" :options="departments" use-input input-debounce="0" label="Select Your Department"  >
-          <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  No results
-                </q-item-section>
-              </q-item>
-            </template>
-        </q-select> -->
-
         <q-input
           label="Explain further... *"
           v-model="text"
@@ -37,7 +27,7 @@
 
         <div>
           <q-btn label="Submit" type="submit" style="width:20%" color="negative"/>
-          <q-btn label="Cancel" type="reset"   color="positive" style="width:20%" class="q-ml-sm" flat/>
+          <q-btn label="Cancel" type="reset"  color="positive" style="width:20%" class="q-ml-sm" flat/>
         </div>
       </q-form>
 
@@ -67,12 +57,17 @@ export default {
         console.log(this.title);
         console.log(this.text);
         if(this.title !== "" && this.text !== "" ){
+          this.$q.loading.show();
           this.$store.dispatch('defencestore/sendSupportMessage', {
             title: this.title,
             text: this.comments
           })
-          .then(()=> this.onReset())
+          .then(()=> {
+            this.$q.loading.hide();
+            this.onReset()
+          })
         }else{
+          // this.$q.loading.hide();
           Notify.create({
             message: "You must fill the form completely before submitting",
             color: "red"
