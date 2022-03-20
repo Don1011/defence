@@ -38,7 +38,7 @@
 
 <!-- Forgotten Password link  -->
 <!-- <div class="row justify-center"> -->
-    <router-link to="" class="  text-center text-italic text-subtitle1  text-secondary" style="text-decoration: none">Having a problem?</router-link>
+    <router-link to="/login-support" class="  text-center text-italic text-subtitle1  text-secondary" style="text-decoration: none">Having a problem?</router-link>
     <router-link to="/admin" class="q-mt-md text-center  text-h6 text-secondary text-bold text-uppercase" style="text-decoration: none">Admin</router-link>
 <!-- </div> -->
 
