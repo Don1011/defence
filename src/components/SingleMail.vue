@@ -41,15 +41,11 @@
 
 
                 <!-- heading -->
-                  <div class="q-mx-auto text-center text-h5 text-bold text-uppercase q-px-md q-my-xl" style="width:50%; text-decoration:underline">Lorem Heading and Ipsuim</div>
+                  <div class="q-mx-auto text-center text-h5 text-bold text-uppercase q-px-md q-my-xl" style="width:50%; text-decoration:underline">{{title}}</div>
 
                   <!--Message Body  -->
                   <div class="q-mx-auto text-subtitle1 text-justify q-px-md">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi fugiat nemo quidem nam velit minima quod neque culpa, ad dolorum saepe maiores accusamus harum facilis reprehenderit earum vel. Excepturi, aperiam?
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi fugiat nemo quidem nam velit minima quod neque culpa, ad dolorum saepe maiores accusamus harum facilis reprehenderit earum vel. Excepturi, aperiam?
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi fugiat nemo quidem nam velit minima quod neque culpa, ad dolorum saepe maiores accusamus harum facilis reprehenderit earum vel. Excepturi, aperiam?
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi fugiat nemo quidem nam velit minima quod neque culpa, ad dolorum saepe maiores accusamus harum facilis reprehenderit earum vel. Excepturi, aperiam?
-                    <!-- Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi fugiat nemo quidem nam velit minima quod neque culpa, ad dolorum saepe maiores accusamus harum facilis reprehenderit earum vel. Excepturi, aperiam? -->
+                    {{text}}
                   </div>
 
                 </div>
@@ -90,6 +86,7 @@ export default {
   },
   methods: {
     fetchMail(){
+      this.$q.loading.show();
       axios({
             method: "GET",
             url: 'https://edefense.herokuapp.com/api/user/mail/'+this.id,
@@ -98,27 +95,28 @@ export default {
             }
         })
         .then(response => {
-            console.log(response)
-            if(response.status === 201){
-                response = response.data.doc;
-                this.from = response.from.name;
-                this.to = response.to.name;
-                this.title = response.title;
-                this.text = response.message.body;
-            }else{
-                Notify.create({
-                    message: "Error fetching message.",
-                    color: 'red'
-                })
-            }
+          // console.log(response)
+          if(response.status === 201){
+              response = response.data.doc;
+              this.from = response.from.name;
+              this.to = response.to.name;
+              this.title = response.title;
+              this.text = response.message.body;
+          }else{
+              Notify.create({
+                  message: "Error fetching message.",
+                  color: 'red'
+              })
+          }
+          this.$q.loading.hide();
         })
         .catch(err => {
-            Notify.create({
-                message: "Error fetching message.",
-                color: 'red'
-            })
+          Notify.create({
+              message: "Error fetching message.",
+              color: 'red'
+          })
+          this.$q.loading.hide();
         })
-
     }
   },
   mounted(){

@@ -50,7 +50,6 @@
 <script>
 import { Notify } from 'quasar';
 
-
 export default {
   name: 'login',
   data(){
@@ -61,6 +60,7 @@ export default {
   },
   methods: {
     userLogin(){
+      this.$q.loading.show();
       if(this.username !== "" && this.password !== ""){
         this.$store.dispatch('defencestore/userLogin', {username: this.username, password: this.password})
         .then(()=>{
@@ -70,6 +70,7 @@ export default {
               color: 'blue'
             })
             this.$router.replace('/request')
+            this.$q.loading.hide();
         })
       }else{
         Notify.create({
@@ -77,7 +78,9 @@ export default {
           caption: 'Complete filling the form before submitting.',
           color: 'red'
         })
+        this.$q.loading.hide();
       }
+        // this.$q.loading.hide();
     }
   }
 }

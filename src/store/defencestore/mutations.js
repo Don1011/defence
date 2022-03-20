@@ -11,11 +11,20 @@ export function getDepartments (state, payload) {
   let arr = [];
   let userDept = localStorage.getItem("userDept");
   payload.departments.forEach(item => {
-    userDept !== item._id && arr.push(item.abbr)
+    (userDept !== item._id && item.abbr !== "ADMIN") && arr.push(item.abbr)
   })
   console.log(arr)
   state.departments = arr;
 }
+// 
+// export function getAllUserDepartments (state, payload) {
+//   let arr = [];
+//   payload.departments.forEach(item => {
+//     (item.abbr !== "ADMIN") && arr.push(item.abbr)
+//   })
+//   // console.log(arr)
+//   state.departments = arr;
+// }
 
 export function setRequests (state, payload) {
   state.outgoingRequests = payload.outgoing;

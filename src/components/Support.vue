@@ -14,20 +14,20 @@
 
       >
 
-        <q-input filled  v-model="name"  label="Your Name *"  :rules="[ val => val && val.length > 0 || 'Please type something']" class="bg-white q-pa-none" />
+        <q-input filled  v-model="title"  label="What problem do you have? *"  :rules="[ val => val && val.length > 0 || 'Please type something']" class="bg-white q-pa-none" />
 
-        <q-select
-        class="bg-white q-py-none"
-        filled
-          v-model="single"
-          :options="options"
-          label="Department"
-          lazy-rules
-          :rules="[ val => val = val != null || 'Please select your department']"
-        />
+        <!-- <q-select  v-model="dept" :options="departments" use-input input-debounce="0" label="Select Your Department"  >
+          <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  No results
+                </q-item-section>
+              </q-item>
+            </template>
+        </q-select> -->
 
         <q-input
-          label="Description"
+          label="Explain further... *"
           v-model="text"
           filled
           type="textarea"
@@ -46,8 +46,7 @@
 </template>
 
 <script>
-import { useQuasar } from 'quasar'
-import { ref } from 'vue'
+import { Notify } from 'quasar'
 import Watermark from 'components/Watermark.vue'
 
 export default {
@@ -55,49 +54,45 @@ export default {
    components:{
     Watermark
   },
-  setup () {
-    const $q = useQuasar()
-
-    const name = ref(null)
-    const text = ref(null)
-    const single = ref(null)
-
+  data () {
     return {
-      name,
-      single,
-      text,
-
-      options: [
-        'Department A', 'Department B', 'Department C', 'Department D', 'Department E'
-      ],
-
-      onSubmit () {
-        // if (accept.value !== true) {
-        //   $q.notify({
-        //     color: 'red-5',
-        //     textColor: 'white',
-        //     icon: 'warning',
-        //     message: 'You need to accept the license and terms first'
-        //   })
-        // }
-        // else {
-        //   $q.notify({
-        //     color: 'green-4',
-        //     textColor: 'white',
-        //     icon: 'cloud_done',
-        //     message: 'Submitted'
-        //   })
-        // }
-      },
-
-      onReset () {
-        name.value = null
-        single.value = null
-        text.value = null
-        // this.single =  ref(null)
-        // this.text = ref('')
-      }
+      title : "",
+      // dept : "",
+      text : "",
+      // departments: []
     }
+  },
+  methods: {
+      onSubmit () {
+        console.log(this.title);
+        console.log(this.text);
+        if(this.title !== "" && this.text !== "" ){
+          this.$store.dispatch('defencestore/sendSupportMessage', {
+            title: this.title,
+            text: this.comments
+          })
+          .then(()=> this.onReset())
+        }else{
+          Notify.create({
+            message: "You must fill the form completely before submitting",
+            color: "red"
+          })
+        }
+      },
+      onReset () {
+        this.title = ""
+        // this.dept = ""
+        this.text = ""
+      },
+      // fetchDepartments(){
+      //   this.$store.dispatch('defencestore/getAllUserDepartments')
+      //   .then(() => {
+      //     this.departments = this.$store.getters['defencestore/getDepartments']
+      //   });
+      // }
+  },
+  mounted(){
+    // this.fetchDepartments();
   }
 }
 </script>

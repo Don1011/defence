@@ -210,7 +210,7 @@ export default {
         })
       }else{
         Notify.create({
-          message: 'You can\'t leave the "to", "title" and "Comments" fields empty.',
+          message: 'You can\'t leave the "to", "title" or "Comments" fields empty.',
           color: 'red'
         })
       }
@@ -222,19 +222,20 @@ export default {
       });
     },
     fetchRequests(){
+      this.$q.loading.show();
       this.$store.dispatch('defencestore/getRequests')
       .then(()=>{
         let req = this.$store.getters['defencestore/getRequests'];
         this.incomingRequests = req.incoming;
         this.outgoingRequests = req.outgoing;
+        this.$q.loading.hide();
       })
+      .catch(err=>this.$q.loading.hide())
     }
   },
   mounted(){
     this.fetchDepartments();
-    // this.departments = await this.$store.getters['defencestore/getDepartments']
     this.fetchRequests();
-    // this.departments = this.$store.getters['defencestore/getRequests']
   }
 }
 </script>
