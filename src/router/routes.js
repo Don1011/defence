@@ -1,7 +1,7 @@
 
 const routes = [
   // Login Router
-  { path: '/login-support', component: () => import('components/Login Support.vue')},
+  { path: '/login-support', component: () => import('src/components/loginSupport.vue')},
 
 
   {
