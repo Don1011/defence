@@ -107,7 +107,7 @@ export default {
       this.$q.loading.show();
       axios({
             method: "GET",
-            url: 'http://192.168.0.102:3000/api/user/request/'+this.id,
+            url: 'http://192.168.0.103:3000/api/user/request/'+this.id,
             headers: {
               'Authorization': 'Bearer '+localStorage.getItem('userToken')
             }

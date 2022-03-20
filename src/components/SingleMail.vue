@@ -89,7 +89,7 @@ export default {
       this.$q.loading.show();
       axios({
             method: "GET",
-            url: 'https://edefense.herokuapp.com/api/user/mail/'+this.id,
+            url: 'http://192.168.0.103:3000/api/user/mail/'+this.id,
             headers: {
               'Authorization': 'Bearer '+localStorage.getItem('userToken')
             }
