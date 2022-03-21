@@ -685,7 +685,6 @@ export function createDepartment (context, data) {
   })
 }
 
-
 export function getAllDepartmentsAdmin (context, data) {
 
   return new Promise((resolve, reject) => {
@@ -719,10 +718,10 @@ export function getAllDepartmentsAdmin (context, data) {
 
 }
 
-
 export function getAllUsersAdmin (context, data) {
 
   return new Promise((resolve, reject) => {
+    console.log('response.data.doc');
     axios({
       method: "GET",
       url: baseurl + '/admin/users',
@@ -731,10 +730,18 @@ export function getAllUsersAdmin (context, data) {
       }
     })
     .then(response => {
-      console.log(response.data.doc);
+      console.log(response);
       if(response.status === 201 || response.status === 200){
-          context.commit('getAllUsersAdmin', {departments: response.data.doc})
-          resolve();
+        response = response.data.doc;
+        let usefulresponse = [];
+        response.forEach(item=>{
+          if(item.role !== "Admin"){
+            usefulresponse.push(item)
+          }
+        })
+        console.log(usefulresponse);
+        context.commit('getAllUsersAdmin', {users: usefulresponse})
+        resolve();
       }else{
           Notify.create({
               message: "Error fetching Users.",
@@ -752,3 +759,4 @@ export function getAllUsersAdmin (context, data) {
   })
 
 }
+

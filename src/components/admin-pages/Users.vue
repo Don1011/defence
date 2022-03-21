@@ -54,8 +54,8 @@
       <q-card flat class="bg-primary" >
         <q-scroll-area style="height: 65vh;">
           <div class="text-subtitle2 text-secondary">
-            <q-list separator v-for="n in 15" :key="n" class="q-mb-sm">
-              <UserItem />
+            <q-list separator v-for="user in users" :key="user._id" class="q-mb-sm">
+              <UserItem :user="user" />
             </q-list>
           </div>
         </q-scroll-area>
@@ -146,12 +146,13 @@ export default {
     },
 
     fetchUsers(){
-      // this.$q.loading.show();
+        console.log('req');
+      this.$q.loading.show();
       this.$store.dispatch('defencestore/getAllUsersAdmin')
       .then(()=>{
         let req = this.$store.getters['defencestore/getAllUsersAdmin'];
         console.log(req);
-        // this.users = req;
+        this.users = req;
         this.$q.loading.hide();
       })
     }

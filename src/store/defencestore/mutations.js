@@ -65,7 +65,8 @@ export function setLogs (state, payload) {
 }
 
 export function getAllUsersAdmin (state, payload) {
-  state.logs = payload;
+  console.log(payload)
+  state.usersList = payload.users;
 }
 
 export function logout(state){
