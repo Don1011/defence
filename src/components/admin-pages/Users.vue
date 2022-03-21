@@ -86,26 +86,37 @@ export default {
       departments: [],
       users: [],
 
-      label: ref('mails'),
-
-      // Filter Function
-
-
 
 
     }
   },
  methods: {
-    selectFile(){
-      this.$refs.selectImageFile.$el.click();
+    
+    onReset () {
+      this.username = ""
+      this.password = ""
+      this.roles = []
+      this.departments = []
     },
-    fileSelected(el){
-      el=el.split('\\');
-      el=el[el.length-1];
-      this.selectedFile = el;
+
+    fetchDepartments(){
+      this.$store.dispatch('defencestore/getAllDepartmentsAdmin')
+      .then(() => {
+        this.departments = this.$store.getters['defencestore/getAllDepartmentsAdmin']
+        // console.log(departments);
+      });
     },
-    unSelectFile(){
-      this.selectedFile = null;
+
+    fetchUsers(){
+        // console.log('req');
+      this.$q.loading.show();
+      this.$store.dispatch('defencestore/getAllUsersAdmin')
+      .then(()=>{
+        let req = this.$store.getters['defencestore/getAllUsersAdmin'];
+        console.log(req);
+        this.users = req;
+        this.$q.loading.hide();
+      })
     },
      onSubmit () {
         console.log(this.title);
@@ -120,7 +131,8 @@ export default {
           })
           .then(()=> {
             this.$q.loading.hide();
-            this.onReset()
+            this.onReset();
+            this.fetchUsers();
           })
         }else{
           // this.$q.loading.hide();
@@ -129,33 +141,7 @@ export default {
             color: "red"
           })
         }
-      },
-      onReset () {
-        this.username = ""
-        this.password = ""
-        this.roles = []
-        this.departments = []
-      },
-
-      fetchDepartments(){
-      this.$store.dispatch('defencestore/getAllDepartmentsAdmin')
-      .then(() => {
-        this.departments = this.$store.getters['defencestore/getAllDepartmentsAdmin']
-        // console.log(departments);
-      });
-    },
-
-    fetchUsers(){
-        console.log('req');
-      this.$q.loading.show();
-      this.$store.dispatch('defencestore/getAllUsersAdmin')
-      .then(()=>{
-        let req = this.$store.getters['defencestore/getAllUsersAdmin'];
-        console.log(req);
-        this.users = req;
-        this.$q.loading.hide();
-      })
-    }
+      }
 
   },
   mounted(){

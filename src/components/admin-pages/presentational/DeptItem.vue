@@ -2,8 +2,8 @@
 
       <q-item clickable class="row text-center  bg-white" style="border-radius: 4px">
         <div class="row col-9">
-          <q-item-section  >Department Name </q-item-section>
-          <q-item-section>ABBR </q-item-section>
+          <q-item-section  >{{department.name}} </q-item-section>
+          <q-item-section>{{department.abbr}} </q-item-section>
         </div>
         <q-item-section>
           <div class="row justify-evenly">
@@ -62,6 +62,7 @@ export default {
             editDialog, deleteDialog
         }
     },
+    props: ['department'],
     methods: {
 
     }

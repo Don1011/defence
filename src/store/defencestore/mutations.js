@@ -35,6 +35,16 @@ export function getAllDepartmentsAdmin (state, payload) {
   state.departments = arr;
 }
 
+export function getAllRawDepartments (state, payload) {
+  let arr = [];
+  payload.departments.forEach(item => {
+    (item.abbr !== "ADMIN") && arr.push(item)
+  })
+  // console.log(arr)
+  // state.departments = arr;
+  state.rawDepartments = arr
+}
+
 export function setRequests (state, payload) {
   state.outgoingRequests = payload.outgoing;
   state.incomingRequests = payload.incoming;

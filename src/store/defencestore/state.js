@@ -3,6 +3,7 @@ export default function () {
     adminToken: null,
     userToken: null,
     departments: [],
+    rawDepartments: [],
     outgoingRequests: [],
     incomingRequests: [],
     inbox: [],
