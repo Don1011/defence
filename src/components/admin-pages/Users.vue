@@ -82,29 +82,17 @@ export default {
       password: ref(''),
       role: ref(''),
       roles: ['Registry', 'Cheif Clerk', 'PA', 'Director', 'Cheif', 'Admin'],
-      department: "",
+      department: ref(''),
       departments: [],
+      users: [],
 
-      // options,
-      // label: ref('mails'),
+      label: ref('mails'),
 
       // Filter Function
-      filterFn (val, update) {
-        if (val === '') {
-          update(() => {
-            options.value = stringOptions
 
-            // here you have access to "ref" which
-            // is the Vue reference of the QSelect
-          })
-          return
-        }
 
-        update(() => {
-          const needle = val.toLowerCase()
-          options.value = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
-        })
-      }
+
+
     }
   },
  methods: {
@@ -125,10 +113,10 @@ export default {
         if(this.username !== "" && this.password !== "" && this.role !== "" && this.department !== "" ){
           this.$q.loading.show();
           this.$store.dispatch('defencestore/createUser', {
-            name: this.username,
-            title: this.password,
-            text: this.role,
-            text: this.departments
+            username: this.username,
+            password: this.password,
+            role: this.role,
+            department: this.department
           })
           .then(()=> {
             this.$q.loading.hide();
@@ -149,16 +137,29 @@ export default {
         this.departments = []
       },
 
-       fetchDepartments(){
-      this.$store.dispatch('defencestore/getDepartments')
+      fetchDepartments(){
+      this.$store.dispatch('defencestore/getAllDepartmentsAdmin')
       .then(() => {
-        this.departments = this.$store.getters['defencestore/getDepartments']
+        this.departments = this.$store.getters['defencestore/getAllDepartmentsAdmin']
+        // console.log(departments);
       });
     },
+
+    fetchUsers(){
+      // this.$q.loading.show();
+      this.$store.dispatch('defencestore/getAllUsersAdmin')
+      .then(()=>{
+        let req = this.$store.getters['defencestore/getAllUsersAdmin'];
+        console.log(req);
+        // this.users = req;
+        this.$q.loading.hide();
+      })
+    }
 
   },
   mounted(){
     this.fetchDepartments();
+    this.fetchUsers()
   }
 }
 </script>

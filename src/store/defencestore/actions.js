@@ -578,7 +578,7 @@ export function createUser (context, data) {
         department: data.department
       },
       headers: {
-        'Authorization': 'Bearer '+localStorage.getItem('userToken')
+        'Authorization': 'Bearer '+localStorage.getItem('adminToken')
       }
     })
     .then(response => {
@@ -602,6 +602,112 @@ export function createUser (context, data) {
             color: 'red'
         })
         reject();
+    })
+  })
+
+}
+
+export function createDepartment (context, data) {
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "POST",
+      url: baseurl + '/admin/dept/create',
+      data:{
+        name: data.name,
+        abbr: data.abbr,
+      },
+      headers: {
+        'Authorization': 'Bearer '+localStorage.getItem('adminToken')
+      }
+    })
+    .then(response => {
+      if(response.status === 201){
+        Notify.create({
+            message: "Department Created Successfully.",
+            color: 'blue'
+        })
+        resolve();
+      }else{
+          Notify.create({
+              message: "Error creating Department. Please retry.",
+              color: 'red'
+          })
+          reject();
+      }
+    })
+    .catch(err => {
+        Notify.create({
+            message: 'Error creating User. Please retry.',
+            color: 'red'
+        })
+        reject();
+    })
+  })
+
+}
+
+export function getAllDepartmentsAdmin (context, data) {
+
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "GET",
+      url: baseurl + '/admin/dept/',
+      headers: {
+        'Authorization': 'Bearer '+localStorage.getItem('adminToken')
+      }
+    })
+    .then(response => {
+      // console.log(response.data.doc);
+      if(response.status === 201 || response.status === 200){
+          context.commit('getAllDepartmentsAdmin', {departments: response.data.doc})
+          resolve();
+      }else{
+          Notify.create({
+              message: "Error fetching departments.",
+              color: 'red'
+          })
+          reject();
+      }
+    })
+    .catch(err => {
+        Notify.create({
+            message: 'Error fetching departments.',
+            color: 'red'
+        })
+    })
+  })
+
+}
+
+
+export function getAllUsersAdmin (context, data) {
+
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "GET",
+      url: baseurl + '/admin/users',
+      headers: {
+        'Authorization': 'Bearer '+localStorage.getItem('adminToken')
+      }
+    })
+    .then(response => {
+      console.log(response.data.doc);
+      if(response.status === 201 || response.status === 200){
+          context.commit('getAllUsersAdmin', {departments: response.data.doc})
+          resolve();
+      }else{
+          Notify.create({
+              message: "Error fetching Users.",
+              color: 'red'
+          })
+          reject();
+      }
+    })
+    .catch(err => {
+        Notify.create({
+            message: 'Error fetching Users.',
+            color: 'red'
+        })
     })
   })
 

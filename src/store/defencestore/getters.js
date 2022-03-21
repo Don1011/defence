@@ -4,6 +4,11 @@ export function getDepartments (state) {
   return state.departments;
 }
 
+export function getAllDepartmentsAdmin (state) {
+  // console.log(state);
+  return state.departments;
+}
+
 export function getRequests (state) {
   return ({ incoming: state.incomingRequests, outgoing: state.outgoingRequests });
 }
@@ -21,5 +26,11 @@ export function usersInDeptForForward (state) {
 }
 
 export function getLogs (state) {
+  return state.logs;
+}
+
+
+export function getAllUsersAdmin (state) {
+  console.log(state);
   return state.logs;
 }
