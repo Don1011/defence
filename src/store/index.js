@@ -1,6 +1,7 @@
 import { createStore } from 'vuex'
 import defencestore from './defencestore'
 
+
 export default function (/* { ssrContext } */) {
   const Store = createStore({
     modules: {

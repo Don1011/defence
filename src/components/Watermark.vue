@@ -17,7 +17,7 @@ export default {
    left:50%;
    transform: translate(-25%, -25%);
    opacity:0.1;
-   z-index:0;
+   z-index:1;
    color:white;
    user-select: none;
 }

@@ -13,9 +13,9 @@
               <div class="q-ml-md ">
               <!-- Mail Title  -->
                 <div class="row items-align justify-between ">
-                  <q-space/>
-                  <div class="row col-3">
-                    <q-space/>
+                  <q-space />
+                  <div class="row col-3" style="80%">
+                    <!-- <q-space/> -->
                     <q-btn v-show="!(status==='Completed')" flat dense @click="confirmCompleted=true" color="blue" label="Complete" icon="check" />
                     <q-btn v-show="(status==='Completed')" flat dense disabled color="green" label="Completed" icon="check" />
                     <q-dialog v-model="confirmCompleted" persistent>
@@ -31,7 +31,7 @@
                         </q-card-actions>
                       </q-card>
                     </q-dialog>
-                    <q-space/>
+                    <!-- <q-space/> -->
                     <q-space/>
                     <q-btn flat round dense @click="print()" icon="print" />
                     <div v-show="!(status==='Completed')" class="">
@@ -52,7 +52,7 @@
                   </div>
                 </div>
 
-                <div id="printMe">
+                <div>
 
               <!-- Sender's Name  -->
                   <div class="text-subtitle1"><span class="text-bold text-grey" >From:</span> <span >{{from}}</span></div>
@@ -76,7 +76,7 @@
                       </q-banner>
                     </div>
                   </div>
-                  
+
 
                 </div>
 
