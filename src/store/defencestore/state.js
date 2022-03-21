@@ -10,5 +10,6 @@ export default function () {
     logs: [],
     usersInDept: [],
     usersInDeptForForward: [],
+    usersList: [],
   }
 }

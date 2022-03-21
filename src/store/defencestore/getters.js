@@ -29,8 +29,7 @@ export function getLogs (state) {
   return state.logs;
 }
 
-
 export function getAllUsersAdmin (state) {
   console.log(state);
-  return state.logs;
+  return state.usersList;
 }
