@@ -2,9 +2,9 @@
 
     <q-item clickable class="row text-center bg-white" style="border-radius: 4px">
         <div class="row col-9">
-            <q-item-section  >Username </q-item-section>
-            <q-item-section>ROLE </q-item-section>
-            <q-item-section>Department</q-item-section>
+            <q-item-section  >{{user.username}} </q-item-section>
+            <q-item-section>{{user.role}} </q-item-section>
+            <q-item-section>{{user.department.abbr}}</q-item-section>
         </div>
         <q-item-section>
             <div class="row justify-evenly">
@@ -65,6 +65,7 @@ export default {
             editDialog, deleteDialog
         }
     },
+    props: ['user'],
     methods: {
 
     }
