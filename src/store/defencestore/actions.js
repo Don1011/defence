@@ -10,7 +10,7 @@ const baseurl = env.backend;
 export function adminLogin (context, data) {
     return new Promise((resolve, reject) => {
         axios({
-            method: "GET",
+            method: "POST",
             url: baseurl + '/login',
             data: {
                 username: data.username,
@@ -333,7 +333,6 @@ export function sendSupportMessage (context, data) {
   })
 
 }
-
 
 export function loginSupport (context, data) {
   return new Promise((resolve, reject) => {
