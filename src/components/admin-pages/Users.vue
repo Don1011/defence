@@ -1,6 +1,6 @@
 <template>
-  <div class="q-pa-md bg-primary" style="height:80vh">
-    <div class="q-gutter-y-md" style="width: 100%">
+  <div class="q-pa-md bg-primary" style="height:80vh;">
+    <div class="q-gutter-y-md" style="width: 100%;">
       <q-card>
         <q-expansion-item
           dense
@@ -16,15 +16,31 @@
               <div class="column">
                 <div class="bg-white col q-px-md column justify-between q-pb-md" style="height:300px;border-radius:0 0 4px 4px">
                   <div class = "q-mx-xl">
-                    <q-input label="Username:" />
-                    <q-input label="Password:" />
-                    <q-input label="Role:" />
-                    <q-input label="Department:" />
+                    <q-input label="Username:" v-model="username" />
+                    <q-input label="Password:" v-model="password"/>
+                    <q-select  v-model="role" :options="roles" use-input input-debounce="0" label="Role"  >
+                      <template v-slot:no-option>
+                          <q-item>
+                            <q-item-section class="text-grey">
+                              No results
+                            </q-item-section>
+                          </q-item>
+                        </template>
+                    </q-select>
+                    <q-select  v-model="department" :options="departments" use-input input-debounce="0" label="Department"  >
+                      <template v-slot:no-option>
+                          <q-item>
+                            <q-item-section class="text-grey">
+                              No results
+                            </q-item-section>
+                          </q-item>
+                        </template>
+                    </q-select>
                   </div>
 
                   <div class="row justify-center q-mt-xl " style="height:40px">
                     <div style="width:20%" class="row">
-                      <q-btn label="Create User" style="width: 100%;" color="negative"/>
+                      <q-btn label="Create User" @click="onSubmit" style="width: 100%;" color="negative"/>
                     </div>
                   </div>
                 </div>
@@ -53,9 +69,7 @@
 import { ref } from 'vue'
 import UserItem from './presentational/UserItem.vue';
 
-const stringOptions = [
-  'Department A', 'Department B', 'Department C', 'Department D', 'Department E', 'Department F'
-]
+
 
 
 export default {
@@ -63,15 +77,16 @@ export default {
     UserItem
   },
   setup () {
-    const options = ref(stringOptions)
     return {
       username: ref(''),
       password: ref(''),
       role: ref(''),
-      department: ref(''),
+      roles: ['Registry', 'Cheif Clerk', 'PA', 'Director', 'Cheif', 'Admin'],
+      department: "",
+      departments: [],
 
-      options,
-      label: ref('mails'),
+      // options,
+      // label: ref('mails'),
 
       // Filter Function
       filterFn (val, update) {
@@ -103,7 +118,47 @@ export default {
     },
     unSelectFile(){
       this.selectedFile = null;
-    }
+    },
+     onSubmit () {
+        console.log(this.title);
+        console.log(this.text);
+        if(this.username !== "" && this.password !== "" && this.role !== "" && this.department !== "" ){
+          this.$q.loading.show();
+          this.$store.dispatch('defencestore/createUser', {
+            name: this.username,
+            title: this.password,
+            text: this.role,
+            text: this.departments
+          })
+          .then(()=> {
+            this.$q.loading.hide();
+            this.onReset()
+          })
+        }else{
+          // this.$q.loading.hide();
+          Notify.create({
+            message: "You must fill the form completely before submitting",
+            color: "red"
+          })
+        }
+      },
+      onReset () {
+        this.username = ""
+        this.password = ""
+        this.roles = []
+        this.departments = []
+      },
+
+       fetchDepartments(){
+      this.$store.dispatch('defencestore/getDepartments')
+      .then(() => {
+        this.departments = this.$store.getters['defencestore/getDepartments']
+      });
+    },
+
+  },
+  mounted(){
+    this.fetchDepartments();
   }
 }
 </script>
