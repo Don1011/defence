@@ -38,7 +38,7 @@
                           <!-- <div class="text-h6">Seen</div> -->
                           <!-- Lorem ipsum dolor sit amet consectetur adipisicing elit. -->
 
-                          <q-card class="row justify-between q-pr-md q-my-xs" v-for="n in 10" :key="n">
+                          <q-card class="row justify-between q-pr-md q-my-xs" v-for="forwardedToListItem in forwardedTo" :key="forwardedToListItem._id">
                             <q-item>
                                 <q-item-section avatar>
                                   <q-avatar>
@@ -47,13 +47,18 @@
                                 </q-item-section>
 
                                 <q-item-section>
-                                  <q-item-label>user@DEPT</q-item-label>
+                                  <q-item-label>{{forwardedToListItem.by.username}}</q-item-label>
                                   <q-item-label caption class="text-red">
-                                    seen
+                                    {{forwardedToListItem.read ? "seen" : ""}}
                                   </q-item-label>
                                 </q-item-section>
                                 <q-item-section>
-                                    <p class="q-ml-lg text-caption text-end"> 00:00:01 </p>
+                                    <q-item-label caption>
+                                        <span class="q-ml-lg text-caption text-end">{{forwardedToListItem.date.split("T")[0]}} </span>
+                                    </q-item-label>
+                                    <q-item-label caption>
+                                        <span class="q-ml-lg text-caption text-end">{{forwardedToListItem.date.split("T")[1].split(".")[0]}} </span>
+                                    </q-item-label>
                                 </q-item-section>
                               </q-item>
                           </q-card>
@@ -115,7 +120,7 @@
                               <q-card-section class="q-pt-none">
                                 <p class="text-h5 q-my-sm text-secondary text-bold">Add Comments</p>
                                  <q-input
-                                    v-model="text"
+                                    v-model="comment"
                                     filled
                                     type="textarea"
                                     placeholder="Comments..."
@@ -123,7 +128,7 @@
                               </q-card-section>
 
                               <q-card-actions align="right">
-                                <q-btn  label="Comment" color="secondary" v-close-popup />
+                                <q-btn @click="saveComment" label="Comment" color="secondary" v-close-popup />
                               </q-card-actions>
                             </q-card>
                           </q-dialog>
@@ -144,7 +149,33 @@
 
 export default {
     name: 'MetaData',
-    props: ['toggle', 'tab', 'metaData']
+    props: ['toggle', 'tab', 'metaData', 'forwardedTo'],
+    data(){
+        return{
+            comment: ""
+        }
+    },
+    method: {
+        saveComment(){
+            // if(this.comment !== ""){
+            //     this.$store.dispatch('defencestore/sendRequest', {
+            //     to: this.to,
+            //     title: this.title,
+            //     text: this.comments,
+            //     files: this.selectedFile,
+            //     reference: ref
+            //     })
+            //     .then(()=>{
+            //     window.location.reload();
+            //     })
+            // }else{
+            //     Notify.create({
+            //     message: 'You can\'t leave the "to", "title" or "Comments" fields empty.',
+            //     color: 'red'
+            //     })
+            // }
+        }
+    }
 }
 </script>
 

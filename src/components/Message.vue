@@ -4,7 +4,7 @@
       <div class="start">
 
         <!-- MetaData -->
-        <MetaData :toggle="drawerRight" :tab="tab" :metaData="metaData" />
+        <MetaData :toggle="drawerRight" :tab="tab" :metaData="metaData" :forwardedTo="forwardedToList" />
 
           <q-page-container>
             <q-page padding>
@@ -85,8 +85,6 @@
           </q-page-container>
     </div>
   </q-layout>
-
-
 </template>
 
 <script>
@@ -118,7 +116,8 @@ export default {
       status: "",
       metaData: null,
       users: [],
-      confirmCompleted: false
+      confirmCompleted: false,
+      forwardedToList: []
     }
   },
   methods: {
@@ -147,6 +146,30 @@ export default {
                 response.metaData.seen.forEach(item => {
                   idList.push(item.by);
                 })
+                axios({
+                    method: "POST",
+                    url: 'http://192.168.0.103:3000/api/user/findmany',
+                    headers: {
+                      'Authorization': 'Bearer '+localStorage.getItem('userToken')
+                    },
+                    data: {
+                      users: idList
+                    }
+                })
+                .then(res => {
+                  res = res.data.result;
+                  let rearrangedList = [];
+                  response.metaData.seen.forEach(item => {
+                    res.forEach(resItem => {
+                      if(resItem._id === item.by){
+                        rearrangedList.push({...item, by: resItem});
+                      }
+                    })
+                  })
+                  // console.log(rearrangedList);
+                  this.forwardedToList = rearrangedList;
+                  // console.log()
+                })
 
             }else{
                 Notify.create({
@@ -165,7 +188,7 @@ export default {
             this.$q.loading.hide();
         })
     },
-     fetchUsersInDept(){
+    fetchUsersInDept(){
       this.$store.dispatch('defencestore/getUsersInDepartment')
       .then(()=>{
         let req = this.$store.getters['defencestore/usersInDeptForForward'];
@@ -202,11 +225,27 @@ export default {
       .catch(err=> {
         this.$q.loading.hide();
       })
+    },
+    setSeen(){
+      axios({
+          method: "GET",
+          url: 'http://192.168.0.103:3000/api/user/metadata/'+this.id,
+          headers: {
+            'Authorization': 'Bearer '+localStorage.getItem('userToken')
+          }
+      })
+      .catch(err=>{
+        Notify.create({
+          message: "Error setting seen flag.",
+          color: "red"
+        })
+      })
     }
   },
   mounted(){
     this.fetchMessage();
     this.fetchUsersInDept();
+    this.setSeen();
   }
 
 }
