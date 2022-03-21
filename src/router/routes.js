@@ -85,6 +85,15 @@ const routes = [
       }
       }},
 
+      { path: '/admin/mail', component: () => import('components/admin-pages/adminMail.vue') ,
+      beforeEnter: (to, from, next) => {
+      if (localStorage.getItem("adminToken") !== null ){
+        next('/admin/users')
+      } else{
+        next()
+      }
+      }},
+
       { path: '/admin/users', component: () => import('components/admin-pages/Users.vue'),
       beforeEnter: (to, from, next) => {
       if (localStorage.getItem("adminToken") == null ){

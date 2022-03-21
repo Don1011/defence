@@ -25,8 +25,8 @@
 
 
 
-        <q-input filled  v-model="name"  label="Full Name"  :rules="[ val => val && val.length > 0 || 'Please type something']" class="bg-white q-pa-none" />
-        <q-input filled  v-model="title"  label="Title"  :rules="[ val => val && val.length > 0 || 'Please type something']" class="bg-white q-pa-none" />
+        <q-input filled  v-model="name"  label="Full Name" class="bg-white q-pa-none" />
+        <q-input filled  v-model="title"  label="Title"  class="bg-white q-pa-none" />
 
         <q-input
           label="State Your Problem Here..."
@@ -34,7 +34,7 @@
           filled
           type="textarea"
           class="bg-white q-py-none"
-          :rules="[ val => val && val.length > 0 || 'Please type the problem you\'re facing']"
+
         />
 
         <div>
