@@ -564,8 +564,6 @@ export function setCompleted (context, data) {
 
 }
 
-
-
 export function createUser (context, data) {
   return new Promise((resolve, reject) => {
     axios({
@@ -606,3 +604,74 @@ export function createUser (context, data) {
   })
 
 }
+
+export function saveComment (context, data) {
+  console.log(data)
+  let { text, request }  = data;
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "POST",
+      url: baseurl + '/user/metadata/'+request,
+      data:{
+        comment: text
+      },
+      headers: {
+        'Authorization': 'Bearer '+localStorage.getItem('userToken')
+      }
+    })
+    .then(response => {
+      console.log(response)
+      if(response.status === 201 || response.status === 200){
+        Notify.create({
+            message: "Comment Saved Successfully.",
+            color: 'blue'
+        })
+        resolve();
+      }else{
+          Notify.create({
+              message: "Error Saving Comment. Please retry.",
+              color: 'red'
+          })
+          reject();
+      }
+    })
+    .catch(err => {
+        Notify.create({
+            message: 'Error Saving Comment. Please retry.',
+            color: 'red'
+        })
+        reject();
+    })
+  })
+}
+// 
+// export function getMinutes (context, data) {
+//   return new Promise((resolve, reject) => {
+//     axios({
+//       method: "GET",
+//       url: baseurl + '/user/logs',
+//       headers: {
+//         'Authorization': 'Bearer '+localStorage.getItem('userToken')
+//       }
+//     })
+//     .then(response => {
+//       console.log(response.data.doc);
+//       if(response.status === 201 || response.status === 200){
+//           context.commit('setLogs', response.data.doc)
+//           resolve();
+//       }else{
+//           Notify.create({
+//               message: "Error fetching logs.",
+//               color: 'red'
+//           })
+//           reject();
+//       }
+//     })
+//     .catch(err => {
+//         Notify.create({
+//             message: 'Error fetching logs.',
+//             color: 'red'
+//         })
+//     })
+//   })
+// }

@@ -4,7 +4,7 @@
       <div class="start">
 
         <!-- MetaData -->
-        <MetaData :toggle="drawerRight" :tab="tab" :metaData="metaData" :forwardedTo="forwardedToList" />
+        <MetaData :toggle="drawerRight" :tab="tab" :metaData="metaData" :forwardedTo="forwardedToList" :request="id" :minutesList="minutesList" />
 
           <q-page-container>
             <q-page padding>
@@ -33,7 +33,7 @@
                     </q-dialog>
                     <q-space/>
                     <q-space/>
-                    <q-btn flat round dense @click="print" icon="print" />
+                    <q-btn flat round dense @click="print()" icon="print" />
                     <div v-show="!(status==='Completed')" class="">
                       <q-btn-dropdown round flat color="secondary" label="" dropdown-icon="reply">
                           <q-scroll-area class="text-center justify-center" style="height: 40vh; width:50vh ">
@@ -70,7 +70,7 @@
                     <div class="col-5">
                       <q-banner dense class="bg-grey-3">
                         <template v-slot:avatar>
-                          <q-btn flat icon="download" color="blue" @click="()=>downloadFile(file)" />
+                          <q-btn flat icon="download" color="blue" @click="downloadFile(file)" />
                         </template>
                         File
                       </q-banner>
@@ -94,6 +94,7 @@ import MetaData from 'components/MetaData.vue'
 import VueHtmlToPaper from 'vue-html-to-paper';
 import axios from 'axios';
 import { Notify }from 'quasar';
+import env from '../../env.js';
 
 export default {
   name: 'Message',
@@ -117,15 +118,17 @@ export default {
       metaData: null,
       users: [],
       confirmCompleted: false,
-      forwardedToList: []
+      forwardedToList: [],
+      minutesList: []
     }
   },
   methods: {
     fetchMessage(){
+      // console.log(env);
       this.$q.loading.show();
       axios({
             method: "GET",
-            url: 'http://192.168.0.103:3000/api/user/request/'+this.id,
+            url: env.backend+'/user/request/'+this.id,
             headers: {
               'Authorization': 'Bearer '+localStorage.getItem('userToken')
             }
@@ -148,7 +151,7 @@ export default {
                 })
                 axios({
                     method: "POST",
-                    url: 'http://192.168.0.103:3000/api/user/findmany',
+                    url: env.backend+'/user/findmany',
                     headers: {
                       'Authorization': 'Bearer '+localStorage.getItem('userToken')
                     },
@@ -166,11 +169,37 @@ export default {
                       }
                     })
                   })
-                  // console.log(rearrangedList);
                   this.forwardedToList = rearrangedList;
-                  // console.log()
                 })
 
+                let minuteIds = [];
+                response.metaData.minute.forEach(item=>{
+                  minuteIds.push(item.by);
+                })
+
+                axios({
+                    method: "POST",
+                    url: env.backend+'/user/findmany',
+                    headers: {
+                      'Authorization': 'Bearer '+localStorage.getItem('userToken')
+                    },
+                    data: {
+                      users: minuteIds
+                    }
+                })
+                .then(res => {
+                  res = res.data.result;
+                  let rearrangedList = [];
+                  response.metaData.minute.forEach((item)=>{
+                    res.forEach(resItem => {
+                      if(resItem._id === item.by){
+                        rearrangedList.push({...item, by: resItem});
+                      }
+                    })
+                  })
+                  this.minutesList = rearrangedList;
+                  console.log(rearrangedList)
+                })
             }else{
                 Notify.create({
                     message: "Error fetching message.",
@@ -209,7 +238,23 @@ export default {
       })
     },
     downloadFile(url){
-      console.log("downloaded")
+      console.log("downloaded");
+      let fileUrl = `${env.backend}/${url}`;
+      axios({
+          url: fileUrl, //your url
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer '+localStorage.getItem('userToken')
+          },
+          responseType: 'blob', // important
+      }).then((response) => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', url.split('/')[url.split('/').length -1]); //or any other extension
+          document.body.appendChild(link);
+          link.click();
+      });
     },
     print(){
       console.log('print')
@@ -229,7 +274,7 @@ export default {
     setSeen(){
       axios({
           method: "GET",
-          url: 'http://192.168.0.103:3000/api/user/metadata/'+this.id,
+          url: env.backend+'/user/metadata/'+this.id,
           headers: {
             'Authorization': 'Bearer '+localStorage.getItem('userToken')
           }
