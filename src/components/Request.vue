@@ -5,7 +5,7 @@
         <!-- <Watermark /> -->
 
 
-      <div class="q-gutter-y-md" style="width: 100%">
+      <div class="q-gutter-y-md" style="width: 100%;">
         <q-card flat class="" >
           <q-tabs
             v-model="label"
@@ -32,7 +32,7 @@
                   <EmptyList :itemList="incomingRequests" message="No incoming request" />
                   <q-list separator v-for="incomingRequest in incomingRequests" :key="incomingRequest._id" >
                     <q-item clickable class="row text-center q-mb-sm bg-white" style="border-radius: 4px">
-                      <div class="row col-9" @click="this.$router.push(`/request-message/${incomingRequest._id}`)">
+                      <div  class="row col-9" @click="this.$router.push(`/request-message/${incomingRequest._id}`)">
                         <q-item-section  >Request from {{incomingRequest.from.abbr}}</q-item-section>
                         <q-item-section>{{incomingRequest.title}} </q-item-section>
                         <q-item-section>{{incomingRequest.createdAt.split("T")[0]}}, {{incomingRequest.createdAt.split("T")[1].split(".")[0]}}</q-item-section>
@@ -236,7 +236,7 @@ export default {
         if(req.outgoing.length===0){
           this.outgoingText = "No Outgoing Request.";
         }
-        
+
         this.incomingRequests = req.incoming;
         this.outgoingRequests = req.outgoing;
         this.$q.loading.hide();
