@@ -232,11 +232,13 @@ export function getRequests (context, data) {
             let userDept = localStorage.getItem('userDept');
             let requests = response.data.doc;
             requests.forEach(item => {
+              if(item.metaData.status !== "Completed"){
                 if(item.from._id === userDept){
-                    outgoing.push(item);
+                  outgoing.push(item);
                 }else{
                     incoming.push(item);
-                }
+                  }
+              }
             });
             context.commit('setRequests', {outgoing, incoming})
             resolve();
