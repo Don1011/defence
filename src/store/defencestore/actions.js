@@ -474,7 +474,6 @@ export function getLogs (context, data) {
           })
       })
     })
-
 }
 
 export function forwardRequest (context, data) {

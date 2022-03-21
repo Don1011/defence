@@ -24,7 +24,6 @@
                       indicator
                     >
                       <q-tab name="forwardedTo" label="Forwarded To" />
-                      <q-tab name="mails" label="Seen" />
                       <q-tab name="alarms" label="Minutes" />
 
                       <!-- <q-tab name="movies" label="Movies" /> -->
@@ -48,44 +47,19 @@
                                 </q-item-section>
 
                                 <q-item-section>
-                                  <q-item-label>Rank</q-item-label>
-                                  <q-item-label caption>
-                                    Lorem Dude
+                                  <q-item-label>user@DEPT</q-item-label>
+                                  <q-item-label caption class="text-red">
+                                    seen
                                   </q-item-label>
                                 </q-item-section>
-                              </q-item>
-
-                              <p style="margin: auto 0" class="text-caption"> 00 : 00 : 01 </p>
-                          </q-card>
-                        </q-scroll-area>
-                      </q-tab-panel>
-
-                      <q-tab-panel name="mails" >
-                        <q-scroll-area  style="height: 70vh">
-
-                          <!-- <div class="text-h6">Seen</div> -->
-                          <!-- Lorem ipsum dolor sit amet consectetur adipisicing elit. -->
-
-                          <q-card class="row justify-between q-pr-md q-my-xs" v-for="n in 10" :key="n">
-                            <q-item>
-                                <q-item-section avatar>
-                                  <q-avatar>
-                                    <img src="https://cdn.quasar.dev/img/boy-avatar.png">
-                                  </q-avatar>
-                                </q-item-section>
-
                                 <q-item-section>
-                                  <q-item-label>Rank</q-item-label>
-                                  <q-item-label caption>
-                                    Lorem Dude
-                                  </q-item-label>
+                                    <p class="q-ml-lg text-caption text-end"> 00:00:01 </p>
                                 </q-item-section>
                               </q-item>
-
-                              <p style="margin: auto 0" class="text-caption"> 00 : 00 : 01 </p>
                           </q-card>
                         </q-scroll-area>
                       </q-tab-panel>
+
                     <!-- Comments Section  -->
                       <q-tab-panel name="alarms" style="">
                         <q-scroll-area style="height: 70vh">
