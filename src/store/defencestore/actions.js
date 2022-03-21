@@ -476,6 +476,7 @@ export function getLogs (context, data) {
     })
 }
 
+
 export function forwardRequest (context, data) {
   // const { to, text, reference, title } = data;
   console.log(data);
