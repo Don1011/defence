@@ -524,8 +524,6 @@ export function forwardRequest (context, data) {
   })
 
 }
-<<<<<<< HEAD
-=======
 
 export function setCompleted (context, data) {
   // const { to, text, reference, title } = data;
@@ -565,4 +563,3 @@ export function setCompleted (context, data) {
   })
 
 }
->>>>>>> 124053793f688ae4d6757570fd87c273d94a2d80

@@ -24,21 +24,20 @@
 <!-- Navigation Buttons/Links  -->
     <div class="flex flex-center q-my-xl">
 
-        <q-item clickable class="q-mb-md q-px-xl" active-class="bg-primary text-secondary" to="/admin/mail" style="border-radius: 25px" v-ripple >
-                    <q-item-section avatar>
-                        <q-icon name="mail" size="1.5rem" />
-                    </q-item-section>
-                    <q-item-section>
-                        <q-item-label class="text-left text-subtitle1">Mail</q-item-label>
-                    </q-item-section>
-                </q-item>
+
 
         <q-list class="q-my-lg">
+                 <q-item clickable class="q-mb-md q-px-xl" active-class="bg-primary text-secondary" to="/admin/mail" style="border-radius: 25px" v-ripple >
+                  <q-item-section avatar>
+                      <q-icon name="mail" size="1.5rem" />
+                  </q-item-section>
+                  <q-item-section>
+                      <q-item-label class="text-left text-subtitle1">Mail</q-item-label>
+                  </q-item-section>
+              </q-item>
                 <q-item clickable class="q-mb-md q-px-xl"
                 active-class="bg-primary text-secondary"
                 v-ripple
-                :active="link === 'Users'"
-                @click="link = 'Users'"
                 style="border-radius: 25px"
                 to="/admin/users"
                 >
@@ -78,9 +77,9 @@
               <q-space/>
               <q-item clickable class=""
                 active-class="my-menu-link"
+                @click="logout"
                 v-ripple
-                :active="link === 'Logout'"
-                @click="link = 'Logout'" style="width:70%" >
+                 style="width:70%" >
 
                 <q-item-section avatar>
                     <q-icon name="logout" size="2rem" />
@@ -100,6 +99,17 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'EssentialLink',
+  methods: {
+    logout(){
+      // console.log("LOGOUT")
+      localStorage.removeItem("adminToken");
+      localStorage.removeItem("userDept");
+      localStorage.removeItem("userToken");
+
+      this.$store.commit('logout')
+      this.$router.replace('/admin');
+    }
+  }
 
 })
 </script>

@@ -41,6 +41,82 @@ export default {
   }
 }
 
+
+
+export function getAllUsers (context, data) {
+
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "GET",
+      url: baseurl + '/admin/users',
+      headers: {
+        'Authorization': 'Bearer '+localStorage.getItem('userToken')
+      }
+    })
+    .then(response => {
+      // console.log(response.data.doc);
+      if(response.status === 201 || response.status === 200){
+          context.commit('getAllUsers', {users: response.data.doc})
+          resolve();
+      }else{
+          Notify.create({
+              message: "Error fetching departments.",
+              color: 'red'
+          })
+          reject();
+      }
+    })
+    .catch(err => {
+        Notify.create({
+            message: 'Error fetching departments.',
+            color: 'red'
+        })
+    })
+  })
+
+}
+
+
+
+export function createUser (context, data) {
+
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "POST",
+      url: baseurl + '/admin/users/create',
+      headers: {
+        'Authorization': 'Bearer '+localStorage.getItem('userToken')
+      },
+      data: {
+        username: data.username,
+        password: data.password,
+        role: data.role,
+        department: data.department
+      }
+    })
+    .then(response => {
+      context.commit('createUser', {username, password, role, department})
+      resolve()
+       Notify.create({
+          message: 'Success.',
+          caption: 'User Created Successfully.',
+          color: 'blue'
+      })
+    })
+    .catch(err => {
+      reject()
+        Notify.create({
+            message: 'Error creating User.',
+            color: 'red'
+        })
+    })
+  })
+
+}
+
+
+
+
 </script>
 
 
