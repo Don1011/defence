@@ -181,6 +181,7 @@ export function getDepartments (context, data) {
 
 }
 
+
 export function getAllUserDepartments (context, data) {
 
   return new Promise((resolve, reject) => {
@@ -556,6 +557,49 @@ export function setCompleted (context, data) {
         Notify.create({
           message: "Error changing status to completed.",
           color: 'red'
+        })
+        reject();
+    })
+  })
+
+}
+
+
+
+export function createUser (context, data) {
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "POST",
+      url: baseurl + '/admin/users/create',
+      data:{
+        username: data.username,
+        password: data.password,
+        role: data.role,
+        department: data.department
+      },
+      headers: {
+        'Authorization': 'Bearer '+localStorage.getItem('userToken')
+      }
+    })
+    .then(response => {
+      if(response.status === 201){
+        Notify.create({
+            message: "User Created Successfully.",
+            color: 'blue'
+        })
+        resolve();
+      }else{
+          Notify.create({
+              message: "Error creating User. Please retry.",
+              color: 'red'
+          })
+          reject();
+      }
+    })
+    .catch(err => {
+        Notify.create({
+            message: 'Error creating User. Please retry.',
+            color: 'red'
         })
         reject();
     })

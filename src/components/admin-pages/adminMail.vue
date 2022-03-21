@@ -159,63 +159,63 @@ export default {
     }
   },
  methods: {
-    selectFile(){
-      this.$refs.selectImageFile.$el.click();
-    },
-    fileSelected(el){
-      el=el.split('\\');
-      el=el[el.length-1];
-      this.selectedFile = el;
-    },
-    unSelectFile(){
-      this.selectedFile = null;
-    },
-    submitMail(){
-      this.$q.loading.show();
-      if(this.to !== "" && this.title !== "" && this.comments !== ""){
-        this.$store.dispatch('defencestore/sendMail', {
-          to: this.to,
-          title: this.title,
-          text: this.comments,
-          files: this.selectedFile
-        })
-        .then(()=>{
-          window.location.reload();
-        this.$q.loading.hide();
-        })
-      }else{
-        this.$q.loading.hide();
-        Notify.create({
-          message: 'You can\'t leave the "to", "title" and "Comments" fields empty.',
-          color: 'red'
-        })
-      }
-    },
-    fetchMails(){
-      this.$q.loading.show();
-      this.$store.dispatch('defencestore/getMails')
-      .then(()=>{
-        let req = this.$store.getters['defencestore/getMails'];
-        this.inbox = req.inbox;
-        this.sent = req.sent;
-        this.$q.loading.hide();
-        // console.log(this.inbox)
-        // console.log(this.sent)
-      })
-    },
-    fetchUsersInDept(){
-      this.$store.dispatch('defencestore/getUsersInDepartment')
-      .then(()=>{
-        let req = this.$store.getters['defencestore/usersInDept'];
-        this.users = req;
-        console.log(this.users)
-      })
-    }
+    // selectFile(){
+    //   this.$refs.selectImageFile.$el.click();
+    // },
+    // fileSelected(el){
+    //   el=el.split('\\');
+    //   el=el[el.length-1];
+    //   this.selectedFile = el;
+    // },
+    // unSelectFile(){
+    //   this.selectedFile = null;
+    // },
+    // submitMail(){
+    //   this.$q.loading.show();
+    //   if(this.to !== "" && this.title !== "" && this.comments !== ""){
+    //     this.$store.dispatch('defencestore/sendMail', {
+    //       to: this.to,
+    //       title: this.title,
+    //       text: this.comments,
+    //       files: this.selectedFile
+    //     })
+    //     .then(()=>{
+    //       window.location.reload();
+    //     this.$q.loading.hide();
+    //     })
+    //   }else{
+    //     this.$q.loading.hide();
+    //     Notify.create({
+    //       message: 'You can\'t leave the "to", "title" and "Comments" fields empty.',
+    //       color: 'red'
+    //     })
+    //   }
+    // },
+    // fetchMails(){
+    //   this.$q.loading.show();
+    //   this.$store.dispatch('defencestore/getMails')
+    //   .then(()=>{
+    //     let req = this.$store.getters['defencestore/getMails'];
+    //     this.inbox = req.inbox;
+    //     this.sent = req.sent;
+    //     this.$q.loading.hide();
+    //     // console.log(this.inbox)
+    //     // console.log(this.sent)
+    //   })
+    // },
+    // fetchUsersInDept(){
+    //   this.$store.dispatch('defencestore/getUsersInDepartment')
+    //   .then(()=>{
+    //     let req = this.$store.getters['defencestore/usersInDept'];
+    //     this.users = req;
+    //     console.log(this.users)
+    //   })
+    // }
   },
   mounted(){
-    this.fetchMails();
-    this.fetchUsersInDept();
-    // console.log(this.users)
+    // this.fetchMails();
+    // this.fetchUsersInDept();
+    // // console.log(this.users)
   }
 }
 </script>
