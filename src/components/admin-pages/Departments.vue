@@ -15,14 +15,14 @@
                 <div class="column">
                   <div class="bg-white col q-px-md column justify-between q-pb-md" style="height:300px;border-radius:0 0 4px 4px">
                     <div class = "q-mx-xl">
-                      <q-input label="Department Name:" />
-                      <q-input label="Department Abbreviation:" />
+                      <q-input v-model="deptName" label="Department Name:"  />
+                      <q-input  v-model="abbr" label="Department Abbreviation:"/>
                       <!-- <q-input label="Department:" /> -->
                     </div>
 
                     <div class="row justify-center q-mt-xl " style="height:40px">
                       <div style="width:20%" class="row">
-                        <q-btn label="Add" style="width: 50%;" color="negative"/>
+                        <q-btn label="Add" @click="onSubmit" style="width: 50%;" color="negative"/>
                       </div>
                     </div>
                   </div>
@@ -51,9 +51,6 @@
 import { ref } from 'vue'
 import DeptItem from './presentational/DeptItem.vue';
 
-const stringOptions = [
-  'Department A', 'Department B', 'Department C', 'Department D', 'Department E', 'Department F'
-]
 
 
 export default {
@@ -61,9 +58,11 @@ export default {
     DeptItem
   },
   setup () {
-    const options = ref(stringOptions)
     return {
-      options,
+
+      deptName: ref(''),
+      abbr: ref(''),
+
       label: ref('mails'),
       bar: ref(false),
       model1: ref(null),
@@ -103,7 +102,33 @@ export default {
     },
     unSelectFile(){
       this.selectedFile = null;
-    }
+    },
+    onSubmit () {
+        console.log(this.title);
+        console.log(this.text);
+        if(this.deptName !== "" && this.abbr !== "" ){
+          this.$q.loading.show();
+          this.$store.dispatch('defencestore/createDepartment', {
+            name: this.deptName,
+            abbr: this.abbr,
+          })
+          .then(()=> {
+            this.$q.loading.hide();
+            this.onReset()
+          })
+        }else{
+          // this.$q.loading.hide();
+          Notify.create({
+            message: "You must fill the form completely before submitting",
+            color: "red"
+          })
+        }
+      },
+      onReset () {
+        this.deptName = ""
+        this.abbr = ""
+      },
+
   }
 }
 </script>

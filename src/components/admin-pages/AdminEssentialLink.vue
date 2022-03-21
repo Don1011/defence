@@ -27,14 +27,7 @@
 
 
         <q-list class="q-my-lg">
-                 <q-item clickable class="q-mb-md q-px-xl" active-class="bg-primary text-secondary" to="/admin/mail" style="border-radius: 25px" v-ripple >
-                  <q-item-section avatar>
-                      <q-icon name="mail" size="1.5rem" />
-                  </q-item-section>
-                  <q-item-section>
-                      <q-item-label class="text-left text-subtitle1">Mail</q-item-label>
-                  </q-item-section>
-              </q-item>
+
                 <q-item clickable class="q-mb-md q-px-xl"
                 active-class="bg-primary text-secondary"
                 v-ripple
