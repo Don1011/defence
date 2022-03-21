@@ -16,17 +16,33 @@
                   <q-space/>
                   <div class="row col-3">
                     <q-space/>
+                    <q-btn v-show="!(status==='Completed')" flat dense @click="confirmCompleted=true" color="green" label="Completed" icon="check" />
+                    <q-dialog v-model="confirmCompleted" persistent>
+                      <q-card>
+                        <q-card-section class="row items-center">
+                          <q-avatar icon="check" color="green" text-color="white" />
+                          <span class="q-ml-sm">Are you sure this request has been completed?</span>
+                        </q-card-section>
+
+                        <q-card-actions align="right">
+                          <q-btn flat label="Cancel" color="red" v-close-popup />
+                          <q-btn @click="completed" flat label="Completed" color="green" v-close-popup />
+                        </q-card-actions>
+                      </q-card>
+                    </q-dialog>
+                    <q-space/>
+                    <q-space/>
                     <q-btn flat round dense @click="print" icon="print" />
                     <div class="">
-                      <q-btn-dropdown flat color="secondary" label="" dropdown-icon="reply">
+                      <q-btn-dropdown round flat color="secondary" label="" dropdown-icon="reply">
                           <q-scroll-area class="text-center justify-center" style="height: 40vh; width:50vh ">
-                        <q-list v-for="user in users" :key="user._id">
-                              <q-item clickable v-close-popup @click="onItemClick">
-                                <q-item-section>
-                                  <q-item-label clickable @click="forwardTo(user._id)" >{{user.username}}</q-item-label>
-                                </q-item-section>
-                              </q-item>
-                        </q-list>
+                            <q-list v-for="user in users" :key="user._id">
+                                  <q-item clickable v-close-popup @click="onItemClick">
+                                    <q-item-section>
+                                      <q-item-label clickable @click="forwardTo(user._id)" >{{user.username}}</q-item-label>
+                                    </q-item-section>
+                                  </q-item>
+                            </q-list>
                           </q-scroll-area>
                       </q-btn-dropdown>
                     </div>
@@ -98,8 +114,10 @@ export default {
       title: "",
       text: "",
       attachments: [],
+      status: "",
       metaData: null,
-      users: []
+      users: [],
+      confirmCompleted: false
     }
   },
   methods: {
@@ -120,6 +138,7 @@ export default {
                 this.to = response.to.name;
                 this.title = response.title;
                 this.text = response.message.body;
+                this.status = response.metaData.status;
                 this.attachments = response.message.attachment;
                 this.metaData = response.metaData;
             }else{
@@ -160,7 +179,22 @@ export default {
       })
     },
     downloadFile(url){
-
+      console.log("downloaded")
+    },
+    print(){
+      console.log('print')
+    },
+    completed(){
+      this.$q.loading.show();
+      let data = {requestId: this.id, status: "Completed"};
+      this.$store.dispatch('defencestore/setCompleted', data)
+      .then(()=>{
+        this.fetchMessage();
+        this.$q.loading.hide();
+      })
+      .catch(err=> {
+        this.$q.loading.hide();
+      })
     }
   },
   mounted(){
