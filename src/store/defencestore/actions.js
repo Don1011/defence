@@ -474,7 +474,6 @@ export function getLogs (context, data) {
           })
       })
     })
-
 }
 
 
@@ -562,4 +561,8 @@ export function setCompleted (context, data) {
     })
   })
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 37ec51241387d201b403c00d46ec8b6848423365

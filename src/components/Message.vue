@@ -16,7 +16,8 @@
                   <q-space/>
                   <div class="row col-3">
                     <q-space/>
-                    <q-btn v-show="!(status==='Completed')" flat dense @click="confirmCompleted=true" color="green" label="Completed" icon="check" />
+                    <q-btn v-show="!(status==='Completed')" flat dense @click="confirmCompleted=true" color="blue" label="Complete" icon="check" />
+                    <q-btn v-show="(status==='Completed')" flat dense disabled color="green" label="Completed" icon="check" />
                     <q-dialog v-model="confirmCompleted" persistent>
                       <q-card>
                         <q-card-section class="row items-center">
@@ -33,7 +34,7 @@
                     <q-space/>
                     <q-space/>
                     <q-btn flat round dense @click="print" icon="print" />
-                    <div class="">
+                    <div v-show="!(status==='Completed')" class="">
                       <q-btn-dropdown round flat color="secondary" label="" dropdown-icon="reply">
                           <q-scroll-area class="text-center justify-center" style="height: 40vh; width:50vh ">
                             <q-list v-for="user in users" :key="user._id">
@@ -46,8 +47,8 @@
                           </q-scroll-area>
                       </q-btn-dropdown>
                     </div>
-                    <q-btn flat @click="drawerRight = true" round v-show="!drawerRight" dense icon="menu" />
-                    <q-btn flat @click="drawerRight = false" round v-show="drawerRight" dense icon="close" />
+                    <q-btn v-show="!drawerRight" flat @click="drawerRight = true" round dense icon="menu" />
+                    <q-btn v-show="drawerRight" flat @click="drawerRight = false" round dense icon="close" />
                   </div>
                 </div>
 
@@ -141,6 +142,12 @@ export default {
                 this.status = response.metaData.status;
                 this.attachments = response.message.attachment;
                 this.metaData = response.metaData;
+
+                let idList = [];
+                response.metaData.seen.forEach(item => {
+                  idList.push(item.by);
+                })
+
             }else{
                 Notify.create({
                     message: "Error fetching message.",

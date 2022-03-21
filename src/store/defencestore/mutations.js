@@ -16,15 +16,15 @@ export function getDepartments (state, payload) {
   console.log(arr)
   state.departments = arr;
 }
-// 
-// export function getAllUserDepartments (state, payload) {
-//   let arr = [];
-//   payload.departments.forEach(item => {
-//     (item.abbr !== "ADMIN") && arr.push(item.abbr)
-//   })
-//   // console.log(arr)
-//   state.departments = arr;
-// }
+
+export function getAllUserDepartments (state, payload) {
+  let arr = [];
+  payload.departments.forEach(item => {
+    (item.abbr !== "ADMIN") && arr.push(item.abbr)
+  })
+  // console.log(arr)
+  state.departments = arr;
+}
 
 export function setRequests (state, payload) {
   state.outgoingRequests = payload.outgoing;
