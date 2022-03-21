@@ -37,8 +37,8 @@
           <q-scroll-area style="height: 65vh;">
             <div class="text-subtitle2 text-secondary">
               <!-- Incomings -->
-              <q-list separator v-for="n in 15" :key="n"  class="q-mb-sm">
-                <DeptItem />
+              <q-list separator v-for="department in departments" :key="department._id"  class="q-mb-sm">
+                <DeptItem :department="department" />
               </q-list>
             </div>
           </q-scroll-area>
@@ -63,72 +63,53 @@ export default {
       deptName: ref(''),
       abbr: ref(''),
 
-      label: ref('mails'),
-      bar: ref(false),
-      model1: ref(null),
-      selectedFile: ref(null),
-      selected: 1,
-      onClick () {
-        console.log('Clicked on a fab action')
-      },
+      departments: []
 
-      // Filter Function
-      filterFn (val, update) {
-        if (val === '') {
-          update(() => {
-            options.value = stringOptions
-
-            // here you have access to "ref" which
-            // is the Vue reference of the QSelect
-          })
-          return
-        }
-
-        update(() => {
-          const needle = val.toLowerCase()
-          options.value = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
-        })
-      }
     }
   },
- methods: {
-    selectFile(){
-      this.$refs.selectImageFile.$el.click();
+  methods: {
+    
+    onReset () {
+      this.deptName = ""
+      this.abbr = ""
     },
-    fileSelected(el){
-      el=el.split('\\');
-      el=el[el.length-1];
-      this.selectedFile = el;
-    },
-    unSelectFile(){
-      this.selectedFile = null;
-    },
-    onSubmit () {
-        console.log(this.title);
-        console.log(this.text);
-        if(this.deptName !== "" && this.abbr !== "" ){
-          this.$q.loading.show();
-          this.$store.dispatch('defencestore/createDepartment', {
-            name: this.deptName,
-            abbr: this.abbr,
-          })
-          .then(()=> {
-            this.$q.loading.hide();
-            this.onReset()
-          })
-        }else{
-          // this.$q.loading.hide();
-          Notify.create({
-            message: "You must fill the form completely before submitting",
-            color: "red"
-          })
-        }
-      },
-      onReset () {
-        this.deptName = ""
-        this.abbr = ""
-      },
 
+    fetchDepartments(){
+      this.$q.loading.show();
+      this.$store.dispatch('defencestore/getAllDepartmentsAdmin')
+      .then(() => {
+        this.$q.loading.hide();
+        this.departments = this.$store.getters['defencestore/rawDepartments']
+        // console.log(departments);
+      })
+      .catch(err => {
+        this.$q.loading.hide();
+      })
+    },
+
+    onSubmit () {
+      if(this.deptName !== "" && this.abbr !== "" ){
+        this.$q.loading.show();
+        this.$store.dispatch('defencestore/createDepartment', {
+          name: this.deptName,
+          abbr: this.abbr,
+        })
+        .then(()=> {
+          this.fetchDepartments();
+          this.$q.loading.hide();
+          this.onReset()
+        })
+      }else{
+        // this.$q.loading.hide();
+        Notify.create({
+          message: "You must fill the form completely before submitting",
+          color: "red"
+        })
+      }
+    },
+  },
+  mounted(){
+    this.fetchDepartments();
   }
 }
 </script>

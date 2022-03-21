@@ -33,3 +33,7 @@ export function getAllUsersAdmin (state) {
   console.log(state);
   return state.usersList;
 }
+
+export function rawDepartments (state) {
+  return state.rawDepartments;
+}

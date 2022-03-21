@@ -690,15 +690,16 @@ export function getAllDepartmentsAdmin (context, data) {
   return new Promise((resolve, reject) => {
     axios({
       method: "GET",
-      url: baseurl + '/admin/dept/',
+      url: baseurl + '/admin/dept',
       headers: {
         'Authorization': 'Bearer '+localStorage.getItem('adminToken')
       }
     })
     .then(response => {
-      // console.log(response.data.doc);
+      console.log(response);
       if(response.status === 201 || response.status === 200){
           context.commit('getAllDepartmentsAdmin', {departments: response.data.doc})
+          context.commit('getAllRawDepartments', {departments: response.data.doc})
           resolve();
       }else{
           Notify.create({
