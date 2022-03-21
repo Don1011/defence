@@ -15,19 +15,6 @@
                   <div class="row col-3">
                     <q-space/>
                     <q-btn flat round dense @click="print" icon="print" />
-                    <div class="">
-                      <q-btn-dropdown flat color="secondary" label="" dropdown-icon="reply">
-                          <q-scroll-area style="height: 40vh; width:20vh ">
-                        <q-list v-for="n in 8" :key="n">
-                              <q-item clickable v-close-popup @click="onItemClick">
-                                <q-item-section>
-                                  <q-item-label>Lorem People</q-item-label>
-                                </q-item-section>
-                              </q-item>
-                        </q-list>
-                          </q-scroll-area>
-                      </q-btn-dropdown>
-                    </div>
                   </div>
                 </div>
 

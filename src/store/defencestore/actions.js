@@ -232,11 +232,13 @@ export function getRequests (context, data) {
             let userDept = localStorage.getItem('userDept');
             let requests = response.data.doc;
             requests.forEach(item => {
+              if(item.metaData.status !== "Completed"){
                 if(item.from._id === userDept){
-                    outgoing.push(item);
+                  outgoing.push(item);
                 }else{
                     incoming.push(item);
-                }
+                  }
+              }
             });
             context.commit('setRequests', {outgoing, incoming})
             resolve();
@@ -564,8 +566,6 @@ export function setCompleted (context, data) {
 
 }
 
-
-
 export function createUser (context, data) {
   return new Promise((resolve, reject) => {
     axios({
@@ -607,6 +607,46 @@ export function createUser (context, data) {
 
 }
 
+export function saveComment (context, data) {
+  console.log(data)
+  let { text, request }  = data;
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "POST",
+      url: baseurl + '/user/metadata/'+request,
+      data:{
+        comment: text
+      },
+      headers: {
+        'Authorization': 'Bearer '+localStorage.getItem('userToken')
+      }
+    })
+    .then(response => {
+      console.log(response)
+      if(response.status === 201 || response.status === 200){
+        Notify.create({
+            message: "Comment Saved Successfully.",
+            color: 'blue'
+        })
+        resolve();
+      }else{
+          Notify.create({
+              message: "Error Saving Comment. Please retry.",
+              color: 'red'
+          })
+          reject();
+      }
+    })
+    .catch(err => {
+        Notify.create({
+            message: 'Error Saving Comment. Please retry.',
+            color: 'red'
+        })
+        reject();
+    })
+  })
+}
+
 export function createDepartment (context, data) {
   return new Promise((resolve, reject) => {
     axios({
@@ -629,22 +669,22 @@ export function createDepartment (context, data) {
         resolve();
       }else{
           Notify.create({
-              message: "Error creating Department. Please retry.",
-              color: 'red'
+            message: "Error creating Department. Please retry.",
+            color: 'red'
           })
           reject();
       }
     })
     .catch(err => {
         Notify.create({
-            message: 'Error creating User. Please retry.',
+            message: 'Error Saving Comment. Please retry.',
             color: 'red'
         })
         reject();
     })
   })
-
 }
+
 
 export function getAllDepartmentsAdmin (context, data) {
 

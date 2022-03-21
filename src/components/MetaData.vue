@@ -69,7 +69,7 @@
                       <q-tab-panel name="alarms" style="">
                         <q-scroll-area style="height: 70vh">
 
-                            <q-card class="my-card  q-my-sm" v-for="n in 10" :key="n" flat bordered>
+                            <q-card class="my-card  q-my-sm" v-for="minutesListItem in minutesList" :key="minutesListItem._id" flat bordered>
                               <q-item class="row justify-between q-pr-md">
                                 <q-item-section avatar>
                                   <q-avatar>
@@ -78,19 +78,26 @@
                                 </q-item-section>
 
                                 <q-item-section>
-                                  <q-item-label>Title</q-item-label>
+                                  <q-item-label>{{minutesListItem.by.username}}</q-item-label>
                                   <q-item-label caption>
-                                    Subhead
+                                    {{minutesListItem.by.role}}
                                   </q-item-label>
                                 </q-item-section>
-                                <p style="margin: auto 0" class="text-caption"> 00 : 00 : 01 </p>
+                                 <q-item-section>
+                                    <q-item-label caption>
+                                        <span class="q-ml-lg text-caption text-end">{{minutesListItem.date.split("T")[0]}} </span>
+                                    </q-item-label>
+                                    <q-item-label caption>
+                                        <span class="q-ml-lg text-caption text-end">{{minutesListItem.date.split("T")[1].split(".")[0]}} </span>
+                                    </q-item-label>
+                                </q-item-section>
                               </q-item>
 
                               <q-separator />
 
                               <q-card-section horizontal>
                                 <q-card-section>
-                                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corrupti impedit commodi nobis, voluptate expedita iure, molestias culpa, voluptatum enim officia quod nesciunt laudantium quos obcaecati pariatur velit. Vel, possimus fugiat?
+                                  {{minutesListItem.comment}}
                                 </q-card-section>
                               </q-card-section>
                             </q-card>
@@ -146,34 +153,38 @@
 </template>
 
 <script>
+import { Notify }from 'quasar';
 
 export default {
     name: 'MetaData',
-    props: ['toggle', 'tab', 'metaData', 'forwardedTo'],
+    props: ['toggle', 'tab', 'metaData', 'forwardedTo', 'request', 'minutesList'],
     data(){
         return{
-            comment: ""
+            comment: "",
+            bar: false
         }
     },
-    method: {
+    methods: {
         saveComment(){
-            // if(this.comment !== ""){
-            //     this.$store.dispatch('defencestore/sendRequest', {
-            //     to: this.to,
-            //     title: this.title,
-            //     text: this.comments,
-            //     files: this.selectedFile,
-            //     reference: ref
-            //     })
-            //     .then(()=>{
-            //     window.location.reload();
-            //     })
-            // }else{
-            //     Notify.create({
-            //     message: 'You can\'t leave the "to", "title" or "Comments" fields empty.',
-            //     color: 'red'
-            //     })
-            // }
+            if(this.comment !== ""){
+                this.$store.dispatch('defencestore/saveComment', {
+                    text: this.comment, request: this.request
+                })
+                .then(()=>{
+                    window.location.reload();
+                })
+                .catch(err=>{
+                    Notify.create({
+                        message: 'You can\'t leave the "Comments" field empty.',
+                        color: 'red'
+                    })
+                })
+            }else{
+                Notify.create({
+                message: 'You can\'t leave the "Comments" field empty.',
+                color: 'red'
+                })
+            }
         }
     }
 }
