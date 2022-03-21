@@ -96,7 +96,8 @@ export default defineComponent({
       },
       hours: 0,
       minutes: 0,
-      seconds: 0
+      seconds: 0,
+      text:""
     }
   },
   mounted() {

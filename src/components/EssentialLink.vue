@@ -182,6 +182,7 @@ export default defineComponent({
     return{
       edit: false,
       editFormShow: false,
+      link:"",
 
       selectedFile: null,
       name: "",

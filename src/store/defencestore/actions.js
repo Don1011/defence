@@ -456,11 +456,19 @@ export function forwardRequest (context, data) {
     })
     .then(response => {
       if(response.status === 201 || response.status === 200){
-        Notify.create({
-            message: "Request successfully forwarded.",
+        if(response.data.doc !== undefined){
+          Notify.create({
+              message: "Request successfully forwarded.",
+              color: 'blue'
+          })
+          resolve();
+        }else{
+          Notify.create({
+            message: "Message has already been forwarded to this user.",
             color: 'blue'
-        })
-        resolve();
+          })
+          reject();
+        }
       }else{
           Notify.create({
               message: "Error forwarding request. Please retry.",
@@ -472,6 +480,45 @@ export function forwardRequest (context, data) {
     .catch(err => {
         Notify.create({
           message: "Error forwarding request. Please retry.",
+          color: 'red'
+        })
+        reject();
+    })
+  })
+
+}
+
+export function setCompleted (context, data) {
+  // const { to, text, reference, title } = data;
+  console.log(data);
+  const { requestId, status } = data;
+
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "GET",
+      url: baseurl + `/user/metadata/${requestId}/${status}`,
+      headers: {
+        'Authorization': 'Bearer '+localStorage.getItem('userToken')
+      }
+    })
+    .then(response => {
+      if(response.status === 201 || response.status === 200){
+        Notify.create({
+            message: "Status changed to completed.",
+            color: 'blue'
+        })
+        resolve();
+      }else{
+          Notify.create({
+              message: "Error changing status to completed.",
+              color: 'red'
+          })
+          reject();
+      }
+    })
+    .catch(err => {
+        Notify.create({
+          message: "Error changing status to completed.",
           color: 'red'
         })
         reject();
