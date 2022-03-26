@@ -4,6 +4,7 @@ export function saveAdminToken (state, payload) {
 }
 
 export function saveUserToken (state, payload) {
+  console.log(state);
   state.userToken = payload.token;
 }
 

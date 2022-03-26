@@ -59,12 +59,13 @@ export function userLogin (context, data) {
           }
       })
       .then(response => {
-          if(response.status === 201){
+          if(response.status === 200 || response.status === 201){
               console.log(response.data);
-              let token = response.data.token;
+              let token = response.data.data.token;
+              // console.log(token);
               localStorage.setItem('userToken', token);
-              let department = response.data.doc.department;
-              let username = response.data.doc.username;
+              let department = response.data.data.doc.department;
+              let username = response.data.data.doc.username;
               localStorage.setItem('userDept', department);
               localStorage.setItem('username', username);
               context.commit('saveUserToken', {token})
@@ -230,7 +231,7 @@ export function getRequests (context, data) {
             let outgoing = [];
             let incoming = [];
             let userDept = localStorage.getItem('userDept');
-            let requests = response.data.doc;
+            let requests = response.data.data;
             requests.forEach(item => {
               if(item.metaData.status !== "Completed"){
                 if(item.from._id === userDept){
@@ -415,12 +416,12 @@ export function getMails (context, data) {
         }
       })
       .then(response => {
-        console.log(response.data.doc);
+        console.log(response.data);
         if(response.status === 201 || response.status === 200){
           let sent = [];
           let inbox = [];
           let username = localStorage.getItem('username');
-          let requests = response.data.doc;
+          let requests = response.data.data;
           requests.forEach(item => {
               if(item.from.username === username){
                   sent.push(item);
