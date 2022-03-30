@@ -1,5 +1,5 @@
 <template>
-  <q-page class="bg-primary" :onload="$router.currentRoute.value.path == '/' ">
+  <q-page class="bg-primary"  :onload="$router.currentRoute.value.path == '/' ">
     <!-- <Login /> -->
     <!-- <Request /> -->
 
@@ -9,13 +9,13 @@
 <script>
 import { defineComponent } from 'vue';
 import Login from 'components/Login.vue'
-import Request from 'components/Request.vue'
+import Task from 'src/components/Task.vue'
 
 export default defineComponent({
   name: 'PageIndex',
   components:{
     Login,
-    Request
+    Task
   },
 
 })

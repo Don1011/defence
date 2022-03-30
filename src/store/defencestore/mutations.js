@@ -65,8 +65,8 @@ export function getUsersInDepartment (state, payload) {
     username !== item.username && arrForForward.push(item)
 
   })
-  console.log(arr)
-  console.log(arrForForward)
+  // console.log(arr)
+  // console.log(arrForForward)
   state.usersInDept = arr;
   state.usersInDeptForForward = arrForForward;
 }

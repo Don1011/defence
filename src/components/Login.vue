@@ -69,7 +69,7 @@ export default {
               caption: 'User successfully authenticated.',
               color: 'blue'
             })
-            this.$router.replace('/request')
+            this.$router.replace('/task')
             this.$q.loading.hide();
         })
       }else{

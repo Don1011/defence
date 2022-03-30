@@ -18,8 +18,9 @@ export function adminLogin (context, data) {
             }
         })
         .then(response => {
-            if(response.status === 201){
-                let token = response.data.token;
+            if(response.status === 201 || response.status === 200){
+                // console.log(response.data.data);
+                let token = response.data.data.token;
                 localStorage.setItem('adminToken', token);
                 context.commit('saveAdminToken', {token})
                 Notify.create({
@@ -60,7 +61,7 @@ export function userLogin (context, data) {
       })
       .then(response => {
           if(response.status === 200 || response.status === 201){
-              console.log(response.data);
+              console.log(response.data.data);
               let token = response.data.data.token;
               // console.log(token);
               localStorage.setItem('userToken', token);
@@ -110,14 +111,16 @@ export function userLogin (context, data) {
 export function sendRequest (context, data) {
   // const { to, text, reference, title } = data;
   console.log(data);
-  const { to, text, files, reference, title } = data;
-
+  const { formData } = data;
+  // const { to, text, files, reference, title } = data;
+  // console.log(files);
   return new Promise((resolve, reject) => {
     axios({
       method: "POST",
       url: baseurl + '/user/request',
       // data: { to, text, reference, title }
-      data: { to, text, files, reference, title },
+      data: formData,
+      // data: { to, text, files, reference, title },
       headers: {
         'Authorization': 'Bearer '+localStorage.getItem('userToken')
       }
@@ -131,17 +134,17 @@ export function sendRequest (context, data) {
         })
         resolve();
       }else{
-          Notify.create({
-              message: "Error sending request. Please retry.",
-              color: 'red'
-          })
-          reject();
+        Notify.create({
+          message: "Error sending request. Please retry.",
+          color: 'red'
+        })
+        reject();
       }
     })
     .catch(err => {
         Notify.create({
-            message: 'Error sending request. Please retry.',
-            color: 'red'
+          message: 'Error sending request. Please retry.',
+          color: 'red'
         })
         reject();
     })
@@ -160,9 +163,9 @@ export function getDepartments (context, data) {
       }
     })
     .then(response => {
-      // console.log(response.data.doc);
+      console.log(response.data.data);
       if(response.status === 201 || response.status === 200){
-          context.commit('getDepartments', {departments: response.data.doc})
+          context.commit('getDepartments', {departments: response.data.data})
           resolve();
       }else{
           Notify.create({
@@ -194,9 +197,9 @@ export function getAllUserDepartments (context, data) {
       }
     })
     .then(response => {
-      // console.log(response.data.doc);
+      console.log(response.data.doc);
       if(response.status === 201 || response.status === 200){
-          context.commit('getAllUserDepartments', {departments: response.data.doc})
+          context.commit('getAllUserDepartments', {departments: response.data.data})
           resolve();
       }else{
           Notify.create({
@@ -226,7 +229,7 @@ export function getRequests (context, data) {
         }
       })
       .then(response => {
-        console.log(response.data);
+        console.log(response);
         if(response.status === 201 || response.status === 200){
             let outgoing = [];
             let incoming = [];
@@ -386,7 +389,7 @@ export function getUsersInDepartment (context, data) {
     .then(response => {
         // console.log(response);
       if(response.status === 201 || response.status === 200){
-          context.commit('getUsersInDepartment', {users: response.data.doc})
+          context.commit('getUsersInDepartment', {users: response.data.data})
           resolve();
       }else{
           Notify.create({
@@ -416,7 +419,7 @@ export function getMails (context, data) {
         }
       })
       .then(response => {
-        console.log(response.data);
+        // console.log(response.data);
         if(response.status === 201 || response.status === 200){
           let sent = [];
           let inbox = [];
@@ -459,9 +462,9 @@ export function getLogs (context, data) {
         }
       })
       .then(response => {
-        console.log(response.data.doc);
+        console.log(response.data.data);
         if(response.status === 201 || response.status === 200){
-            context.commit('setLogs', response.data.doc)
+            context.commit('setLogs', response.data.data)
             resolve();
         }else{
             Notify.create({
@@ -699,8 +702,8 @@ export function getAllDepartmentsAdmin (context, data) {
     .then(response => {
       console.log(response);
       if(response.status === 201 || response.status === 200){
-          context.commit('getAllDepartmentsAdmin', {departments: response.data.doc})
-          context.commit('getAllRawDepartments', {departments: response.data.doc})
+          context.commit('getAllDepartmentsAdmin', {departments: response.data.data})
+          context.commit('getAllRawDepartments', {departments: response.data.data})
           resolve();
       }else{
           Notify.create({
@@ -723,7 +726,7 @@ export function getAllDepartmentsAdmin (context, data) {
 export function getAllUsersAdmin (context, data) {
 
   return new Promise((resolve, reject) => {
-    console.log('response.data.doc');
+    // console.log('response');
     axios({
       method: "GET",
       url: baseurl + '/admin/users',
@@ -734,7 +737,7 @@ export function getAllUsersAdmin (context, data) {
     .then(response => {
       console.log(response);
       if(response.status === 201 || response.status === 200){
-        response = response.data.doc;
+        response = response.data.data;
         let usefulresponse = [];
         response.forEach(item=>{
           if(item.role !== "Admin"){

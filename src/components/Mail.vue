@@ -208,7 +208,7 @@ export default {
       .then(()=>{
         let req = this.$store.getters['defencestore/usersInDept'];
         this.users = req;
-        console.log(this.users)
+        // console.log(this.users)
       })
     }
   },

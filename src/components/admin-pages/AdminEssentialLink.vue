@@ -100,7 +100,7 @@ export default defineComponent({
       localStorage.removeItem("userToken");
 
       this.$store.commit('logout')
-      this.$router.replace('/admin');
+      this.$router.replace('/');
     }
   }
 

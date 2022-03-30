@@ -86,6 +86,7 @@ export default {
   setup () {
     const options = ref(stringOptions)
     return {
+      mails: [],
       options,
       label: ref('mails'),
       bar: ref(false),
@@ -95,6 +96,7 @@ export default {
       onClick () {
         console.log('Clicked on a fab action')
       },
+
 
       // Filter Function
       filterFn (val, update) {
@@ -126,7 +128,13 @@ export default {
     },
     unSelectFile(){
       this.selectedFile = null;
+    },
+    getMails(){
+
     }
+  },
+  mounted(){
+    // this.getMails()
   }
 }
 </script>

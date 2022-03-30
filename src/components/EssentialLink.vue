@@ -94,12 +94,12 @@
 <!-- Navigation Buttons/Links  -->
     <div class="flex flex-center q-my-xl">
        <q-list class="q-mb-lg">
-                <q-item clickable class="q-mb-md q-px-xl" active-class="bg-primary text-secondary" to="/request" style="border-radius: 25px" v-ripple >
+                <q-item clickable class="q-mb-md q-px-xl" active-class="bg-primary text-secondary" to="/task" style="border-radius: 25px" v-ripple >
                     <q-item-section avatar>
                         <q-icon name="home" size="1.5rem" />
                     </q-item-section>
                     <q-item-section>
-                        <q-item-label class="text-left text-subtitle1">Request</q-item-label>
+                        <q-item-label class="text-left text-subtitle1">Task</q-item-label>
                     </q-item-section>
                 </q-item>
 
@@ -197,10 +197,20 @@ export default defineComponent({
       localStorage.removeItem("adminToken");
       localStorage.removeItem("userDept");
       localStorage.removeItem("userToken");
+      localStorage.removeItem("userName");
 
       this.$store.commit('logout')
       this.$router.replace('/');
-    }
+    },
+    getProfile(){
+      this.$store.dispatch('defencestore/getProfile')
+      .then(() => {
+        this.departments = this.$store.dispatch('defencestore/getProfile')
+      });
+    },
+  },
+  mounted(){
+    // this.getProfile();
   }
 })
 </script>

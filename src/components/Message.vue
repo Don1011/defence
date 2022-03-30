@@ -67,8 +67,8 @@
                   </div>
 
                   <div class="row q-mt-lg" v-for="file in attachments" :key="file">
-                    <div class="col-5">
-                      <q-banner dense class="bg-grey-3">
+                    <div class="col-5" style="width:18%">
+                      <q-banner dense class="bg-grey-5">
                         <template v-slot:avatar>
                           <q-btn flat icon="download" color="blue" @click="downloadFile(file)" />
                         </template>
@@ -95,6 +95,7 @@ import VueHtmlToPaper from 'vue-html-to-paper';
 import axios from 'axios';
 import { Notify }from 'quasar';
 import env from '../../env.js';
+// import mimeTypes from 'mime-types';
 
 export default {
   name: 'Message',
@@ -134,19 +135,22 @@ export default {
             }
         })
         .then(response => {
-          console.log(response)
+          console.log(response.status)
+          console.log(response.data)
             if(response.status === 201){
-                response = response.data.doc;
-                this.from = response.from.name;
-                this.to = response.to.name;
-                this.title = response.title;
-                this.text = response.message.body;
-                this.status = response.metaData.status;
-                this.attachments = response.message.attachment;
-                this.metaData = response.metaData;
+                response = response.data;
+                this.from = response.data.from.name;
+                this.to = response.data.to.name;
+                this.title = response.data.title;
+                this.text = response.data.message.body;
+                this.status = response.data.metaData.status;
+                this.attachments = response.data.message.attachment;
+                this.metaData = response.data.metaData;
+
+                console.log('responsedata.message.attachment');
 
                 let idList = [];
-                response.metaData.seen.forEach(item => {
+                response.data.metaData.seen.forEach(item => {
                   idList.push(item.by);
                 })
                 axios({
@@ -162,7 +166,7 @@ export default {
                 .then(res => {
                   res = res.data.result;
                   let rearrangedList = [];
-                  response.metaData.seen.forEach(item => {
+                  response.data.metaData.seen.forEach(item => {
                     res.forEach(resItem => {
                       if(resItem._id === item.by){
                         rearrangedList.push({...item, by: resItem});
@@ -173,7 +177,7 @@ export default {
                 })
 
                 let minuteIds = [];
-                response.metaData.minute.forEach(item=>{
+                response.data.metaData.minute.forEach(item=>{
                   minuteIds.push(item.by);
                 })
 
@@ -190,7 +194,7 @@ export default {
                 .then(res => {
                   res = res.data.result;
                   let rearrangedList = [];
-                  response.metaData.minute.forEach((item)=>{
+                  response.data.metaData.minute.forEach((item)=>{
                     res.forEach(resItem => {
                       if(resItem._id === item.by){
                         rearrangedList.push({...item, by: resItem});
@@ -210,6 +214,8 @@ export default {
         })
         .then(()=>this.$q.loading.hide())
         .catch(err => {
+          console.log(err)
+
             Notify.create({
                 message: "Error fetching message.",
                 color: 'red'
@@ -240,6 +246,7 @@ export default {
     downloadFile(url){
       console.log("downloaded");
       let fileUrl = `${env.backend}/${url}`;
+      // console.log(url);
       axios({
           url: fileUrl, //your url
           method: 'GET',
@@ -248,10 +255,15 @@ export default {
           },
           responseType: 'blob', // important
       }).then((response) => {
-          const url = window.URL.createObjectURL(new Blob([response.data]));
+          let filetype = url.split('.')[url.split('.').length-1];
+          let fileName = url.split('/')[url.split('/').length-1];
+          fileName = fileName+"."+filetype;
+          const fileDownloadUrl = window.URL.createObjectURL(new Blob([response.data]));
           const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', url.split('/')[url.split('/').length -1]); //or any other extension
+          console.log(response);
+          link.href = fileDownloadUrl;
+          link.setAttribute('download', fileName); //or any other extension
+          // link.setAttribute('download', url.split('.')[url.split('.').length -1]); //or any other extension
           document.body.appendChild(link);
           link.click();
       });
@@ -278,6 +290,8 @@ export default {
           headers: {
             'Authorization': 'Bearer '+localStorage.getItem('userToken')
           }
+      }).then(() => {
+        console.log(response);
       })
       .catch(err=>{
         Notify.create({

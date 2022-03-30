@@ -16,16 +16,16 @@
             style=""
           >
             <div class="col-6">
-              <q-tab name="incomings"  @click="selected = 1"  :ripple="false"  class="q-mx-auto q-px-none q-py-md" style="width:100%; " > <p  :class="{highlight:selected == 1}" style="border-radius: 15px" class="hello q-px-xl q-py-sm q-my-auto " >Incoming Request</p> </q-tab>
+              <q-tab name="To-do"  @click="selected = 'To-do'"  :ripple="false"  class="q-mx-auto q-px-none q-py-md" style="width:100%; " > <p  :class="{highlight:selected == 'To-do'}" style="border-radius: 15px" class="hello q-px-xl q-py-sm q-my-auto " > To-do </p> </q-tab>
             </div>
 
             <div class="col-6">
-              <q-tab name="outgoings" @click="selected = 2"  :ripple="false" class="q-mx-auto q-px-none q-py-md " style="width:100%; " > <p  :class="{highlight:selected == 2}" style="border-radius: 15px" class="  q-px-xl q-py-sm q-my-auto " >Outgoing Request</p> </q-tab>
+              <q-tab name="Request" @click="selected = 'Request'"  :ripple="false" class="q-mx-auto q-px-none q-py-md " style="width:100%; " > <p  :class="{highlight:selected == 'Request'}" style="border-radius: 15px" class="  q-px-xl q-py-sm q-my-auto " >Requests </p> </q-tab>
             </div>
           </q-tabs>
 
           <q-tab-panels v-model="label" animated class="bg-primary text-white q-pt-lg">
-            <q-tab-panel name="incomings" >
+            <q-tab-panel name="To-do" >
                <q-scroll-area style="height: 59vh;">
                  <div class="text-subtitle2 text-secondary">
                 <!-- Incomings -->
@@ -50,7 +50,7 @@
               </q-scroll-area>
             </q-tab-panel>
 
-            <q-tab-panel name="outgoings" style="z-index: 5">
+            <q-tab-panel name="Request" style="z-index: 5">
               <q-scroll-area style="height: 59vh;">
                 <div class="text-subtitle2 text-secondary">
                   <!-- Outgoings -->
@@ -133,6 +133,7 @@
                       accept=".csv,.txt,.xls,.xlsx,.doc,.docx,.pdf,.dbf,.zip,.rar,.7z,.jpg,.png,.gif"
                       max-files="1"
                       max-file-size="5120000"
+
                     >
                       <template v-slot:prepend>
                         <q-icon name="attach_file" />
@@ -171,10 +172,10 @@ export default {
   },
   setup () {
     return {
-      label: ref('incomings'),
+      label: ref('To-do'),
       bar: ref(false),
       model1: ref(null),
-      selected: 1,
+      selected: "To-do",
 
       to: ref(""),
       title: ref(""),
@@ -201,16 +202,26 @@ export default {
     },
     submitRequest(){
       let ref = `NA/2022/${Math.floor(Math.random() * 1000)}/${Math.floor(Math.random() * 4000.93)}`;
+      let formData = new FormData();
+      formData.append("to", this.to);
+      formData.append("text", this.comments);
+      formData.append("files", this.selectedFile);
+      formData.append("reference", ref);
+      formData.append("title", this.title);
       if(this.to !== "" && this.title !== "" && this.comments !== ""){
         this.$store.dispatch('defencestore/sendRequest', {
-          to: this.to,
-          title: this.title,
-          text: this.comments,
-          files: this.selectedFile,
-          reference: ref
+          // to: this.to,
+          // title: this.title,
+          // text: this.comments,
+          // files: this.selectedFile,
+          // reference: ref
+          formData
         })
         .then(()=>{
           window.location.reload();
+          // console.log('selected file state');
+          // console.log(this.selectedFile);
+
         })
       }else{
         Notify.create({
@@ -230,6 +241,7 @@ export default {
       this.$store.dispatch('defencestore/getRequests')
       .then(()=>{
         let req = this.$store.getters['defencestore/getRequests'];
+        console.log(req);
         if(req.incoming.length===0){
           this.incomingText = "No Incoming Request.";
         }
@@ -272,13 +284,6 @@ p{
 .slide-toggle{
   display: none;
 }
-
-/* .slidemenu{
-  font-family: arial, sans-serif;
-  max-width: 600px;
-  margin: 50px auto;
-  overflow: hidden;
-} */
 
 .slidemenu label{
   width: 25%;
