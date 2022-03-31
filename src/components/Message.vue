@@ -53,12 +53,13 @@
                 </div>
 
                 <div>
-
-              <!-- Sender's Name  -->
+                     <!-- Water Marked Image  -->
+                      <Watermark />
+                  <!-- Sender's Name  -->
                   <div class="text-subtitle1"><span class="text-bold text-grey" >From:</span> <span >{{from}}</span></div>
                   <div class="text-subtitle1"><span class="text-bold text-grey" >To:</span> <span >{{to}}</span></div>
 
-                <!-- heading -->
+                  <!-- heading -->
                   <div class="q-mx-auto text-center text-h5 text-bold text-uppercase q-px-md q-my-xl" style="width:50%; text-decoration:underline">{{title}}</div>
 
                   <!--Message Body  -->

@@ -24,6 +24,8 @@
 
           <q-tab-panels v-model="label" animated class="bg-primary text-white q-pt-lg">
             <q-tab-panel name="inbox">
+                    <!-- Water Marked Image  -->
+                      <Watermark />
                <q-scroll-area style="height: 59vh;">
                  <div class="text-subtitle2 text-secondary">
                 <!-- Incomings -->
@@ -40,6 +42,8 @@
             </q-tab-panel>
 
             <q-tab-panel name="outbox">
+                 <!-- Water Marked Image  -->
+                 <Watermark />
               <q-scroll-area style="height: 59vh">
                 <div class="text-subtitle2 text-secondary">
                   <!-- Outgoings -->

@@ -1,12 +1,11 @@
 <template>
     <div class="q-pa-md bg-primary" style="height:80vh">
 
-      <!-- Water Marked Image  -->
-        <!-- <Watermark /> -->
-
 
       <div class="q-gutter-y-md" style="width: 100%;">
-        <q-card flat class="" >
+
+
+        <q-card flat class=""  style="z-index:">
           <q-tabs
             v-model="label"
             class=" text-secondary bg-primary q-pa-none text-white "
@@ -26,7 +25,11 @@
 
           <q-tab-panels v-model="label" animated class="bg-primary text-white q-pt-lg">
             <q-tab-panel name="To-do" >
+                    <!-- Water Marked Image  -->
+                    <Watermark />
                <q-scroll-area style="height: 59vh;">
+
+
                  <div class="text-subtitle2 text-secondary">
                 <!-- Incomings -->
                   <EmptyList :itemList="incomingRequests" message="No incoming request" />
@@ -51,7 +54,10 @@
             </q-tab-panel>
 
             <q-tab-panel name="Request" style="z-index: 5">
+                 <!-- Water Marked Image  -->
+                 <Watermark />
               <q-scroll-area style="height: 59vh;">
+
                 <div class="text-subtitle2 text-secondary">
                   <!-- Outgoings -->
                   <EmptyList :itemList="outgoingRequests" message="No outgoing message"/>
@@ -162,13 +168,13 @@
 
 <script>
 import { ref } from 'vue'
-// import Watermark from 'components/Watermark.vue'
+import Watermark from 'components/Watermark.vue'
 import EmptyList from './EmptyList';
 
 export default {
   components:{
-    EmptyList
-    // Watermark
+    EmptyList,
+    Watermark
   },
   setup () {
     return {

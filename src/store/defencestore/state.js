@@ -12,5 +12,6 @@ export default function () {
     usersInDept: [],
     usersInDeptForForward: [],
     usersList: [],
+    loggedUser: null
   }
 }

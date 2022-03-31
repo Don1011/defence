@@ -39,3 +39,7 @@ export function rawDepartments (state) {
   return state.rawDepartments;
 }
 
+export function getProfile (state) {
+  console.log(state)
+  return state;
+}

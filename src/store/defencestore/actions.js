@@ -765,3 +765,35 @@ export function getAllUsersAdmin (context, data) {
 
 }
 
+
+export function getProfile (context, data) {
+  console.log(baseurl);
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "GET",
+      url: baseurl + '/user/user',
+      headers: {
+        'Authorization': 'Bearer '+localStorage.getItem('userToken')
+      }
+    })
+    .then(response => {
+      console.log(response);
+      if(response.status === 201 || response.status === 200){
+          context.commit('getProfile', response.data.data)
+          resolve();
+      }else{
+          Notify.create({
+              message: "Error fetching logs.",
+              color: 'red'
+          })
+          reject();
+      }
+    })
+    .catch(err => {
+        Notify.create({
+            message: 'Error fetching logs.',
+            color: 'red'
+        })
+    })
+  })
+}

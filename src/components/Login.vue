@@ -17,14 +17,14 @@
    <p class="text-center text-h4 text-bold text-secondary">Login</p>
 
    <div class="q-px-xl">
-     <q-input rounded outlined elevated v-model="username" placeholder="Username" class="q-mb-xl q-mt-md q-mx-auto" standout="bg-white" color="white" style="width:60%">
+     <q-input rounded outlined elevated v-model="username" placeholder="Username" class="q-mb-xl q-mt-md q-mx-auto"  color="black" style="width:60%">
         <template v-slot:append>
           <q-avatar>
             <q-icon name="person" size="1.8rem"/>
           </q-avatar>
         </template>
       </q-input>
-      <q-input rounded outlined v-model="password" placeholder="Password" type="password" class="q-mb-xl q-mx-auto" standout="bg-white" color="white" style="width:60%;">
+      <q-input rounded outlined v-model="password" placeholder="Password" type="password" class="q-mb-xl q-mx-auto"  color="black" style="width:60%;">
         <template v-slot:append>
           <q-avatar>
             <q-icon name="lock" size="1.8rem"/>
@@ -62,6 +62,8 @@ export default {
     userLogin(){
       this.$q.loading.show();
       if(this.username !== "" && this.password !== ""){
+        let array = this.username.split('@')
+        this.username = `${array[0].toLowerCase()}@${array[1].toUpperCase()}`
         this.$store.dispatch('defencestore/userLogin', {username: this.username, password: this.password})
         .then(()=>{
             Notify.create({
@@ -69,6 +71,7 @@ export default {
               caption: 'User successfully authenticated.',
               color: 'blue'
             })
+            console.log(this.username);
             this.$router.replace('/task')
             this.$q.loading.hide();
         })

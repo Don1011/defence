@@ -21,6 +21,9 @@
 
           <q-tab-panels v-model="label" animated class="bg-primary text-white q-pt-lg">
             <q-tab-panel name="mails">
+
+                <!-- Water Marked Image  -->
+                <Watermark />
               <q-scroll-area style="height: 59vh;">
                 <div class="text-subtitle2 text-secondary">
                   <!-- Outgoings -->
@@ -76,6 +79,7 @@
 
 <script>
 import { ref } from 'vue'
+import Watermark from '../Watermark.vue';
 
 const stringOptions = [
   'Department A', 'Department B', 'Department C', 'Department D', 'Department E', 'Department F'
@@ -83,6 +87,9 @@ const stringOptions = [
 
 
 export default {
+  components:{
+    Watermark
+  },
   setup () {
     const options = ref(stringOptions)
     return {

@@ -5,7 +5,9 @@
 
     <p class="text-italic text-center q-px-md text-bold text-secondary text-h4 q-mx-auto">Having a Problem?</p>
 
-     <div class="q-pa-md q-mx-auto bg-white " style="max-width: 70%; z-index:1; border: 1px solid #1C2E3D; border-radius: 5px">
+     <div class="q-pa-md q-mx-auto bg-white " style="max-width: 70%; z-index:1; border: 1px solid #1C2E3D; border-radius: 5px; height: 60vh">
+
+
 
       <q-form
         @submit="onSubmit"
@@ -13,6 +15,8 @@
         class="q-gutter-lg q-py-lg"
 
       >
+         <!-- Water Marked Image  -->
+        <Watermark />
 
         <q-input filled  v-model="title"  label="What problem do you have? *"  :rules="[ val => val && val.length > 0 || 'Please type something']" class="bg-white q-pa-none" />
 

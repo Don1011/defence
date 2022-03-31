@@ -16,14 +16,14 @@
    <p class="text-center text-h4 text-bold text-secondary">Admin Login</p>
 
    <div class="q-px-xl">
-     <q-input rounded outlined elevated v-model="username" placeholder="Username" class="q-mb-xl q-mt-md q-mx-auto" standout="bg-white" color="secondary" style="width:60%">
+     <q-input rounded outlined elevated v-model="username" placeholder="Username" class="q-mb-xl q-mt-md q-mx-auto"  color="black" style="width:60%">
         <template v-slot:append>
           <q-avatar>
             <q-icon name="person" size="1.8rem"/>
           </q-avatar>
         </template>
       </q-input>
-      <q-input rounded outlined v-model="password" placeholder="Password" v-on:keyup.enter="adminLogin" type = "password" class="q-mb-xl q-mx-auto" standout="bg-white" color="secondary" style="width:60%;">
+      <q-input rounded outlined v-model="password" placeholder="Password" v-on:keyup.enter="adminLogin" type = "password" class="q-mb-xl q-mx-auto" color="black" style="width:60%;">
         <template v-slot:append>
           <q-avatar>
             <q-icon name="lock" size="1.8rem"/>
@@ -59,6 +59,8 @@ export default {
     adminLogin(){
       // this.$router.push('/admin/users');
       if(this.username !== "" && this.password !== ""){
+        let array = this.username.split('@')
+        this.username = `${array[0].toLowerCase()}@${array[1].toUpperCase()}`
         this.$store.dispatch('defencestore/adminLogin', {username: this.username, password: this.password})
         .then(()=>{
           // if(res.status === 200 || res.status === 201){
@@ -67,6 +69,7 @@ export default {
               caption: 'Admin successfully authenticated.',
               color: 'blue'
             })
+            // console.log(this.username);
             this.$router.replace('/admin/users')
         })
       }else{

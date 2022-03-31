@@ -84,3 +84,7 @@ export function logout(state){
   console.log("Logout commited")
   state.userToken = null
 }
+
+export function getProfile (state, payload) {
+  state.loggedUser = payload;
+}

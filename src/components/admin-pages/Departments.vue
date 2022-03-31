@@ -15,8 +15,8 @@
                 <div class="column">
                   <div class="bg-white col q-px-md column justify-between q-pb-md" style="height:300px;border-radius:0 0 4px 4px">
                     <div class = "q-mx-xl">
-                      <q-input v-model="deptName" label="Department Name:"  />
-                      <q-input  v-model="abbr" label="Department Abbreviation:"/>
+                      <q-input v-model="deptName" label="Department Name:" class="text-capitalize" />
+                      <q-input  v-model="abbr" placeholder="Department Abbreviation:" @keyup="this.abbr = this.abbr.toUpperCase();"/>
                       <!-- <q-input label="Department:" /> -->
                     </div>
 
@@ -34,6 +34,8 @@
 
         </q-card>
         <q-card flat class="bg-primary" >
+           <!-- Water Marked Image  -->
+          <Watermark />
           <q-scroll-area style="height: 65vh;">
             <div class="text-subtitle2 text-secondary">
               <!-- Incomings -->
@@ -50,12 +52,14 @@
 <script>
 import { ref } from 'vue'
 import DeptItem from './presentational/DeptItem.vue';
+import Watermark from '../Watermark.vue';
 
 
 
 export default {
   components: {
-    DeptItem
+    DeptItem,
+    Watermark
   },
   setup () {
     return {
@@ -68,7 +72,7 @@ export default {
     }
   },
   methods: {
-    
+
     onReset () {
       this.deptName = ""
       this.abbr = ""

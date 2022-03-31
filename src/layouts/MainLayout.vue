@@ -57,15 +57,14 @@
       show-if-above
       bordered
       style="overflow-y:hidden"
-      v-if="(this.$router.currentRoute.value.path.split('/').includes('admin')) && this.$router.currentRoute.value.path !== '/admin' "
-    >
+      v-if="(this.$router.currentRoute.value.path.split('/').includes('admin')) && this.$router.currentRoute.value.path !== '/admin' ">
       <q-list>
         <AdminEssentialLink  />
       </q-list>
     </q-drawer>
 
     <q-page-container>
-        <Watermark v-if="this.$router.currentRoute.value.path !== '/' && this.$router.currentRoute.value.path !== '/admin'" class="q-mx-auto" />
+        <!-- <Watermark v-if="this.$router.currentRoute.value.path !== '/' && this.$router.currentRoute.value.path !== '/admin'" class="q-mx-auto" /> -->
       <router-view >  </router-view>
     </q-page-container>
   </q-layout>
