@@ -10,6 +10,7 @@ export function getAllDepartmentsAdmin (state) {
 }
 
 export function getRequests (state) {
+  console.log(state);
   return ({ incoming: state.incomingRequests, outgoing: state.outgoingRequests });
 }
 
@@ -36,4 +37,9 @@ export function getAllUsersAdmin (state) {
 
 export function rawDepartments (state) {
   return state.rawDepartments;
+}
+
+export function getProfile (state) {
+  console.log(state)
+  return state;
 }

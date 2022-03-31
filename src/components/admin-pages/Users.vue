@@ -52,6 +52,8 @@
 
       </q-card>
       <q-card flat class="bg-primary" >
+         <!-- Water Marked Image  -->
+          <Watermark />
         <q-scroll-area style="height: 65vh;">
           <div class="text-subtitle2 text-secondary">
             <q-list separator v-for="user in users" :key="user._id" class="q-mb-sm">
@@ -68,13 +70,15 @@
 <script>
 import { ref } from 'vue'
 import UserItem from './presentational/UserItem.vue';
+import Watermark from '../Watermark.vue';
 
 
 
 
 export default {
   components: {
-    UserItem
+    UserItem,
+    Watermark
   },
   setup () {
     return {
@@ -91,7 +95,7 @@ export default {
     }
   },
  methods: {
-    
+
     onReset () {
       this.username = ""
       this.password = ""

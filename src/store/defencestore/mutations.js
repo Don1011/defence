@@ -4,6 +4,7 @@ export function saveAdminToken (state, payload) {
 }
 
 export function saveUserToken (state, payload) {
+  console.log(state);
   state.userToken = payload.token;
 }
 
@@ -64,8 +65,8 @@ export function getUsersInDepartment (state, payload) {
     username !== item.username && arrForForward.push(item)
 
   })
-  console.log(arr)
-  console.log(arrForForward)
+  // console.log(arr)
+  // console.log(arrForForward)
   state.usersInDept = arr;
   state.usersInDeptForForward = arrForForward;
 }
@@ -82,4 +83,8 @@ export function getAllUsersAdmin (state, payload) {
 export function logout(state){
   console.log("Logout commited")
   state.userToken = null
+}
+
+export function getProfile (state, payload) {
+  state.loggedUser = payload;
 }

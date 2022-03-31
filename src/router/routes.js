@@ -13,14 +13,14 @@ const routes = [
       { path: '/', component: () => import('components/Login.vue'),
       beforeEnter: (to, from, next) => {
       if (localStorage.getItem("userToken") !== null ){
-        next('/request')
+        next('/task')
       }
         else{
           next()
         }
       } },
 
-      { path: '/request', component: () => import('components/Request.vue'),
+      { path: '/task', component: () => import('src/components/Task.vue'),
         beforeEnter: (to, from, next) => {
         if (localStorage.getItem("userToken") == null ){
           next('/')

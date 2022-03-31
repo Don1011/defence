@@ -79,7 +79,7 @@
       </q-dialog>
 
       <div class="flex  items-center q-mx-auto q-my-md">
-        <p class="q-my-auto q-mr-md text-weight-medium">User Name</p>
+        <p class="q-my-auto q-mr-md text-weight-medium">{{ username }}</p>
         <q-icon name="notifications" size="1.3rem"/>
       </div>
 
@@ -94,12 +94,12 @@
 <!-- Navigation Buttons/Links  -->
     <div class="flex flex-center q-my-xl">
        <q-list class="q-mb-lg">
-                <q-item clickable class="q-mb-md q-px-xl" active-class="bg-primary text-secondary" to="/request" style="border-radius: 25px" v-ripple >
+                <q-item clickable class="q-mb-md q-px-xl" active-class="bg-primary text-secondary" to="/task" style="border-radius: 25px" v-ripple >
                     <q-item-section avatar>
                         <q-icon name="home" size="1.5rem" />
                     </q-item-section>
                     <q-item-section>
-                        <q-item-label class="text-left text-subtitle1">Request</q-item-label>
+                        <q-item-label class="text-left text-subtitle1">Tasks</q-item-label>
                     </q-item-section>
                 </q-item>
 
@@ -116,7 +116,7 @@
                         <q-icon name="storefront" size="1.5rem"/>
                     </q-item-section>
                     <q-item-section>
-                        <q-item-label class="text-left text-subtitle1">Mail</q-item-label>
+                        <q-item-label class="text-left text-subtitle1">Messages</q-item-label>
                     </q-item-section>
                 </q-item>
 
@@ -133,7 +133,7 @@
                         <q-icon name="view_list" size="1.5rem" />
                     </q-item-section>
                     <q-item-section>
-                        <q-item-label class="text-left text-subtitle1">Logs</q-item-label>
+                        <q-item-label class="text-left text-subtitle1">Archives</q-item-label>
                     </q-item-section>
                 </q-item>
 
@@ -187,7 +187,8 @@ export default defineComponent({
       selectedFile: null,
       name: "",
       rank: "",
-      password: ""
+      password: "",
+      username:""
 
     }
   },
@@ -197,10 +198,24 @@ export default defineComponent({
       localStorage.removeItem("adminToken");
       localStorage.removeItem("userDept");
       localStorage.removeItem("userToken");
+      localStorage.removeItem("username");
 
       this.$store.commit('logout')
       this.$router.replace('/');
-    }
+    },
+    getProfile(){
+      this.$q.loading.show();
+      this.$store.dispatch('defencestore/getProfile')
+      .then(()=>{
+        let req = this.$store.getters['defencestore/getProfile'];
+        console.log(req.loggedUser)
+        this.username = req.loggedUser.name;
+        this.$q.loading.hide();
+      })
+    },
+  },
+  mounted(){
+    this.getProfile();
   }
 })
 </script>
