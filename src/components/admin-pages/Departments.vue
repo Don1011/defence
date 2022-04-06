@@ -34,8 +34,6 @@
 
         </q-card>
         <q-card flat class="bg-primary" >
-           <!-- Water Marked Image  -->
-          <Watermark />
           <q-scroll-area style="height: 65vh;">
             <div class="text-subtitle2 text-secondary">
               <!-- Incomings -->

@@ -31,7 +31,7 @@ const routes = [
         }
       },
 
-      { path: '/mail', component: () => import('components/Mail.vue'),
+      { path: '/messages', component: () => import('components/Mail.vue'),
       beforeEnter: (to, from, next) => {
       if (localStorage.getItem("userToken") == null ){
         next('/')
@@ -51,7 +51,7 @@ const routes = [
         }
       } },
 
-      { path: '/logs', component: () => import('components/Logs.vue'),
+      { path: '/archives', component: () => import('components/Logs.vue'),
       beforeEnter: (to, from, next) => {
       if (localStorage.getItem("userToken") == null ){
         next('/')
@@ -73,7 +73,7 @@ const routes = [
 
       // { path: '/login', component: () => import('components/Login.vue') },
       { path: '/request-message/:id', component: () => import('components/Message.vue') },
-      { path: '/log-message/:id', component: () => import('components/Message.vue') },
+      { path: '/archive-message/:id', component: () => import('components/Message.vue') },
       { path: '/mail-message/:id', component: () => import('components/SingleMail.vue') },
 
       { path: '/admin', component: () => import('components/admin-pages/Login.vue') ,

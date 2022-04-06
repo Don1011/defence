@@ -126,7 +126,6 @@ export default {
   },
   methods: {
     fetchMessage(){
-      // console.log(env);
       this.$q.loading.show();
       axios({
             method: "GET",
@@ -165,7 +164,8 @@ export default {
                     }
                 })
                 .then(res => {
-                  res = res.data.result;
+                  // console.log(res);
+                  res = res.data.data;
                   let rearrangedList = [];
                   response.data.metaData.seen.forEach(item => {
                     res.forEach(resItem => {
@@ -291,7 +291,8 @@ export default {
           headers: {
             'Authorization': 'Bearer '+localStorage.getItem('userToken')
           }
-      }).then(() => {
+      })
+      .then(() => {
         console.log(response);
       })
       .catch(err=>{

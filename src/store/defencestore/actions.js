@@ -55,20 +55,22 @@ export function userLogin (context, data) {
           method: "POST",
           url: baseurl + '/login',
           data: {
-              username: data.username,
-              password: data.password
+            username: data.username,
+            password: data.password
           }
       })
       .then(response => {
           if(response.status === 200 || response.status === 201){
-              console.log(response.data.data);
               let token = response.data.data.token;
-              // console.log(token);
               localStorage.setItem('userToken', token);
               let department = response.data.data.doc.department;
               let username = response.data.data.doc.username;
-              localStorage.setItem('userDept', department);
+              let userId = response.data.data.doc._id;
+              localStorage.setItem('userDeptId', department._id);
+              localStorage.setItem('userDeptAbbr', department.abbr);
+              localStorage.setItem('userDeptName', department.name);
               localStorage.setItem('username', username);
+              localStorage.setItem('userId', userId);
               context.commit('saveUserToken', {token})
               Notify.create({
                   message: 'Login Success.',
@@ -98,11 +100,12 @@ export function userLogin (context, data) {
           }
       })
       .catch(err => {
-          Notify.create({
-              message: 'Login Failure.',
-              caption: "Authentication error, check credentials.",
-              color: 'red'
-          })
+        Notify.create({
+            message: 'Login Failure.',
+            caption: "Authentication error, check credentials.",
+            color: 'red'
+        })
+        reject();
       })
   })
 
@@ -233,15 +236,25 @@ export function getRequests (context, data) {
         if(response.status === 201 || response.status === 200){
             let outgoing = [];
             let incoming = [];
-            let userDept = localStorage.getItem('userDept');
+            let userDeptId = localStorage.getItem('userDeptId');
+            let username = localStorage.getItem('username');
+            let userId = localStorage.getItem('userId');
             let requests = response.data.data;
             requests.forEach(item => {
               if(item.metaData.status !== "Completed"){
-                if(item.from._id === userDept){
-                  outgoing.push(item);
-                }else{
-                    incoming.push(item);
+                if(item.from._id === userDeptId || item.to._id === userDeptId){
+                  let seenByIds = [];
+                  item.metaData.seen.forEach(element => {
+                    seenByIds.push(element.by);
+                  });
+                  if(username.split('@')[0] === "reg" || seenByIds.includes(userId)){
+                    if(item.from._id === userDeptId){
+                      outgoing.push(item);
+                    }else{
+                        incoming.push(item);
+                    }
                   }
+                }
               }
             });
             context.commit('setRequests', {outgoing, incoming})
@@ -419,11 +432,11 @@ export function getMails (context, data) {
         }
       })
       .then(response => {
-        // console.log(response.data);
         if(response.status === 201 || response.status === 200){
           let sent = [];
           let inbox = [];
           let username = localStorage.getItem('username');
+          console.log(username);
           let requests = response.data.data;
           requests.forEach(item => {
               if(item.from.username === username){

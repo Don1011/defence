@@ -10,9 +10,9 @@ export function saveUserToken (state, payload) {
 
 export function getDepartments (state, payload) {
   let arr = [];
-  let userDept = localStorage.getItem("userDept");
+  let userDeptId = localStorage.getItem("userDeptId");
   payload.departments.forEach(item => {
-    (userDept !== item._id && item.abbr !== "ADMIN") && arr.push(item.abbr)
+    (userDeptId !== item._id && item.abbr !== "ADMIN") && arr.push(item.abbr)
   })
   console.log(arr)
   state.departments = arr;

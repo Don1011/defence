@@ -216,18 +216,10 @@ export default {
       formData.append("title", this.title);
       if(this.to !== "" && this.title !== "" && this.comments !== ""){
         this.$store.dispatch('defencestore/sendRequest', {
-          // to: this.to,
-          // title: this.title,
-          // text: this.comments,
-          // files: this.selectedFile,
-          // reference: ref
           formData
         })
         .then(()=>{
           window.location.reload();
-          // console.log('selected file state');
-          // console.log(this.selectedFile);
-
         })
       }else{
         Notify.create({
