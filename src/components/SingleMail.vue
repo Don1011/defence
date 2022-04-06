@@ -21,7 +21,7 @@
                 <div id="printMe">
                   <!-- Sender's Name  -->
                   <div class="text-subtitle1">
-                    <span class="text-bold text-grey" >From:</span> 
+                    <span class="text-bold text-grey" >From:</span>
                     <span class="text-h6 q-ml-md">{{from}}</span>
                   </div>
 
@@ -52,6 +52,7 @@ import { Notify } from 'quasar';
 import Watermark from 'components/Watermark.vue'
 import VueHtmlToPaper from 'vue-html-to-paper';
 import axios from 'axios';
+import env from '../../env.js';
 
 export default {
   name: 'Message',
@@ -73,18 +74,18 @@ export default {
   },
   methods: {
     fetchMail(){
+      // console.log(env.backend);
       this.$q.loading.show();
       axios({
             method: "GET",
-            url: 'http://192.168.0.103:3000/api/user/mail/'+this.id,
+            url: env.backend + '/user/mail/'+this.id,
             headers: {
               'Authorization': 'Bearer '+localStorage.getItem('userToken')
             }
         })
         .then(response => {
-          // console.log(response)
           if(response.status === 201){
-              response = response.data.doc;
+              response = response.data.data;
               this.from = response.from.name;
               this.to = response.to.name;
               this.title = response.title;

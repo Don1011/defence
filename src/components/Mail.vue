@@ -200,11 +200,12 @@ export default {
       this.$store.dispatch('defencestore/getMails')
       .then(()=>{
         let req = this.$store.getters['defencestore/getMails'];
+        // console.log(req);
         this.inbox = req.inbox;
         this.sent = req.sent;
         this.$q.loading.hide();
-        // console.log(this.inbox)
-        // console.log(this.sent)
+        console.log(this.inbox)
+        console.log(this.sent)
       })
     },
     fetchUsersInDept(){

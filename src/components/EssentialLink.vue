@@ -31,12 +31,12 @@
         <q-card>
             <q-card-section class="items-center">
                 <div class="column q-mt-md">
-                    <div class="bg-white col q-px-md column justify-between q-pb-md" style="height:300px;border-radius:0 0 4px 4px">
+                    <div class="bg-white col q-px-md column justify-between q-pb-md" style="height:80vh; width: 90vh ;border-radius:0 0 4px 4px">
                         <div class = "q-mx-sm">
                             <q-file
                               v-model="selectedFile"
                               label="Select New Profile Picture"
-                              square
+                              rounded="true"
                               flat
                               use-chips
                               clearable
@@ -45,12 +45,19 @@
                               max-file-size="5120000"
                             >
                               <template v-slot:prepend>
-                                <q-icon name="attach_file" />
+                                <q-icon name="add" />
                               </template>
                             </q-file>
+                            <q-btn label="Upload" />
+
+                            <q-separator/>
 
                             <q-input v-model="name" label="Edit Name:" />
                             <q-input v-model="rank" label="Edit Rank:" />
+                            <q-btn label="Upload" />
+
+                            <q-separator/>
+
                             <q-expansion-item
                               expand-separator
                               icon="lock"
@@ -109,7 +116,7 @@
                 :active="link === 'Products'"
                 @click="link = 'Products'"
                 style="border-radius: 25px"
-                to="/mail"
+                to="/messages"
                 >
 
                     <q-item-section avatar>
@@ -126,7 +133,7 @@
                 :active="link === 'Settings'"
                 @click="link = 'Settings'"
                 style="border-radius: 25px"
-                to="/logs"
+                to="/archives"
                 >
 
                     <q-item-section avatar>
