@@ -13,6 +13,7 @@
     "axios": "^0.26.1",
     "core-js": "^3.6.5",
     "mime-types": "^2.1.35",
+    "print-js": "^1.6.0",
     "quasar": "^2.0.0",
     "vue": "^3.0.0",
     "vue-html-to-paper": "^1.4.4",
