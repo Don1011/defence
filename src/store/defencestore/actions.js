@@ -39,11 +39,14 @@ export function adminLogin (context, data) {
             }
         })
         .catch(err => {
-            Notify.create({
-                message: 'Login Failure.',
-                caption: "Authentication error, check credentials.",
-                color: 'red'
-            })
+          if(err.response?.status === 401){
+            context.dispatch("logout")
+          }
+          Notify.create({
+              message: 'Login Failure.',
+              caption: "Authentication error, check credentials.",
+              color: 'red'
+          })
         })
     })
 
@@ -223,6 +226,7 @@ export function getAllUserDepartments (context, data) {
 }
 
 export function getRequests (context, data) {
+  // console.log(context);
     return new Promise((resolve, reject) => {
       axios({
         method: "GET",
@@ -243,15 +247,21 @@ export function getRequests (context, data) {
             requests.forEach(item => {
               if(item.metaData.status !== "Completed"){
                 if(item.from._id === userDeptId || item.to._id === userDeptId){
+                  // console.log("If statement crossed");
                   let seenByIds = [];
                   item.metaData.seen.forEach(element => {
                     seenByIds.push(element.by);
                   });
+                  // console.log(seenByIds);
                   if(username.split('@')[0] === "reg" || seenByIds.includes(userId)){
                     if(item.from._id === userDeptId){
-                      outgoing.push(item);
-                    }else{
+                      // if(seenByIds[seenByIds.length-1] === userId){
                         incoming.push(item);
+                      // }else{
+                      //   outgoing.push(item);
+                      // }
+                    }else{
+                     incoming.push(item);
                     }
                   }
                 }
@@ -268,6 +278,11 @@ export function getRequests (context, data) {
         }
       })
       .catch(err => {
+        if(err.response?.status === 401){
+          context.dispatch("logout")
+        }
+        console.log(err);
+
           Notify.create({
               message: 'Error fetching requests.',
               color: 'red'
@@ -308,6 +323,9 @@ export function sendMail (context, data) {
         }
       })
       .catch(err => {
+        if(err.response?.status === 401){
+    context.dispatch("logout")
+        }
           Notify.create({
               message: 'Error sending mail. Please retry.',
               color: 'red'
@@ -344,6 +362,9 @@ export function sendSupportMessage (context, data) {
       }
     })
     .catch(err => {
+      if(err.response?.status === 401){
+    context.dispatch("logout")
+      }
         Notify.create({
             message: 'Error sending message. Please retry.',
             color: 'red'
@@ -380,6 +401,9 @@ export function loginSupport (context, data) {
       }
     })
     .catch(err => {
+      if(err.response?.status === 401){
+    context.dispatch("logout")
+      }
         Notify.create({
             message: 'Error sending message. Please retry.',
             color: 'red'
@@ -413,6 +437,9 @@ export function getUsersInDepartment (context, data) {
       }
     })
     .catch(err => {
+      if(err.response?.status === 401){
+    context.dispatch("logout")
+      }
         Notify.create({
             message: 'Error fetching users in your department.',
             color: 'red'
@@ -456,6 +483,9 @@ export function getMails (context, data) {
         }
       })
       .catch(err => {
+        if(err.response?.status === 401){
+    context.dispatch("logout")
+        }
           Notify.create({
               message: 'Error fetching mails.',
               color: 'red'
@@ -488,6 +518,9 @@ export function getLogs (context, data) {
         }
       })
       .catch(err => {
+        if(err.response?.status === 401){
+    context.dispatch("logout")
+        }
           Notify.create({
               message: 'Error fetching logs.',
               color: 'red'
@@ -534,6 +567,9 @@ export function forwardRequest (context, data) {
       }
     })
     .catch(err => {
+      if(err.response?.status === 401){
+    context.dispatch("logout")
+      }
         Notify.create({
           message: "Error forwarding request. Please retry.",
           color: 'red'
@@ -573,6 +609,9 @@ export function setCompleted (context, data) {
       }
     })
     .catch(err => {
+      if(err.response?.status === 401){
+    context.dispatch("logout")
+      }
         Notify.create({
           message: "Error changing status to completed.",
           color: 'red'
@@ -614,6 +653,9 @@ export function createUser (context, data) {
       }
     })
     .catch(err => {
+      if(err.response?.status === 401){
+    context.dispatch("logout")
+      }
         Notify.create({
             message: 'Error creating User. Please retry.',
             color: 'red'
@@ -655,6 +697,9 @@ export function saveComment (context, data) {
       }
     })
     .catch(err => {
+      if(err.response?.status === 401){
+    context.dispatch("logout")
+      }
         Notify.create({
             message: 'Error Saving Comment. Please retry.',
             color: 'red'
@@ -693,6 +738,9 @@ export function createDepartment (context, data) {
       }
     })
     .catch(err => {
+      if(err.response?.status === 401){
+    context.dispatch("logout")
+      }
         Notify.create({
             message: 'Error Saving Comment. Please retry.',
             color: 'red'
@@ -727,6 +775,9 @@ export function getAllDepartmentsAdmin (context, data) {
       }
     })
     .catch(err => {
+      if(err.response?.status === 401){
+    context.dispatch("logout")
+      }
         Notify.create({
             message: 'Error fetching departments.',
             color: 'red'
@@ -769,6 +820,9 @@ export function getAllUsersAdmin (context, data) {
       }
     })
     .catch(err => {
+      if(err.response?.status === 401){
+    context.dispatch("logout")
+      }
         Notify.create({
             message: 'Error fetching Users.',
             color: 'red'
@@ -803,10 +857,17 @@ export function getProfile (context, data) {
       }
     })
     .catch(err => {
+      if(err.response?.status === 401){
+    context.dispatch("logout")
+      }
         Notify.create({
             message: 'Error fetching logs.',
             color: 'red'
         })
     })
   })
+}
+
+export function logout (context) {
+  localStorage.clear();
 }

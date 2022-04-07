@@ -292,10 +292,11 @@ export default {
             'Authorization': 'Bearer '+localStorage.getItem('userToken')
           }
       })
-      .then(() => {
+      .then((response) => {
         console.log(response);
       })
       .catch(err=>{
+        console.log(err)
         Notify.create({
           message: "Error setting seen flag.",
           color: "red"
