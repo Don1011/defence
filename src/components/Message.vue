@@ -153,6 +153,7 @@ export default {
                 response.data.metaData.seen.forEach(item => {
                   idList.push(item.by);
                 })
+                // fetch list of people a request was forwarded to
                 axios({
                     method: "POST",
                     url: env.backend+'/user/findmany',
@@ -181,7 +182,7 @@ export default {
                 response.data.metaData.minute.forEach(item=>{
                   minuteIds.push(item.by);
                 })
-
+                // Fetch the minutes
                 axios({
                     method: "POST",
                     url: env.backend+'/user/findmany',
@@ -205,6 +206,12 @@ export default {
                   this.minutesList = rearrangedList;
                   console.log(rearrangedList)
                 })
+
+                // Make sure people that are from the dept that sent a request don't add to the list of users that have seen a request
+                let deptId = localStorage.getItem('userDeptId');
+                if(response.data.to._id === deptId){
+                  this.setSeen();
+                }
             }else{
                 Notify.create({
                     message: "Error fetching message.",
@@ -307,7 +314,7 @@ export default {
   mounted(){
     this.fetchMessage();
     this.fetchUsersInDept();
-    this.setSeen();
+    // this.setSeen();
   }
 
 }
