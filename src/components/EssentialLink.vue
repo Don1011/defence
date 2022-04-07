@@ -21,54 +21,55 @@
 
         >
           <div class="absolute-bottom" v-show="edit" style="padding: 0; height: 30px" >
-            <q-btn no-caps icon="add" @click="editFormShow=true"  unelevated label="Edit" style="width:100%;" size="0.7rem"/>
+            <input type="file" ref="file" style="display: none">
+            <q-btn no-caps icon="add"  @click="$refs.file.click()" unelevated label="upload" style="width:100%;" size="0.7rem"/>
           </div>
         </q-img>
         <q-space/>
       </div>
 
       <q-dialog v-model="editFormShow" persistent>
-        <q-card>
+        <q-card style=" width:30%; height:70vh;">
+            <q-card-section class="row items-center q-pb-none">
+              <!-- <div class="text-h6">Close icon</div> -->
+              <q-space />
+              <q-btn icon="close" flat round dense v-close-popup />
+            </q-card-section>
+
             <q-card-section class="items-center">
                 <div class="column q-mt-md">
-                    <div class="bg-white col q-px-md column justify-between q-pb-md" style="height:80vh; width: 90vh ;border-radius:0 0 4px 4px">
+                    <div class="bg-white col q-px-md column justify-between q-pb-md" style="  ;border-radius:0 0 4px 4px">
                         <div class = "q-mx-sm">
-                            <q-file
-                              v-model="selectedFile"
-                              label="Select New Profile Picture"
-                              rounded="true"
-                              flat
-                              use-chips
-                              clearable
-                              accept=".csv,.txt,.xls,.xlsx,.doc,.docx,.pdf,.dbf,.zip,.rar,.7z,.jpg,.png,.gif"
-                              max-files="1"
-                              max-file-size="5120000"
-                            >
-                              <template v-slot:prepend>
-                                <q-icon name="add" />
-                              </template>
-                            </q-file>
-                            <q-btn label="Upload" />
+                            <!-- <q-separator/> -->
+                            <label for="">Edit Name</label>
+                            <q-input v-model="name" outlined style="width:100%; margin: 2% 0 3%"  label="Edit Name:" />
 
-                            <q-separator/>
+                            <label for="">Edit Name</label>
+                            <q-input v-model="rank" outlined style="width:100%; margin: 2% 0 3%"  label="Edit Rank:" />
 
-                            <q-input v-model="name" label="Edit Name:" />
-                            <q-input v-model="rank" label="Edit Rank:" />
-                            <q-btn label="Upload" />
+                            <div class="row q-my-md">
+                              <q-space/>
+                              <q-btn label="Save" color="secondary" />
+                            </div>
 
                             <q-separator/>
 
                             <q-expansion-item
                               expand-separator
                               icon="lock"
-                              label="Edit password"
+                              label="Change password"
                               class="q-mt-md rounded-borders"
                             >
                               <q-card>
                                 <q-card-section>
                                   <div class = "q-my-sm">
-                                    <q-input v-model="password" label="New Password:" />
-                                    <q-input v-model="password" label="Enter Password Again:" />
+                                    <q-input v-model="password" outlined style="margin: 4% 0" label="New Password:" />
+                                    <q-input v-model="password" outlined style="margin: 4% 0" label="Enter Password Again:" />
+
+                                     <div class="row q-my-md">
+                                      <q-space/>
+                                      <q-btn label="Save" color="secondary" />
+                                    </div>
                                   </div>
                                 </q-card-section>
                               </q-card>
@@ -77,17 +78,12 @@
                     </div>
                 </div>
             </q-card-section>
-
-            <q-card-actions align="right">
-            <q-btn flat label="Cancel" color="red"  v-close-popup />
-            <q-btn label="Save" color="negative"  />
-            </q-card-actions>
         </q-card>
       </q-dialog>
 
       <div class="flex  items-center q-mx-auto q-my-md">
         <p class="q-my-auto q-mr-md text-weight-medium">{{ username }}</p>
-        <q-icon name="notifications" size="1.3rem"/>
+        <q-icon name="settings" size="1.3rem" style="cursor:pointer" @click="editFormShow=true"/>
       </div>
 
     </div>

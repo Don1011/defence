@@ -14,8 +14,8 @@
               <!-- Mail Title  -->
                 <div class="row items-align justify-between ">
                   <q-space />
-                  <div class="row col-3" style="80%">
-                    <!-- <q-space/> -->
+                  <div class="row col-3" style="width:50%">
+                    <q-space/>
                     <q-btn v-show="!(status==='Completed')" flat dense @click="confirmCompleted=true" color="blue" label="Complete" icon="check" />
                     <q-btn v-show="(status==='Completed')" flat dense disabled color="green" label="Completed" icon="check" />
                     <q-dialog v-model="confirmCompleted" persistent>
@@ -32,8 +32,8 @@
                       </q-card>
                     </q-dialog>
                     <!-- <q-space/> -->
-                    <q-space/>
-                    <q-btn flat round dense @click="print()" icon="print" />
+                    <!-- <q-space/> -->
+                    <q-btn flat round dense @click="print({printable: '#printNow', type: 'html', header: 'Hello!', ignoreElements:['print-button']})" icon="print" />
                     <div v-show="!(status==='Completed')" class="">
                       <q-btn-dropdown round flat color="secondary" label="" dropdown-icon="reply">
                           <q-scroll-area class="text-center justify-center" style="height: 40vh; width:50vh ">
@@ -52,7 +52,7 @@
                   </div>
                 </div>
 
-                <div>
+                <div id="printNow">
                      <!-- Water Marked Image  -->
                       <Watermark />
                   <!-- Sender's Name  -->
@@ -92,17 +92,17 @@
 import { ref } from 'vue'
 import Watermark from 'components/Watermark.vue'
 import MetaData from 'components/MetaData.vue'
-import VueHtmlToPaper from 'vue-html-to-paper';
 import axios from 'axios';
 import { Notify }from 'quasar';
 import env from '../../env.js';
+import Print from "print-js";
 // import mimeTypes from 'mime-types';
 
 export default {
   name: 'Message',
   components:{
     Watermark,
-    VueHtmlToPaper,
+    Print,
     MetaData
   },
   data () {
@@ -276,9 +276,9 @@ export default {
           link.click();
       });
     },
-    print(){
-      console.log('print')
-    },
+    // print(){
+    //   console.log('print')
+    // },
     completed(){
       this.$q.loading.show();
       let data = {requestId: this.id, status: "Completed"};
@@ -309,6 +309,14 @@ export default {
           color: "red"
         })
       })
+    },
+     print() {
+          print({
+        printable: "printNow",
+        type: "html",
+        targetStyles: ['*'],
+        header: 'PrintJS - Print Form With Customized Header',
+      });
     }
   },
   mounted(){
@@ -325,3 +333,4 @@ export default {
 
 
 </style>
+
