@@ -256,7 +256,7 @@ export function getRequests (context, data) {
                   if(username.split('@')[0] === "reg" || seenByIds.includes(userId)){
                     if(item.from._id === userDeptId){
                       // if(seenByIds[seenByIds.length-1] === userId){
-                        incoming.push(item);
+                        outgoing.push(item);
                       // }else{
                       //   outgoing.push(item);
                       // }
