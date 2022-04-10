@@ -283,10 +283,11 @@ export function getRequests (context, data) {
         }
         console.log(err);
 
-          Notify.create({
-              message: 'Error fetching requests.',
-              color: 'red'
-          })
+        Notify.create({
+            message: 'Error fetching requests.',
+            color: 'red'
+        })
+        reject();
       })
     })
 
@@ -858,7 +859,7 @@ export function getProfile (context, data) {
     })
     .catch(err => {
       if(err.response?.status === 401){
-    context.dispatch("logout")
+        context.dispatch("logout")
       }
         Notify.create({
             message: 'Error fetching logs.',
@@ -870,4 +871,93 @@ export function getProfile (context, data) {
 
 export function logout (context) {
   localStorage.clear();
+}
+
+
+export function editProfile (context, data) {
+  console.log(data);
+  const { name, rank } = data;
+
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "POST",
+      url: baseurl + '/user/edit-profile',
+      data: { name, rank },
+      headers: {
+        'Authorization': 'Bearer '+localStorage.getItem('userToken')
+      }
+    })
+    .then(response => {
+      if(response.status === 201){
+        Notify.create({
+            message: "New password saved.",
+            color: 'blue'
+        })
+        resolve();
+      }else if(response.status === 401){
+        context.dispatch("logout");
+      }else{
+          Notify.create({
+            message: "Error editing profile.",
+            color: 'red'
+          })
+          reject();
+      }
+    })
+    .catch(err => {
+      if(err.response?.status === 401){
+        context.dispatch("logout")
+      }
+        Notify.create({
+          message: 'Error editing profile.',
+          color: 'red'
+        })
+        reject();
+    })
+  })
+
+}
+
+export function changePassword (context, data) {
+  console.log(data);
+  const { old, new } = data;
+
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "POST",
+      url: baseurl + '/user/change-password',
+      data: { old, new },
+      headers: {
+        'Authorization': 'Bearer '+localStorage.getItem('userToken')
+      }
+    })
+    .then(response => {
+      if(response.status === 201){
+        Notify.create({
+            message: "New password saved.",
+            color: 'blue'
+        })
+        resolve();
+      }else if(response.status === 401){
+        context.dispatch("logout");
+      }else{
+          Notify.create({
+            message: "Error changing password.",
+            color: 'red'
+          })
+          reject();
+      }
+    })
+    .catch(err => {
+      if(err.response?.status === 401){
+        context.dispatch("logout")
+      }
+      Notify.create({
+        message: 'Error changing password.',
+        color: 'red'
+      })
+      reject();
+    })
+  })
+
 }
