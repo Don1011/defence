@@ -4,7 +4,6 @@
 
       <div class="q-gutter-y-md" style="width: 100%;">
 
-
         <q-card flat class=""  style="z-index:">
           <q-tabs
             v-model="label"
@@ -199,6 +198,7 @@ export default {
   },
  methods: {
     selectFile(){
+
       this.$refs.selectImageFile.$el.click();
     },
     fileSelected(el){
