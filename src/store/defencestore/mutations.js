@@ -4,7 +4,7 @@ export function saveAdminToken (state, payload) {
 }
 
 export function saveUserToken (state, payload) {
-  console.log(state);
+  // console.log(state);
   state.userToken = payload.token;
 }
 
@@ -14,7 +14,7 @@ export function getDepartments (state, payload) {
   payload.departments.forEach(item => {
     (userDeptId !== item._id && item.abbr !== "ADMIN") && arr.push(item.abbr)
   })
-  console.log(arr)
+  // console.log(arr)
   state.departments = arr;
 }
 
@@ -76,15 +76,25 @@ export function setLogs (state, payload) {
 }
 
 export function getAllUsersAdmin (state, payload) {
-  console.log(payload)
+  // console.log(payload)
   state.usersList = payload.users;
 }
 
 export function logout(state){
-  console.log("Logout commited")
+  // console.log("Logout commited")
   state.userToken = null
 }
 
 export function getProfile (state, payload) {
   state.loggedUser = payload;
+}
+
+export function setAdminMails (state, payload) {
+  let { mails } = payload;
+  state.adminMails = mails;
+}
+
+export function setAdminSingleMail (state, payload) {
+  let {mail} = payload;
+  state.adminSingleMail=mail;
 }

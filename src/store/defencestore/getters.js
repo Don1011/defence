@@ -10,7 +10,7 @@ export function getAllDepartmentsAdmin (state) {
 }
 
 export function getRequests (state) {
-  console.log(state);
+  // console.log(state);
   return ({ incoming: state.incomingRequests, outgoing: state.outgoingRequests });
 }
 
@@ -31,7 +31,7 @@ export function getLogs (state) {
 }
 
 export function getAllUsersAdmin (state) {
-  console.log(state);
+  // console.log(state);
   return state.usersList;
 }
 
@@ -40,6 +40,13 @@ export function rawDepartments (state) {
 }
 
 export function getProfile (state) {
-  console.log(state)
   return state;
+}
+
+export function getAdminMails (state) {
+  return state.adminMails
+}
+
+export function getAdminSingleMail (state) {
+  return state.adminSingleMail;
 }

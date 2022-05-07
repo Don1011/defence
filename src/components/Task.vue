@@ -112,39 +112,42 @@
             <q-card-section>
                 <div class="column">
                   <div class="bg-white col q-px-md column justify-between q-pb-md" style="height:300px;border-radius:0 0 4px 4px">
-                    <!-- <div class="row q-mx-auto" style="width:100%" > -->
-                      <!-- <div class="bg-white " style="width: 260px;border-radius:10px"> -->
-                          <q-select  v-model="to" :options="departments" use-input input-debounce="0" label="Select Department To"  >
-                            <template v-slot:no-option>
-                                <q-item>
-                                  <q-item-section class="text-grey">
-                                    No results
-                                  </q-item-section>
-                                </q-item>
-                              </template>
-                          </q-select>
-                        <!-- </div> -->
-                      <!-- </div> -->
-                    <q-input v-model="title" label="Title:" />
-                    <q-input v-model="comments" type="textarea" placeholder="Add Comments" />
+                    <div class="" >
+                      <q-select  v-model="to" :options="departments" use-input input-debounce="0" label="Select Department To"  >
+                        <template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                No results
+                              </q-item-section>
+                            </q-item>
+                          </template>
+                      </q-select>
+                    </div>
+                    <div class="" >
+                      <q-input v-model="title" label="Title:" />
+                    </div>
+                    <div class="" >
+                      <q-input v-model="comments" type="textarea" placeholder="Add Comments" />
+                    </div>
                     <!-- <q-file  @change="fileSelected" ref="selectImageFile" type = "file"  /> -->
-                    <q-file
-                      v-model="selectedFile"
-                      label="Attach File"
-                      square
-                      flat
-                      use-chips
-                      clearable
-                      accept=".csv,.txt,.xls,.xlsx,.doc,.docx,.pdf,.dbf,.zip,.rar,.7z,.jpg,.png,.gif"
-                      max-files="1"
-                      max-file-size="5120000"
+                    <div class="" >
+                      <q-file
+                        v-model="selectedFile"
+                        label="Attach File"
+                        square
+                        flat
+                        use-chips
+                        clearable
+                        accept=".csv,.txt,.xls,.xlsx,.doc,.docx,.pdf,.dbf,.zip,.rar,.7z,.jpg,.png,.gif"
+                        max-files="1"
+                        max-file-size="5120000"
 
-                    >
-                      <template v-slot:prepend>
-                        <q-icon name="attach_file" />
-                      </template>
-                    </q-file>
-
+                      >
+                        <template v-slot:prepend>
+                          <q-icon name="attach_file" />
+                        </template>
+                      </q-file>
+                    </div>
                     <div class="row justify-between q-mt-xl " style="height:40px">
                       <div style="width:20%" class="row">
                         <q-btn @click="submitRequest" label="send" style="width: 50%;" color="negative"/>

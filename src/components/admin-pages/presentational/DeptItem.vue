@@ -22,7 +22,7 @@
 
                 <q-card-actions align="right">
                 <q-btn flat label="Cancel" color="secondary" v-close-popup />
-                <q-btn flat label="Yes" color="red" v-close-popup />
+                <q-btn flat label="Yes" color="red" v-close-popup @click="deleteDept" />
                 </q-card-actions>
             </q-card>
         </q-dialog>
@@ -62,7 +62,7 @@ export default {
             editDialog, deleteDialog
         }
     },
-    props: ['department'],
+    props: ['department', 'deleteDept'],
     methods: {
 
     }

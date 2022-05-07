@@ -75,7 +75,13 @@ export default {
             this.$router.replace('/task')
             this.$q.loading.hide();
         })
-        .catch(err => this.$q.loading.hide())
+        .catch(err => {
+            this.$q.loading.hide();
+            Notify.create({
+              message: `${err}`,
+              color: 'red'
+            })
+        })
       }else{
         Notify.create({
           message: 'Login Failure.',

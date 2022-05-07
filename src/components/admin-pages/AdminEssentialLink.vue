@@ -10,7 +10,7 @@
 
       <div class="flex  items-center q-mx-auto q-my-md">
         <p class="q-my-auto q-mr-md text-weight-thin">DDC REGISTRY</p>
-        <q-icon name="notifications" size="1.3rem"/>
+        <!-- <q-icon name="notifications" size="1.3rem"/> -->
       </div>
 
     </div>

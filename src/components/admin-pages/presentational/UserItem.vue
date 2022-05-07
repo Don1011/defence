@@ -23,7 +23,7 @@
 
                 <q-card-actions align="right">
                 <q-btn flat label="Cancel" color="secondary" v-close-popup />
-                <q-btn flat label="Yes" color="red" v-close-popup />
+                <q-btn flat label="Yes" color="red" v-close-popup @click="deleteUser" />
                 </q-card-actions>
             </q-card>
         </q-dialog>
@@ -35,10 +35,10 @@
                     <div class="column q-mt-md">
                         <div class="bg-white col q-px-md column justify-between q-pb-md" style="height:300px;border-radius:0 0 4px 4px">
                             <div class = "q-mx-sm">
-                                <q-input label="Username:" />
-                                <q-input label="Password:" />
-                                <q-input label="Role:" />
-                                <q-input label="Department:" />
+                                <q-input label="Username:" v-model="user.username" />
+                                <q-input label="Password:" v-model="user.password" />
+                                <q-input label="Rank:" v-model="user.rank" />
+                                <q-input label="Role:" v-model="user.role" />
                             </div>
                         </div>
                     </div>
@@ -62,10 +62,13 @@ export default {
         const editDialog = ref(false)
         const deleteDialog = ref(false)
         return {
-            editDialog, deleteDialog
+          editDialog,
+          deleteDialog,
+
+
         }
     },
-    props: ['user'],
+    props: ['user', 'deleteUser', 'editUser'],
     methods: {
 
     }
