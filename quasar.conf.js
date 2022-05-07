@@ -7,7 +7,7 @@
 // https://quasar.dev/quasar-cli/quasar-conf-js
 
 const { configure } = require('quasar/wrappers');
-// const env = require('./env.js');
+const env = require('./env.js');
 
 module.exports = configure(function (ctx) {
   return {
@@ -45,10 +45,10 @@ module.exports = configure(function (ctx) {
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
       vueRouterMode: 'hash', // available values: 'hash', 'history'
-// 
-//       env: {
-//         baseurl: env.backend
-//       },
+//
+      env: {
+        baseurl: env.backend
+      },
       // transpile: false,
       // publicPath: '/',
 

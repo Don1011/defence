@@ -116,7 +116,7 @@ const routes = [
         }
       } },
 
-      { path: '/admin/message', component: () => import('components/admin-pages/Message.vue') },
+      { path: '/admin/message/:id', component: () => import('components/admin-pages/Message.vue') },
 
     ]
   },

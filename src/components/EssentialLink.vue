@@ -11,23 +11,23 @@
       <div class=" row">
         <q-space/>
         <q-img
-          :src="avi || 'https://cdn.quasar.dev/img/parallax2.jpg'"
+          :src="avi"
           spinner-color="white"
           style="height: 110px; width: 110px; border-radius:100%;"
           img-class="my-custom-image"
           class="rounded-borders "
           @mouseenter="edit = true"
           @mouseleave="edit =false"
-
         >
           <div class="absolute-bottom" v-show="edit" style="padding: 0; height: 30px" >
-            <input type="file" ref="file" style="display: none">
-            <q-btn no-caps icon="add"  @click="$refs.file.click()" unelevated label="upload" style="width:100%;" size="0.7rem"/>
+            <input type="file" ref="userAvatar" style="display: none" @change="uploadFile">
+            <q-btn no-caps icon="add"  @click="$refs.userAvatar.click()" unelevated label="upload" style="width:100%;" size="0.7rem"/>
           </div>
         </q-img>
         <q-space/>
       </div>
 
+      <!-- Edit form dialog -->
       <q-dialog v-model="editFormShow">
         <q-card style=" width:30%; height:70vh;">
             <q-card-section class="row items-center q-pb-none">
@@ -66,9 +66,9 @@
                               <q-card>
                                 <q-card-section>
                                   <div class = "q-my-sm">
-                                    <q-input v-model="oldPassword" outlined style="margin: 4% 0" label="Old Password:" />
-                                    <q-input v-model="newPassword" outlined style="margin: 4% 0" label="New Password:" />
-                                    <q-input v-model="confirmNew" outlined style="margin: 4% 0" label="Enter Password Again:" />
+                                    <q-input type="password" v-model="oldPassword" outlined style="margin: 4% 0" label="Old Password:" />
+                                    <q-input type="password" v-model="newPassword" outlined style="margin: 4% 0" label="New Password:" />
+                                    <q-input type="password" v-model="confirmNew" outlined style="margin: 4% 0" label="Enter Password Again:" />
 
                                      <div class="row q-my-md">
                                       <q-space/>
@@ -186,6 +186,7 @@
 <script>
 import { defineComponent } from 'vue';
 import { Notify } from 'quasar';
+import { backend } from '../../env';
 
 export default defineComponent({
   name: 'EssentialLink',
@@ -198,9 +199,8 @@ export default defineComponent({
       selectedFile: null,
       name: "",
       rank: "",
-      // password: "",
       username:"",
-      avi:false,
+      avi:'https://cdn.quasar.dev/img/parallax2.jpg',
 
       oldPassword: "",
       newPassword: "",
@@ -212,13 +212,11 @@ export default defineComponent({
   },
   methods: {
     logout(){
-      // console.log("LOGOUT")
       localStorage.removeItem("adminToken");
       localStorage.removeItem("userDept");
       localStorage.removeItem("userToken");
       localStorage.removeItem("username");
 
-      // this.$store.commit('logout')
       this.$router.replace('/');
     },
     getProfile(){
@@ -226,12 +224,13 @@ export default defineComponent({
       this.$store.dispatch('defencestore/getProfile')
       .then(()=>{
         let req = this.$store.getters['defencestore/getProfile'];
-        console.log(req.loggedUser)
+        console.log(req.loggedUser);
         req=req.loggedUser;
         this.username = req.username;
         this.rank = req.rank;
         this.name = req.name;
-        this.avi = req.avi;
+        this.avi = `${backend}/${req.avatar}`;
+        console.log(req.avatar);
         this.$q.loading.hide();
       })
       .catch(err => this.$q.loading.hide())
@@ -256,7 +255,7 @@ export default defineComponent({
       if(this.oldPassword !== "" && this.newPassword !== "" && this.confirmNew !== ""){
         if(this.newPassword === this.confirmNew){
           if(this.newPassword !== this.oldPassword){
-            this.$store.dispatch("defencestore/changePassword", { old: this.oldPassword, new: this.newPassword })
+            this.$store.dispatch("defencestore/changePassword", { oldPassword: this.oldPassword, newPassword: this.newPassword, confirmPassword: this.confirmNew })
             .then(()=>{ this.changePasswordLoader=false })
             .catch(err=>{ this.changePasswordLoader=false })
           }else{
@@ -278,6 +277,19 @@ export default defineComponent({
           color: "red"
         })
       }
+    },
+    uploadFile(){
+      this.$q.loading.show();
+      let formData = new FormData();
+      formData.append("avatar", this.$refs.userAvatar.files[0]);
+      this.$store.dispatch("defencestore/updateAvatar", {formData})
+      .then(() => {
+        this.$q.loading.hide();
+        this.$router.go(this.$router.currentRoute);
+      })
+      .catch(() => {
+        this.$q.loading.hide();
+      })
     }
   },
   mounted(){

@@ -27,18 +27,17 @@
               <q-scroll-area style="height: 59vh;">
                 <div class="text-subtitle2 text-secondary">
                   <!-- Outgoings -->
-                  <q-list separator v-for="n in 7" :key="n" >
-                    <q-item clickable class="row text-center q-mb-sm bg-white" @click="this.$router.push('/admin/message')" style="border-radius: 4px">
+                  <q-list separator v-for="mail in pendingMails" :key="mail._id" >
+                    <q-item clickable class="row text-center q-mb-sm bg-white" :to="`/admin/message/${mail._id}`" style="border-radius: 4px">
                       <div class="row col-10" >
-                        <q-item-section  >Request to DDA</q-item-section>
-                        <q-item-section>Network is not working and the windows </q-item-section>
-                        <q-item-section>Oct /13/2021 : 10:30am.</q-item-section>
+                        <q-item-section  >Mail from {{mail.from.username}}</q-item-section>
+                        <q-item-section>{{mail.message.title}} </q-item-section>
+                        <q-item-section>{{mail.updatedAt.split("T")[0]}}, {{mail.updatedAt.split("T")[1].split(".")[0]}}</q-item-section>
                       </div>
 
                       <q-item-section>
                         <div class="row justify-evenly" style="width">
                           <span class=" text-negative q-my-auto text-subtitle2" style="width: 40%;"> Pending</span>
-                          <!-- <q-btn label="Comments" class="bg-negative text-white text-subtitle2" style="width: 40%;"/> -->
                         </div>
                       </q-item-section>
                     </q-item>
@@ -51,18 +50,17 @@
               <q-scroll-area style="height: 59vh;">
                 <div class="text-subtitle2 text-secondary">
                   <!-- Outgoings -->
-                  <q-list separator v-for="n in 7" :key="n" >
-                    <q-item clickable class="row text-center q-mb-sm bg-white" @click="this.$router.push('/message')" style="border-radius: 4px">
+                  <q-list separator v-for="mail in solvedMails" :key="mail._id" >
+                    <q-item clickable class="row text-center q-mb-sm bg-white" :to="`/admin/message/${mail._id}`" style="border-radius: 4px">
                       <div class="row col-10" >
-                        <q-item-section  >Request to DDA</q-item-section>
-                        <q-item-section>Network is not working and the windows </q-item-section>
-                        <q-item-section>Oct /13/2021 : 10:30am.</q-item-section>
+                        <q-item-section  >Mail to {{mail.to.username}}</q-item-section>
+                        <q-item-section>{{mail.message.title}} </q-item-section>
+                        <q-item-section>{{mail.updatedAt.split("T")[0]}}, {{mail.updatedAt.split("T")[1].split(".")[0]}}</q-item-section>
                       </div>
 
                       <q-item-section>
                         <div class="row justify-evenly" style="width">
                           <span class=" text-negative q-my-auto text-subtitle2" style="width: 40%;"> Solved </span>
-                          <!-- <q-btn label="Comments" class="bg-negative text-white text-subtitle2" style="width: 40%;"/> -->
                         </div>
                       </q-item-section>
                     </q-item>
@@ -72,6 +70,74 @@
             </q-tab-panel>
           </q-tab-panels>
         </q-card>
+
+    <!-- Add Mail Button  -->
+    <q-page-sticky position="bottom-right" :offset="[18, 18]">
+      <q-btn
+        round
+        size="1.3rem"
+        class="q-mr-md q-mb-lg cursor-pointer"
+        icon="add"
+        color="positive"
+        @click="bar = true"
+      />
+
+    </q-page-sticky>
+
+    <!-- Draft Dialog -->
+    <q-dialog v-model="bar" persistent>
+      <q-card style="width: 1200px; max-width: 90vw;margin-left: 20%">
+        <q-bar class="bg-secondary text-white" style="height:60px">
+          <p class="text-h6 q-my-auto">New Draft</p>
+
+          <q-space />
+
+          <q-btn dense flat icon="close" v-close-popup>
+            <q-tooltip>Close</q-tooltip>
+          </q-btn>
+        </q-bar>
+
+        <q-card-section>
+            <div class="column">
+              <div class="bg-white col q-px-md column justify-between q-pb-md" style="min-height:300px;border-radius:0 0 4px 4px">
+                <q-select  v-model="to" :options="users" use-input input-debounce="0" label="Select User"  >
+                  <template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        No results
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                </q-select>
+                <q-input v-model="title" label="Title:" />
+                <q-input v-model="comments" type="textarea" placeholder="Message" />
+                <q-file
+                  v-model="selectedFile"
+                  label="Attach File"
+                  square
+                  flat
+                  use-chips
+                  clearable
+                  accept=".csv,.txt,.xls,.xlsx,.doc,.docx,.pdf,.dbf,.zip,.rar,.7z,.jpg,.png,.gif"
+                  max-files="1"
+                  max-file-size="5120000"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="attach_file" />
+                  </template>
+                </q-file>
+                <div class="row justify-between q-mt-xl " style="height:40px">
+                  <div style="width:20%" class="row">
+                    <q-btn @click="submitMail" label="send" style="width: 50%;" color="negative"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+
       </div>
 
   </div>
@@ -93,55 +159,93 @@ export default {
   setup () {
     const options = ref(stringOptions)
     return {
-      mails: [],
+      pendingMails: [],
+      solvedMails: [],
       options,
       label: ref('mails'),
       bar: ref(false),
       model1: ref(null),
-      selectedFile: ref(null),
       selected: 1,
-      onClick () {
-        console.log('Clicked on a fab action')
-      },
+      tab: false,
 
 
-      // Filter Function
-      filterFn (val, update) {
-        if (val === '') {
-          update(() => {
-            options.value = stringOptions
+      to: ref(""),
+      title: ref(""),
+      comments: ref(""),
+      selectedFile: ref(null),
+      users: []
 
-            // here you have access to "ref" which
-            // is the Vue reference of the QSelect
-          })
-          return
-        }
-
-        update(() => {
-          const needle = val.toLowerCase()
-          options.value = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
-        })
-      }
     }
   },
  methods: {
     selectFile(){
       this.$refs.selectImageFile.$el.click();
     },
-    fileSelected(el){
-      el=el.split('\\');
-      el=el[el.length-1];
-      this.selectedFile = el;
-    },
-    unSelectFile(){
-      this.selectedFile = null;
-    },
     getMails(){
+      this.$q.loading.show();
+      this.$store.dispatch('defencestore/fetchAdminMails')
+      .then(()=>{
+        this.$q.loading.hide();
+        let allMails =this.$store.getters['defencestore/getAdminMails'];
+        // console.log(allMails);
+        let pending = [];
+        let solved = [];
 
+        allMails.forEach(item => {
+          if(item.from.role === 'Admin'){
+            solved.push(item);
+          }else{
+            pending.push(item);
+          }
+        });
+
+        this.pendingMails = pending;
+        this.solvedMails = solved;
+      })
+      .catch(err => {
+        this.$q.loading.hide();
+      })
+    },
+    fetchUsersInDept(){
+      this.$store.dispatch('defencestore/getAllUsersAdmin')
+      .then(()=>{
+        let req = this.$store.getters['defencestore/getAllUsersAdmin'];
+        let usernames = [];
+        req.forEach(item => {
+          usernames.push(item.username)
+        })
+        this.users = usernames;
+        // console.log(this.users)
+      })
+    },
+    submitMail(){
+      this.$q.loading.show();
+      if(this.to !== "" && this.title !== "" && this.comments !== ""){
+        this.$store.dispatch('defencestore/sendAdminMail', {
+          to: this.to,
+          title: this.title,
+          text: this.comments,
+          files: this.selectedFile
+        })
+        .then(()=>{
+          this.$q.loading.hide();
+          window.location.reload();
+        })
+        .catch(()=>{
+          this.$q.loading.hide();
+        })
+      }else{
+        this.$q.loading.hide();
+        Notify.create({
+          message: 'You can\'t leave the "to", "title" and "Comments" fields empty.',
+          color: 'red'
+        })
+      }
     }
   },
   mounted(){
-    // this.getMails()
+    this.getMails();
+    this.fetchUsersInDept();
   }
 }
 </script>
