@@ -4,9 +4,6 @@
 <!-- Profile part  -->
     <div class=" column items-center">
 
-      <!-- <q-avatar class="bg-primary q-mx-auto" size="5rem">
-        <q-icon name="person" size="3.5rem" color="secondary"/>
-      </q-avatar> -->
        <!-- Profile Image  -->
       <div class=" row">
         <q-space/>
@@ -28,6 +25,7 @@
         <q-space/>
       </div>
 
+      <!-- Edit Profile Dialog  -->
       <q-dialog v-model="editFormShow" persistent>
         <q-card style=" width:30%; height:70vh;">
             <q-card-section class="row items-center q-pb-none">
@@ -44,7 +42,7 @@
                             <label for="">Edit Name</label>
                             <q-input v-model="name" outlined style="width:100%; margin: 2% 0 3%"  label="Edit Name:" />
 
-                            <label for="">Edit Name</label>
+                            <label for="">Edit Rank</label>
                             <q-input v-model="rank" outlined style="width:100%; margin: 2% 0 3%"  label="Edit Rank:" />
 
                             <div class="row q-my-md">
@@ -97,7 +95,7 @@
 <!-- Navigation Buttons/Links  -->
     <div class="flex flex-center q-my-xl">
        <q-list class="q-mb-lg">
-                <q-item clickable class="q-mb-md q-px-xl" active-class="bg-primary text-secondary" to="/task" style="border-radius: 25px" v-ripple >
+                <q-item clickable class="q-mb-md q-px-xl" active-class="bg-primary text-secondary" to="/task" style="border-radius: 15px" v-ripple >
                     <q-item-section avatar>
                         <q-icon name="home" size="1.5rem" />
                     </q-item-section>
@@ -111,7 +109,7 @@
                 v-ripple
                 :active="link === 'Products'"
                 @click="link = 'Products'"
-                style="border-radius: 25px"
+                style="border-radius: 15px"
                 to="/messages"
                 >
 
@@ -128,7 +126,7 @@
                 v-ripple
                 :active="link === 'Settings'"
                 @click="link = 'Settings'"
-                style="border-radius: 25px"
+                style="border-radius: 15px"
                 to="/archives"
                 >
 
@@ -145,7 +143,7 @@
                 v-ripple
                 :active="link === 'Support'"
                 @click="link = 'Support'"
-                style="border-radius: 25px"
+                style="border-radius: 15px"
                 to="/support"
                 >
 
@@ -161,7 +159,7 @@
                   active-class="bg-primary text-secondary"
                   v-ripple
                   @click="logout"
-                  style="border-radius: 25px"
+                  style="border-radius: 15px"
                 >
 
                   <q-item-section avatar>

@@ -33,7 +33,7 @@
                     </q-dialog>
                     <!-- <q-space/> -->
                     <!-- <q-space/> -->
-                    <q-btn flat round dense @click="print({printable: '#printNow', type: 'html', header: 'Hello!', ignoreElements:['print-button']})" icon="print" />
+                    <q-btn flat round dense @click="print()" icon="print" />
                     <div v-show="!(status==='Completed')" class="">
                       <q-btn-dropdown round flat color="secondary" label="" dropdown-icon="reply">
                           <q-scroll-area class="text-center justify-center" style="height: 40vh; width:50vh ">
@@ -95,14 +95,14 @@ import MetaData from 'components/MetaData.vue'
 import axios from 'axios';
 import { Notify }from 'quasar';
 import env from '../../env.js';
-import Print from "print-js";
+import Printjs from "print-js";
 // import mimeTypes from 'mime-types';
 
 export default {
   name: 'Message',
   components:{
     Watermark,
-    Print,
+    Printjs,
     MetaData
   },
   data () {
