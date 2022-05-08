@@ -75,6 +75,7 @@ const routes = [
       { path: '/request-message/:id', component: () => import('components/Message.vue') },
       { path: '/archive-message/:id', component: () => import('components/Message.vue') },
       { path: '/mail-message/:id', component: () => import('components/SingleMail.vue') },
+      { path: '/messages/id', component: () => import('pages/conversations.vue') },
 
       { path: '/admin', component: () => import('components/admin-pages/Login.vue') ,
       beforeEnter: (to, from, next) => {
