@@ -1,7 +1,7 @@
 
 import { Notify } from 'quasar';
 import axios from 'axios';
-import env from '../../../env.js';
+import env, { backend } from '../../../env.js';
 
 // const route = useRoute();
 // const baseurl = "https://edefense.herokuapp.com/api";
@@ -178,8 +178,9 @@ export function getDepartments (context, data) {
       }
     })
     .then(response => {
-      // console.log(response.data.data);
+      console.log(response.data.data);
       if(response.status === 201 || response.status === 200){
+        console.log('Hellooo')
           context.commit('getDepartments', {departments: response.data.data})
           resolve();
       }else{
@@ -1206,4 +1207,28 @@ export function sendAdminMail (context, data) {
     })
   })
 
+}
+
+
+export function getAllConversation({commit}){
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "GET",
+      url: backend + '/user/convo',
+      headers: {
+        'Authorization': 'Bearer '+localStorage.getItem('userToken')
+      }
+    })
+    .then((response)=>{
+      if(response.status === 200 || response.status === 201){
+        let data = response.data
+        console.log(data);
+        commit('setConversations', data)
+      }
+      resolve()
+    })
+    .catch((error) =>{
+      reject()
+    })
+  })
 }

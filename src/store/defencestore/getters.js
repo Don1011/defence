@@ -18,6 +18,10 @@ export function getMails (state) {
   return ({ inbox: state.inbox, sent: state.sent });
 }
 
+export function getAllConversations (state) {
+  return  state.conversations;
+}
+
 export function usersInDept (state) {
   return state.usersInDept;
 }
