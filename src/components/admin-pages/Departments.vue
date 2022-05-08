@@ -38,7 +38,7 @@
             <div class="text-subtitle2 text-secondary">
               <!-- Incomings -->
               <q-list separator v-for="department in departments" :key="department._id"  class="q-mb-sm">
-                <DeptItem :department="department" :deleteDept="() => deleteDept(department._id)"  />
+                <DeptItem :department="department"  />
               </q-list>
             </div>
           </q-scroll-area>
@@ -114,19 +114,6 @@ export default {
           color: "red"
         })
       }
-    },
-
-    deleteDept(id){
-      // console.log(id);
-      this.$q.loading.show();
-      this.$store.dispatch('defencestore/adminDeleteDept', {id})
-      .then(() => {
-        this.$q.loading.hide();
-        this.$router.go();
-      })
-      .catch(err=>{
-        this.$q.loading.hide();
-      })
     },
   },
   mounted(){
