@@ -18,6 +18,7 @@
                   <div class = "q-mx-xl">
                     <q-input label="Username:" v-model="username" />
                     <q-input label="Password:" v-model="password"/>
+                    <q-input label="Rank:" v-model="rank"/>
                     <q-select  v-model="role" :options="roles" use-input input-debounce="0" label="Role"  >
                       <template v-slot:no-option>
                           <q-item>
@@ -57,7 +58,7 @@
         <q-scroll-area style="height: 65vh;">
           <div class="text-subtitle2 text-secondary">
             <q-list separator v-for="user in users" :key="user._id" class="q-mb-sm">
-              <UserItem :user="user" />
+              <UserItem :user="user" :deleteUser="() => deleteUser(user._id)" :editUser="editUser" />
             </q-list>
           </div>
         </q-scroll-area>
@@ -71,9 +72,7 @@
 import { ref } from 'vue'
 import UserItem from './presentational/UserItem.vue';
 import Watermark from '../Watermark.vue';
-
-
-
+import { Notify } from 'quasar';
 
 export default {
   components: {
@@ -84,14 +83,12 @@ export default {
     return {
       username: ref(''),
       password: ref(''),
+      rank: ref(''),
       role: ref(''),
       roles: ['Registry', 'Cheif Clerk', 'PA', 'Director', 'Cheif', 'Admin'],
       department: ref(''),
       departments: [],
       users: [],
-
-
-
     }
   },
  methods: {
@@ -102,7 +99,6 @@ export default {
       this.roles = []
       this.departments = []
     },
-
     fetchDepartments(){
       this.$store.dispatch('defencestore/getAllDepartmentsAdmin')
       .then(() => {
@@ -110,7 +106,6 @@ export default {
         // console.log(departments);
       });
     },
-
     fetchUsers(){
         // console.log('req');
       this.$q.loading.show();
@@ -122,30 +117,51 @@ export default {
         this.$q.loading.hide();
       })
     },
-     onSubmit () {
-        console.log(this.title);
-        console.log(this.text);
-        if(this.username !== "" && this.password !== "" && this.role !== "" && this.department !== "" ){
-          this.$q.loading.show();
-          this.$store.dispatch('defencestore/createUser', {
-            username: this.username,
-            password: this.password,
-            role: this.role,
-            department: this.department
-          })
-          .then(()=> {
-            this.$q.loading.hide();
-            this.onReset();
-            this.fetchUsers();
-          })
-        }else{
-          // this.$q.loading.hide();
+    onSubmit () {
+      // console.log(this.title);
+      // console.log(this.text);
+      if(this.username !== "" && this.password !== "" && this.role !== "" && this.department !== "" && this.rank !== "" ){
+        this.$q.loading.show();
+        this.$store.dispatch('defencestore/createUser', {
+          username: this.username,
+          password: this.password,
+          role: this.role,
+          rank: this.rank,
+          department: this.department
+        })
+        .then(()=> {
+          // this.$router.go();
+        })
+        .catch(()=>{
           Notify.create({
-            message: "You must fill the form completely before submitting",
+            message: "Error creating user.",
             color: "red"
           })
-        }
+          this.$q.loading.hide();
+        })
+      }else{
+        // this.$q.loading.hide();
+        Notify.create({
+          message: "You must fill the form completely before submitting",
+          color: "red"
+        })
       }
+    },
+    deleteUser (id) {
+      // console.log(id);
+      this.$q.loading.show();
+      this.$store.dispatch('defencestore/adminDeleteUser', {id})
+      .then(() => {
+        this.$q.loading.hide();
+        this.$router.go();
+      })
+      .catch(err=>{
+        this.$q.loading.hide();
+      })
+    },
+    editUser (payload) {
+      console.log(payload);
+    }
 
   },
   mounted(){

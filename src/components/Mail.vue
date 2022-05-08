@@ -70,7 +70,7 @@
 
             <q-card-section>
                 <div class="column">
-                  <div class="bg-white col q-px-md column justify-between q-pb-md" style="height:300px;border-radius:0 0 4px 4px">
+                  <div class="bg-white col q-px-md column justify-between q-pb-md" style="min-height:300px;border-radius:0 0 4px 4px">
                     <q-select  v-model="to" :options="users" use-input input-debounce="0" label="Select User"  >
                       <template v-slot:no-option>
                         <q-item>

@@ -18,8 +18,10 @@ export function adminLogin (context, data) {
             }
         })
         .then(response => {
+            // console.log(response);
             if(response.status === 201 || response.status === 200){
-                // console.log(response.data.data);
+              if (response.data.data.doc.role === "Admin") {
+                console.log(response.data.data);
                 let token = response.data.data.token;
                 localStorage.setItem('adminToken', token);
                 context.commit('saveAdminToken', {token})
@@ -29,6 +31,14 @@ export function adminLogin (context, data) {
                     color: 'blue'
                 })
                 resolve();
+              }else{
+                Notify.create({
+                  message: "Unauthorized.",
+                  caption: "User is not an Admin.",
+                  color: 'red'
+                })
+                reject();
+              }
             }else{
                 Notify.create({
                     message: "Login Failure.",
@@ -39,14 +49,16 @@ export function adminLogin (context, data) {
             }
         })
         .catch(err => {
-            Notify.create({
-                message: 'Login Failure.',
-                caption: "Authentication error, check credentials.",
-                color: 'red'
-            })
+          if(err.response?.status === 401){
+            context.dispatch("logout")
+          }
+          Notify.create({
+              message: 'Login Failure.',
+              caption: "Authentication error, check credentials.",
+              color: 'red'
+          })
         })
     })
-
 }
 
 export function userLogin (context, data) {
@@ -113,10 +125,10 @@ export function userLogin (context, data) {
 
 export function sendRequest (context, data) {
   // const { to, text, reference, title } = data;
-  console.log(data);
+  // console.log(data);
   const { formData } = data;
   // const { to, text, files, reference, title } = data;
-  // console.log(files);
+  console.log(files);
   return new Promise((resolve, reject) => {
     axios({
       method: "POST",
@@ -129,7 +141,7 @@ export function sendRequest (context, data) {
       }
     })
     .then(response => {
-      console.log(response);
+      // console.log(response);
       if(response.status === 201){
         Notify.create({
             message: "Request successfully sent.",
@@ -166,7 +178,7 @@ export function getDepartments (context, data) {
       }
     })
     .then(response => {
-      console.log(response.data.data);
+      // console.log(response.data.data);
       if(response.status === 201 || response.status === 200){
           context.commit('getDepartments', {departments: response.data.data})
           resolve();
@@ -188,7 +200,6 @@ export function getDepartments (context, data) {
 
 }
 
-
 export function getAllUserDepartments (context, data) {
 
   return new Promise((resolve, reject) => {
@@ -200,7 +211,7 @@ export function getAllUserDepartments (context, data) {
       }
     })
     .then(response => {
-      console.log(response.data.doc);
+      // console.log(response.data.doc);
       if(response.status === 201 || response.status === 200){
           context.commit('getAllUserDepartments', {departments: response.data.data})
           resolve();
@@ -223,6 +234,7 @@ export function getAllUserDepartments (context, data) {
 }
 
 export function getRequests (context, data) {
+  console.log(context);
     return new Promise((resolve, reject) => {
       axios({
         method: "GET",
@@ -232,7 +244,7 @@ export function getRequests (context, data) {
         }
       })
       .then(response => {
-        console.log(response);
+        // console.log(response);
         if(response.status === 201 || response.status === 200){
             let outgoing = [];
             let incoming = [];
@@ -243,15 +255,21 @@ export function getRequests (context, data) {
             requests.forEach(item => {
               if(item.metaData.status !== "Completed"){
                 if(item.from._id === userDeptId || item.to._id === userDeptId){
+                  console.log("If statement crossed");
                   let seenByIds = [];
                   item.metaData.seen.forEach(element => {
                     seenByIds.push(element.by);
                   });
+                  console.log(seenByIds);
                   if(username.split('@')[0] === "reg" || seenByIds.includes(userId)){
                     if(item.from._id === userDeptId){
-                      outgoing.push(item);
+                      // if(seenByIds[seenByIds.length-1] === userId){
+                        outgoing.push(item);
+                      // }else{
+                      //   outgoing.push(item);
+                      // }
                     }else{
-                        incoming.push(item);
+                     incoming.push(item);
                     }
                   }
                 }
@@ -268,10 +286,16 @@ export function getRequests (context, data) {
         }
       })
       .catch(err => {
-          Notify.create({
-              message: 'Error fetching requests.',
-              color: 'red'
-          })
+        if(err.response?.status === 401){
+          context.dispatch("logout")
+        }
+        // console.log(err);
+
+        Notify.create({
+            message: 'Error fetching requests.',
+            color: 'red'
+        })
+        reject();
       })
     })
 
@@ -279,7 +303,7 @@ export function getRequests (context, data) {
 
 export function sendMail (context, data) {
     // const { to, text, reference, title } = data;
-    console.log(data);
+    // console.log(data);
     const { to, text, files, title } = data;
 
     return new Promise((resolve, reject) => {
@@ -308,6 +332,9 @@ export function sendMail (context, data) {
         }
       })
       .catch(err => {
+        if(err.response?.status === 401){
+    context.dispatch("logout")
+        }
           Notify.create({
               message: 'Error sending mail. Please retry.',
               color: 'red'
@@ -344,6 +371,9 @@ export function sendSupportMessage (context, data) {
       }
     })
     .catch(err => {
+      if(err.response?.status === 401){
+    context.dispatch("logout")
+      }
         Notify.create({
             message: 'Error sending message. Please retry.',
             color: 'red'
@@ -380,6 +410,9 @@ export function loginSupport (context, data) {
       }
     })
     .catch(err => {
+      if(err.response?.status === 401){
+    context.dispatch("logout")
+      }
         Notify.create({
             message: 'Error sending message. Please retry.',
             color: 'red'
@@ -413,6 +446,9 @@ export function getUsersInDepartment (context, data) {
       }
     })
     .catch(err => {
+      if(err.response?.status === 401){
+    context.dispatch("logout")
+      }
         Notify.create({
             message: 'Error fetching users in your department.',
             color: 'red'
@@ -436,7 +472,7 @@ export function getMails (context, data) {
           let sent = [];
           let inbox = [];
           let username = localStorage.getItem('username');
-          console.log(username);
+          // console.log(username);
           let requests = response.data.data;
           requests.forEach(item => {
               if(item.from.username === username){
@@ -456,6 +492,9 @@ export function getMails (context, data) {
         }
       })
       .catch(err => {
+        if(err.response?.status === 401){
+    context.dispatch("logout")
+        }
           Notify.create({
               message: 'Error fetching mails.',
               color: 'red'
@@ -475,7 +514,7 @@ export function getLogs (context, data) {
         }
       })
       .then(response => {
-        console.log(response.data.data);
+        // console.log(response.data.data);
         if(response.status === 201 || response.status === 200){
             context.commit('setLogs', response.data.data)
             resolve();
@@ -488,6 +527,9 @@ export function getLogs (context, data) {
         }
       })
       .catch(err => {
+        if(err.response?.status === 401){
+    context.dispatch("logout")
+        }
           Notify.create({
               message: 'Error fetching logs.',
               color: 'red'
@@ -499,7 +541,7 @@ export function getLogs (context, data) {
 
 export function forwardRequest (context, data) {
   // const { to, text, reference, title } = data;
-  console.log(data);
+  // console.log(data);
   const { userId, requestId } = data;
 
   return new Promise((resolve, reject) => {
@@ -534,6 +576,9 @@ export function forwardRequest (context, data) {
       }
     })
     .catch(err => {
+      if(err.response?.status === 401){
+    context.dispatch("logout")
+      }
         Notify.create({
           message: "Error forwarding request. Please retry.",
           color: 'red'
@@ -546,7 +591,7 @@ export function forwardRequest (context, data) {
 
 export function setCompleted (context, data) {
   // const { to, text, reference, title } = data;
-  console.log(data);
+  // console.log(data);
   const { requestId, status } = data;
 
   return new Promise((resolve, reject) => {
@@ -573,6 +618,9 @@ export function setCompleted (context, data) {
       }
     })
     .catch(err => {
+      if(err.response?.status === 401){
+    context.dispatch("logout")
+      }
         Notify.create({
           message: "Error changing status to completed.",
           color: 'red'
@@ -584,6 +632,7 @@ export function setCompleted (context, data) {
 }
 
 export function createUser (context, data) {
+  console.log(data);
   return new Promise((resolve, reject) => {
     axios({
       method: "POST",
@@ -592,6 +641,7 @@ export function createUser (context, data) {
         username: data.username,
         password: data.password,
         role: data.role,
+        rank: data.rank,
         department: data.department
       },
       headers: {
@@ -614,6 +664,9 @@ export function createUser (context, data) {
       }
     })
     .catch(err => {
+      if(err.response?.status === 401){
+    context.dispatch("logout")
+      }
         Notify.create({
             message: 'Error creating User. Please retry.',
             color: 'red'
@@ -625,7 +678,7 @@ export function createUser (context, data) {
 }
 
 export function saveComment (context, data) {
-  console.log(data)
+  // console.log(data)
   let { text, request }  = data;
   return new Promise((resolve, reject) => {
     axios({
@@ -639,7 +692,7 @@ export function saveComment (context, data) {
       }
     })
     .then(response => {
-      console.log(response)
+      // console.log(response)
       if(response.status === 201 || response.status === 200){
         Notify.create({
             message: "Comment Saved Successfully.",
@@ -655,6 +708,9 @@ export function saveComment (context, data) {
       }
     })
     .catch(err => {
+      if(err.response?.status === 401){
+    context.dispatch("logout")
+      }
         Notify.create({
             message: 'Error Saving Comment. Please retry.',
             color: 'red'
@@ -693,6 +749,9 @@ export function createDepartment (context, data) {
       }
     })
     .catch(err => {
+      if(err.response?.status === 401){
+    context.dispatch("logout")
+      }
         Notify.create({
             message: 'Error Saving Comment. Please retry.',
             color: 'red'
@@ -713,11 +772,12 @@ export function getAllDepartmentsAdmin (context, data) {
       }
     })
     .then(response => {
-      console.log(response);
+      // console.log(response);
       if(response.status === 201 || response.status === 200){
-          context.commit('getAllDepartmentsAdmin', {departments: response.data.data})
-          context.commit('getAllRawDepartments', {departments: response.data.data})
-          resolve();
+        let departments=response.data.data.reverse();
+        context.commit('getAllDepartmentsAdmin', {departments})
+        context.commit('getAllRawDepartments', {departments: response.data.data})
+        resolve();
       }else{
           Notify.create({
               message: "Error fetching departments.",
@@ -727,6 +787,9 @@ export function getAllDepartmentsAdmin (context, data) {
       }
     })
     .catch(err => {
+      if(err.response?.status === 401){
+    context.dispatch("logout")
+      }
         Notify.create({
             message: 'Error fetching departments.',
             color: 'red'
@@ -748,7 +811,7 @@ export function getAllUsersAdmin (context, data) {
       }
     })
     .then(response => {
-      console.log(response);
+      // console.log(response);
       if(response.status === 201 || response.status === 200){
         response = response.data.data;
         let usefulresponse = [];
@@ -757,7 +820,8 @@ export function getAllUsersAdmin (context, data) {
             usefulresponse.push(item)
           }
         })
-        console.log(usefulresponse);
+        // console.log(usefulresponse);
+        usefulresponse=usefulresponse.reverse();
         context.commit('getAllUsersAdmin', {users: usefulresponse})
         resolve();
       }else{
@@ -769,6 +833,9 @@ export function getAllUsersAdmin (context, data) {
       }
     })
     .catch(err => {
+      if(err.response?.status === 401){
+    context.dispatch("logout")
+      }
         Notify.create({
             message: 'Error fetching Users.',
             color: 'red'
@@ -780,7 +847,7 @@ export function getAllUsersAdmin (context, data) {
 
 
 export function getProfile (context, data) {
-  console.log(baseurl);
+  // console.log(baseurl);
   return new Promise((resolve, reject) => {
     axios({
       method: "GET",
@@ -790,7 +857,7 @@ export function getProfile (context, data) {
       }
     })
     .then(response => {
-      console.log(response);
+      // console.log(response);
       if(response.status === 201 || response.status === 200){
           context.commit('getProfile', response.data.data)
           resolve();
@@ -803,10 +870,340 @@ export function getProfile (context, data) {
       }
     })
     .catch(err => {
+      if(err.response?.status === 401){
+        context.dispatch("logout")
+      }
         Notify.create({
             message: 'Error fetching logs.',
             color: 'red'
         })
     })
   })
+}
+
+export function logout (context) {
+  localStorage.clear();
+}
+
+
+export function editProfile (context, data) {
+  // console.log(data);
+  const { name, rank } = data;
+
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "PATCH",
+      url: baseurl + '/user/profile/update',
+      data: { name, rank },
+      headers: {
+        'Authorization': 'Bearer '+localStorage.getItem('userToken')
+      }
+    })
+    .then(response => {
+      if(response.status === 201){
+        Notify.create({
+            message: "Profile updated successfully.",
+            color: 'blue'
+        })
+        resolve();
+      }else if(response.status === 401){
+        context.dispatch("logout");
+      }else{
+          Notify.create({
+            message: "Error editing profile.",
+            color: 'red'
+          })
+          reject();
+      }
+    })
+    .catch(err => {
+      if(err.response?.status === 401){
+        context.dispatch("logout")
+      }
+        Notify.create({
+          message: 'Error editing profile.',
+          color: 'red'
+        })
+        reject();
+    })
+  })
+
+}
+
+export function changePassword (context, data) {
+  // console.log(data);
+  const { oldPassword, newPassword, confirmPassword } = data;
+  // console.log(oldPassword);
+  // console.log(newPassword);
+  // console.log(confirmPassword);
+
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "PATCH",
+      url: baseurl + '/user/profile/password',
+      data: { oldPassword, newPassword, confirmPassword },
+      headers: {
+        'Authorization': 'Bearer '+localStorage.getItem('userToken')
+      }
+    })
+    .then(response => {
+      if(response.status === 201){
+        Notify.create({
+            message: "New password saved.",
+            color: 'blue'
+        })
+        resolve();
+      }else if(response.status === 401){
+        context.dispatch("logout");
+      }else{
+          Notify.create({ message: "Error changing password.", color: 'red' })
+          reject();
+      }
+    })
+    .catch(err => {
+      if(err.response?.status === 401){
+        context.dispatch("logout")
+      }
+      Notify.create({
+        message: 'Error changing password.',
+        color: 'red'
+      })
+      reject();
+    })
+  })
+
+}
+
+export function updateAvatar(context, data) {
+  let { formData } = data;
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "POST",
+      url: baseurl + '/user/profile/avatar',
+      data:formData,
+      headers: {
+        'Authorization': 'Bearer '+localStorage.getItem('userToken')
+      }
+    })
+    .then(response => {
+      if(response.status === 201){
+        Notify.create({
+          message: "Avatar successfully changed.",
+          color: 'blue'
+        })
+        resolve();
+      }else{
+        Notify.create({
+          message: "Error updating avatar.",
+          color: 'red'
+        })
+        reject();
+      }
+    })
+    .catch(err => {
+      if(err.response?.status === 401){
+        context.dispatch("logout")
+      }
+      Notify.create({
+        message: "Error updating avatar.",
+        color: 'red'
+      })
+      reject();
+    })
+  })
+}
+
+export function fetchAdminMails(context, data){
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "GET",
+      url: baseurl+'/admin/mail',
+      headers: {
+        'Authorization': 'Bearer '+localStorage.getItem('adminToken')
+      }
+    })
+    .then(response => {
+      // console.log(response);
+      if(response.status === 201){
+        context.commit('setAdminMails', {mails: response.data.data})
+        resolve();
+      }else if(response.status === 401){
+        context.dispatch('logout');
+      }else{
+        Notify.create({
+          message: "Error fetching admin's mails.",
+          color: 'red'
+        })
+        reject();
+      }
+    })
+    .catch(err => {
+      if(err.response?.status === 401){
+        context.dispatch("logout")
+      }
+      Notify.create({
+        message: "Error fetching admin's mails.",
+        color: 'red'
+      })
+      reject();
+    })
+  })
+}
+
+export function fetchAdminSingleMail(context, data) {
+  let {id} = data;
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "GET",
+      url: baseurl+'/admin/mail/'+id,
+      headers: {
+        'Authorization': 'Bearer '+localStorage.getItem('adminToken')
+      }
+    })
+    .then(response => {
+      console.log(response);
+      if(response.status === 201){
+        context.commit('setAdminSingleMail', {mail: response.data.data})
+        resolve();
+      }else if(response.status === 401){
+        context.dispatch('logout');
+      }else{
+        Notify.create({
+          message: "Error fetching mail.",
+          color: 'red'
+        })
+        reject();
+      }
+    })
+    .catch(err => {
+      if(err.response?.status === 401){
+        context.dispatch("logout")
+      }
+      Notify.create({
+        message: "Error fetching mail.",
+        color: 'red'
+      })
+      reject();
+    })
+  })
+}
+
+export function adminDeleteUser (context, data) {
+  let {id} = data;
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "DELETE",
+      url: baseurl+'/admin/users/'+id+'/delete',
+      headers: {
+        'Authorization': 'Bearer '+localStorage.getItem('adminToken')
+      }
+    })
+    .then(response => {
+      // console.log(response);
+      if(response.status === 201){
+        resolve();
+      }else if(response.status === 401){
+        context.dispatch('logout');
+        reject();
+      }else{
+        Notify.create({
+          message: "Error deleting user.",
+          color: 'red'
+        })
+        reject();
+      }
+    })
+    .catch(err => {
+      if(err.response?.status === 401){
+        context.dispatch("logout")
+      }
+      Notify.create({
+        message: "Error deleting user.",
+        color: 'red'
+      })
+      reject();
+    })
+  })
+}
+
+export function adminDeleteDept (context, data) {
+  let {id} = data;
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "DELETE",
+      url: baseurl+'/admin/dept/'+id+'/delete',
+      headers: {
+        'Authorization': 'Bearer '+localStorage.getItem('adminToken')
+      }
+    })
+    .then(response => {
+      // console.log(response);
+      if(response.status === 201){
+        resolve();
+      }else if(response.status === 401){
+        context.dispatch('logout');
+        reject();
+      }else{
+        Notify.create({
+          message: "Error deleting depatment.",
+          color: 'red'
+        })
+        reject();
+      }
+    })
+    .catch(err => {
+      if(err.response?.status === 401){
+        context.dispatch("logout")
+      }
+      Notify.create({
+        message: "Error deleting department.",
+        color: 'red'
+      })
+      reject();
+    })
+  })
+}
+
+export function sendAdminMail (context, data) {
+  // const { to, text, reference, title } = data;
+  // console.log(data);
+  const { to, text, file, title } = data;
+
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "POST",
+      url: baseurl + '/admin/mail',
+      data: { to, text, file, title },
+      headers: {
+        'Authorization': 'Bearer '+localStorage.getItem('adminToken')
+      }
+    })
+    .then(response => {
+      // console.log(response);
+      if(response.status === 201){
+        Notify.create({
+            message: "Mail successfully sent.",
+            color: 'blue'
+        })
+        resolve();
+      }else{
+          Notify.create({
+              message: "Error sending mail. Please retry.",
+              color: 'red'
+          })
+          reject();
+      }
+    })
+    .catch(err => {
+      if(err.response?.status === 401){
+        context.dispatch("logout")
+      }
+      Notify.create({
+          message: 'Error sending mail. Please retry.',
+          color: 'red'
+      })
+      reject();
+    })
+  })
+
 }

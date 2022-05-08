@@ -12,7 +12,7 @@
         <Watermark />
   <q-scroll-area style="height: 70vh;">
     <div class="text-subtitle2 text-secondary" >
-        <EmptyList :itemList="logs" message="No logs to show" />
+        <EmptyList :itemList="logs" message="Your archive is empty" />
         <q-list separator v-for="log in logs" :key="log._id" >
           <Log :log="log" />
       </q-list>

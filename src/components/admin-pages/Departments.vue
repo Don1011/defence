@@ -38,7 +38,7 @@
             <div class="text-subtitle2 text-secondary">
               <!-- Incomings -->
               <q-list separator v-for="department in departments" :key="department._id"  class="q-mb-sm">
-                <DeptItem :department="department" />
+                <DeptItem :department="department" :deleteDept="() => deleteDept(department._id)"  />
               </q-list>
             </div>
           </q-scroll-area>
@@ -51,8 +51,7 @@
 import { ref } from 'vue'
 import DeptItem from './presentational/DeptItem.vue';
 import Watermark from '../Watermark.vue';
-
-
+import { Notify } from 'quasar';
 
 export default {
   components: {
@@ -101,6 +100,13 @@ export default {
           this.$q.loading.hide();
           this.onReset()
         })
+        .catch(()=>{
+          Notify.create({
+            message: "Error creating department.",
+            color: "red"
+          })
+          this.$q.loading.hide();
+        })
       }else{
         // this.$q.loading.hide();
         Notify.create({
@@ -108,6 +114,19 @@ export default {
           color: "red"
         })
       }
+    },
+
+    deleteDept(id){
+      // console.log(id);
+      this.$q.loading.show();
+      this.$store.dispatch('defencestore/adminDeleteDept', {id})
+      .then(() => {
+        this.$q.loading.hide();
+        this.$router.go();
+      })
+      .catch(err=>{
+        this.$q.loading.hide();
+      })
     },
   },
   mounted(){
