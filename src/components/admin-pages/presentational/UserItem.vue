@@ -4,7 +4,7 @@
         <div class="row col-9">
             <q-item-section  >{{user.username}} </q-item-section>
             <q-item-section>{{user.role}} </q-item-section>
-            <q-item-section>{{user.department.abbr}}</q-item-section>
+            <q-item-section>{{user.department?.abbr ?? "Department Deleted"}}</q-item-section>
         </div>
         <q-item-section>
             <div class="row justify-evenly">
@@ -91,8 +91,6 @@
 </template>
 
 <script>
-import { ref } from 'vue'
-
 export default {
     data () {
       return {
@@ -105,7 +103,7 @@ export default {
           changePasswordLoader: false
         }
     },
-    props: ['user', 'deleteUser', 'editUser'],
+    props: ['user'],
     methods: {
       deleteUser (id) {
         this.$q.loading.show();

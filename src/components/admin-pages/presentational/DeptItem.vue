@@ -34,8 +34,6 @@ import { ref } from 'vue'
 
 export default {
     data () {
-        const editDialog = ref(false)
-        const deleteDialog = ref(false)
         return {
             deleteDialog: false,
             deptName: "",
