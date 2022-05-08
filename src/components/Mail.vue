@@ -1,66 +1,46 @@
 <template>
     <div class="q-pa-md bg-primary" style="height:80vh">
-
-      <!-- <Watermark /> -->
-
-      <div class="q-gutter-y-md" style="width: 100%">
-        <q-card flat class="" >
-          <q-tabs
-            v-model="label"
-            class=" text-secondary bg-primary q-pa-none text-white "
-            align="justify"
-            indicator-color="positive"
-            v-ripple="false"
-            style=""
-          >
-            <div class="col-6">
-              <q-tab name="inbox"  @click="selected = 1"  :ripple="false"  class="q-mx-auto q-px-none q-py-md" style="width:100%; " > <p  :class="{highlight:selected == 1}" style="border-radius: 15px" class="hello q-px-xl q-py-sm q-my-auto " >Inbox</p> </q-tab>
-            </div>
-
-            <div class="col-6">
-              <q-tab name="outbox" @click="selected = 2"  :ripple="false" class="q-mx-auto q-px-none q-py-md " style="width:100%; " > <p  :class="{highlight:selected == 2}" style="border-radius: 15px" class="  q-px-xl q-py-sm q-my-auto " >Sent</p> </q-tab>
-            </div>
-          </q-tabs>
-
-          <q-tab-panels v-model="label" animated class="bg-primary text-white q-pt-lg">
-            <q-tab-panel name="inbox">
-                    <!-- Water Marked Image  -->
-                      <Watermark />
-               <q-scroll-area style="height: 59vh;">
+          <div class="bg-primary text-white q-pt-lg">
+               <q-scroll-area style="height: 72vh;">
                  <div class="text-subtitle2 text-secondary">
-                <!-- Incomings -->
-                <EmptyList :itemList="inbox" message="No message to display" />
-                 <q-list separator v-for="item in inbox" :key="item._id" >
-                  <q-item clickable class="row text-center q-mb-sm bg-white" :to="'/mail-message/'+item._id" style="border-radius: 4px">
-                      <q-item-section  >Message from {{item.from.username}}</q-item-section>
-                      <q-item-section>{{item.title}}</q-item-section>
-                      <q-item-section>{{item.createdAt.split("T")[0]}}, {{item.createdAt.split("T")[1].split(".")[0]}}</q-item-section>
-                  </q-item>
-                </q-list>
-              </div>
-              </q-scroll-area>
-            </q-tab-panel>
-
-            <q-tab-panel name="outbox">
-                 <!-- Water Marked Image  -->
-                 <Watermark />
-              <q-scroll-area style="height: 59vh">
-                <div class="text-subtitle2 text-secondary">
-                  <!-- Outgoings -->
-                  <EmptyList :itemList="sent" message="No sent message to display" />
-                  <q-list separator v-for="item in sent" :key="item._id" >
-                    <q-item clickable class="row text-center q-mb-sm bg-white" :to="'/mail-message/'+item._id" style="border-radius: 4px">
-                        <q-item-section  >Message to {{item.to.username}}</q-item-section>
-                        <q-item-section>{{item.title}}</q-item-section>
-                        <q-item-section>{{item.createdAt.split("T")[0]}}, {{item.createdAt.split("T")[1].split(".")[0]}}</q-item-section>
+                 <!-- Incomings -->
+                  <EmptyList :itemList="inbox" message="No message to display" />
+                  <q-item
+                      class="message-item bg-white row q-pa-sm q-ma-sm light-border shadow-1"
+                      v-ripple
+                      clickable
+                      to="/messages/id"
+                      v-for="item in inbox"
+                      :key="item._id"
+                    >
+                      <div class="column justify-center">
+                        <q-avatar>
+                          <img src="https://cdn.quasar.dev/img/avatar.png" />
+                        </q-avatar>
+                      </div>
+                      <div class="column justify-center q-mx-md">
+                        <div class="name">{{item.from.username}}</div>
+                        <div class="last-message text-black text-sm">
+                         {{item.title}}
+                        </div>
+                      </div>
+                      <q-space />
+                      <div class="column justify-center q-mr-lg">
+                        <div class="text-accent text-sm">{{item.createdAt.split("T")[1].split(".")[0]}}</div>
+                      </div>
                     </q-item>
-                  </q-list>
+
+
+                 <!-- <div  v-for="item in inbox" :key="item._id" >
+                  <q-item clickable class="row text-center q-mb-sm bg-white" :to="'/mail-message/'+item._id" style="border-radius: 4px">
+                      <div class="col-4">Message from {{item.from.username}}</div>
+                      <div class="col-4 text-left">{{item.title}}</div>
+                      <div class="col-4">{{item.createdAt.split("T")[0]}}, {{item.createdAt.split("T")[1].split(".")[0]}}</div>
+                  </q-item>
+                 </div> -->
                 </div>
               </q-scroll-area>
-            </q-tab-panel>
-          </q-tab-panels>
-        </q-card>
-      </div>
+          </div>
 
 <!-- Add Mail Button  -->
       <q-page-sticky position="bottom-right" :offset="[18, 18]">
@@ -234,7 +214,8 @@ p{
 
   background-color: white !important;
   color: #FE0D0D;
-
-
+}
+.message-item{
+  border-radius: 4px
 }
 </style>
