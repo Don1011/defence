@@ -186,10 +186,9 @@ export default {
      })
    },
    getAllDepartments(){
-    this.$store.dispatch('defencestore/getDepartments')
+    this.$store.dispatch('defencestore/allDepartmentsWithUsers')
     .then((response) =>{
-      this.departments = this.$store.getters['defencestore/getDepartments'];
-      console.log(this.departments);
+      console.log(response);
     })
     .catch((error) =>{
       console.log(error);
@@ -199,7 +198,7 @@ export default {
     this.$store.dispatch('defencestore/getUsersInDepartment')
     .then((response) =>{
       this.usersInDepartment = this.$store.getters['defencestore/usersInDept'];
-      console.log(this.usersInDepartment);
+      // console.log(this.usersInDepartment);
     })
     .catch((error) =>{
       console.log(error);

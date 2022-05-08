@@ -1331,3 +1331,26 @@ export function getAllConversation({commit}){
     })
   })
 }
+
+
+export function allDepartmentsWithUsers ({commit}){
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "GET",
+      url: backend + '/user/all',
+      headers: {
+        'Authorization': 'Bearer '+localStorage.getItem('userToken')
+      }
+    })
+    .then((response)=>{
+      if(response.status === 200 || response.status === 201){
+        let data = response.data
+        console.log(data);
+      }
+      resolve()
+    })
+    .catch((error) =>{
+      reject()
+    })
+  })
+}
