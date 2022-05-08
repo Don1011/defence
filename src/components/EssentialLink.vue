@@ -23,7 +23,7 @@
         </q-img>
         <q-space/>
       </div>
-      
+
       <!-- Edit form dialog -->
       <q-dialog v-model="editFormShow">
         <q-card style=" width:30%; height:70vh;">
@@ -221,13 +221,13 @@ export default defineComponent({
       this.$store.dispatch('defencestore/getProfile')
       .then(()=>{
         let req = this.$store.getters['defencestore/getProfile'];
-        console.log(req.loggedUser);
+        // console.log(req.loggedUser);
         req=req.loggedUser;
         this.username = req.username;
         this.rank = req.rank;
         this.name = req.name;
         this.avi = `${backend}/${req.avatar}`;
-        console.log(req.avatar);
+        // console.log(req.avatar);
         this.$q.loading.hide();
       })
       .catch(err => this.$q.loading.hide())

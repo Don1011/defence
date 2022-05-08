@@ -34,7 +34,7 @@
               </q-scroll-area>
             <!-- Add Mail Button  -->
             <q-page-sticky position="bottom-right" :offset="[18, 18]">
-              <q-fab color="positive" icon="add" direction="up" class="fab">
+              <q-fab color="positive" icon="message" direction="up" class="fab">
                 <q-fab-action
                   external-label
                   label-position="left"
@@ -106,21 +106,21 @@
             <q-dialog v-model="otherDepts">
               <q-card style="width: 50vw">
                 <q-card-section style="" class="" v-for="department in departments" :key="department._id">
-                  <q-expansion-item expand-separator :label="department">
+                  <q-expansion-item expand-separator :label="department.abbr">
                     <q-card>
-                      <q-item class="message-item row q-pa-sm">
+                      <q-item class="message-item row q-pa-sm" v-for="userss in department.users" :key="userss._id">
                         <div class="column justify-center">
                           <q-avatar>
                             <img src="https://cdn.quasar.dev/img/avatar.png" />
                           </q-avatar>
                         </div>
                         <div class="column justify-center q-mx-md">
-                          <div class="name">John Doe</div>
+                          <div class="name">{{ userss.username }}</div>
                         </div>
                         <q-space />
                         <div class="column justify-center">
                           <q-btn
-                            to="/messages/id"
+                            :to="`/messages/${userss.username}`"
                             flat
                             round
                             color="secondary"
@@ -148,6 +148,7 @@
 
 <script>
 import { ref } from 'vue'
+import axios from 'axios'
 // import Watermark from 'components/Watermark.vue'
 import EmptyList from 'components/EmptyList.vue'
 
@@ -172,6 +173,7 @@ export default {
       inbox: [],
       conversations: [],
       departments: [],
+      // usersOfDepts:
       usersInDepartment: []
     }
   },
@@ -186,9 +188,18 @@ export default {
      })
    },
    getAllDepartments(){
-    this.$store.dispatch('defencestore/allDepartmentsWithUsers')
-    .then((response) =>{
-      console.log(response);
+     axios({
+      method: "GET",
+      url: 'http://192.168.130.132:3000/api/user/all',
+      headers: {
+        'Authorization': 'Bearer '+localStorage.getItem('userToken')
+      }
+    })
+    .then((response)=>{
+      if(response.status === 200 || response.status === 201){
+        this.departments = response.data.data
+        console.log(this.departments);
+      }
     })
     .catch((error) =>{
       console.log(error);
@@ -198,7 +209,6 @@ export default {
     this.$store.dispatch('defencestore/getUsersInDepartment')
     .then((response) =>{
       this.usersInDepartment = this.$store.getters['defencestore/usersInDept'];
-      // console.log(this.usersInDepartment);
     })
     .catch((error) =>{
       console.log(error);
