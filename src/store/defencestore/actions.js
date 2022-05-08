@@ -1321,7 +1321,7 @@ export function getAllConversation({commit}){
     .then((response)=>{
       if(response.status === 200 || response.status === 201){
         let data = response.data
-        console.log(data);
+        // console.log(data);
         commit('setConversations', data)
       }
       resolve()
@@ -1335,7 +1335,7 @@ export function getAllConversation({commit}){
 
 export function allDepartmentsWithUsers ({commit}){
   return new Promise((resolve, reject) => {
-    axios({
+   axios({
       method: "GET",
       url: backend + '/user/all',
       headers: {
@@ -1346,6 +1346,7 @@ export function allDepartmentsWithUsers ({commit}){
       if(response.status === 200 || response.status === 201){
         let data = response.data
         console.log(data);
+        // return data
       }
       resolve()
     })
