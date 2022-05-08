@@ -1,12 +1,12 @@
 <template>
-  <div class="column">
+  <div class="column main">
     <div class="row">
       <q-btn
         @click="this.$router.back()"
         class="q-ma-md"
         flat
         round
-        color="primary"
+        color="red"
         icon="chevron_left"
       />
       <div class="column text-bold justify-center">John Doe</div>
@@ -93,7 +93,7 @@
         </div>
       </div>
     </q-scroll-area>
-    <div class="q-my-md q-mx-lg">
+    <div class="q-my-sm q-mx-lg">
       <q-input filled bottom-slots v-model="text" label="Send Message">
         <template v-slot:append>
           <q-icon name="send" @click="text = ''" class="cursor-pointer" />
@@ -110,8 +110,12 @@
   </div>
 </template>
 <script>
+import { ref } from "vue";
 export default {
   name: "ConversationPage",
+  components:{
+    text: ref('')
+  }
 };
 </script>
 <style>
@@ -126,6 +130,10 @@ export default {
   border-top-left-radius: 30px;
 }
 .message-scroll-area {
-  height: 80vh;
+  height: 57vh;
+}
+.main{
+  /* height: 60vh;
+  width: 100%; */
 }
 </style>

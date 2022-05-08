@@ -6,6 +6,7 @@ export default function () {
     rawDepartments: [],
     outgoingRequests: [],
     incomingRequests: [],
+    conversations: [],
     inbox: [],
     sent: [],
     logs: [],

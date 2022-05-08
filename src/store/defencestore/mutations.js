@@ -98,3 +98,7 @@ export function setAdminSingleMail (state, payload) {
   let {mail} = payload;
   state.adminSingleMail=mail;
 }
+
+export function setConversations (state, payload) {
+  state.conversations = payload
+}
