@@ -4,7 +4,7 @@
         <div class="row col-9">
             <q-item-section  >{{user.username}} </q-item-section>
             <q-item-section>{{user.role}} </q-item-section>
-            <q-item-section>{{user.department.abbr}}</q-item-section>
+            <q-item-section>{{user.department?.abbr ?? "Department Deleted"}}</q-item-section>
         </div>
         <q-item-section>
             <div class="row justify-evenly">
@@ -23,54 +23,133 @@
 
                 <q-card-actions align="right">
                 <q-btn flat label="Cancel" color="secondary" v-close-popup />
-                <q-btn flat label="Yes" color="red" v-close-popup @click="deleteUser" />
+                <q-btn flat label="Yes" color="red" v-close-popup @click="() => deleteUser(this.user._id)" />
                 </q-card-actions>
             </q-card>
         </q-dialog>
 
         <!-- Edit Dialog -->
         <q-dialog v-model="editDialog" persistent>
-            <q-card>
-                <q-card-section class="items-center">
-                    <div class="column q-mt-md">
-                        <div class="bg-white col q-px-md column justify-between q-pb-md" style="height:300px;border-radius:0 0 4px 4px">
-                            <div class = "q-mx-sm">
-                                <q-input label="Username:" v-model="user.username" />
-                                <q-input label="Password:" v-model="user.password" />
-                                <q-input label="Rank:" v-model="user.rank" />
-                                <q-input label="Role:" v-model="user.role" />
+          <q-card style=" width:30%;">
+            <q-card-section class="row items-center q-pb-none">
+              <div class="text-h6">Edit User's Profile</div>
+              <q-space />
+              <q-btn icon="close" flat round dense v-close-popup />
+            </q-card-section>
+            <q-card-section class="items-center">
+                <div class="column q-mt-md">
+                    <div class="bg-white col q-px-md column justify-between q-pb-md" style="border-radius:0 0 4px 4px">
+                        <div class = "q-mx-sm">
+                            <!-- <q-separator/> -->
+                            <!-- <label for="">Enter New Name</label> -->
+                            <q-input v-model="name" outlined style="width:100%; margin: 2% 0 3%"  label="Enter New Name:" />
+
+                            <!-- <label for="">Enter New Name</label> -->
+                            <q-input v-model="rank" outlined style="width:100%; margin: 2% 0 3%"  label="Enter New Rank:" />
+
+                            <div class="row q-my-md">
+                              <q-space/>
+                              <q-btn @click="() => editProfile(user._id)" label="Save" color="secondary" />
                             </div>
+                            <q-inner-loading
+                              :showing="editProfileLoader"
+                            />
+
+                            <q-separator/>
+
+                            <q-expansion-item
+                              expand-separator
+                              icon="lock"
+                              label="Change password"
+                              class="q-mt-md rounded-borders"
+                            >
+                              <q-card>
+                                <q-card-section>
+                                  <div class = "q-my-sm">
+                                    <q-input type="password" v-model="newPassword" outlined style="margin: 4% 0" label="New Password:" />
+                                    <q-input type="password" v-model="confirmNew" outlined style="margin: 4% 0" label="Enter Password Again:" />
+
+                                    <div class="row q-my-md">
+                                      <q-space/>
+                                      <q-btn @click="() => editPassword(user._id)" label="Save" color="secondary" />
+                                    </div>
+                                  </div>
+                                </q-card-section>
+                              </q-card>
+                              <q-inner-loading
+                                :showing="changePasswordLoader"
+                              />
+                            </q-expansion-item>
                         </div>
                     </div>
-                </q-card-section>
-
-                <q-card-actions align="right">
-                <q-btn flat label="Cancel" color="red"  v-close-popup />
-                <q-btn label="Save" color="negative" />
-                </q-card-actions>
-            </q-card>
+                </div>
+            </q-card-section>
+          </q-card>
         </q-dialog>
     </q-item>
 
 </template>
 
 <script>
-import { ref } from 'vue'
-
 export default {
-    setup () {
-        const editDialog = ref(false)
-        const deleteDialog = ref(false)
-        return {
-          editDialog,
-          deleteDialog,
-
-
+    data () {
+      return {
+          editDialog:false,
+          deleteDialog:false,
+          name:'',
+          rank:'',
+          newPassword:'',
+          confirmNew:'',
+          changePasswordLoader: false
         }
     },
-    props: ['user', 'deleteUser', 'editUser'],
+    props: ['user'],
     methods: {
-
+      deleteUser (id) {
+        this.$q.loading.show();
+        this.$store.dispatch('defencestore/adminDeleteUser', {id})
+        .then(() => {
+          this.$q.loading.hide();
+          this.$router.go();
+        })
+        .catch(err=>{
+          this.$q.loading.hide();
+        })
+      },
+      editProfile (id) {
+        this.editProfileLoader = true;
+        this.$store.dispatch('defencestore/adminEditUser', {
+          id,
+          name: this.name,
+          rank: this.rank
+        })
+        .then(() => {
+          this.editProfileLoader = false;
+          this.$router.go();
+        })
+        .catch(err=>{
+          this.editProfileLoader = false;
+        })
+      },
+      editPassword (id) {
+        this.changePasswordLoader=true;
+        this.$store.dispatch('defencestore/adminEditUserPassword', {
+          id,
+          newPassword: this.newPassword,
+          confirmNew: this.confirmNew
+        })
+        .then(() => {
+          this.changePasswordLoader = false;
+          this.$router.go();
+        })
+        .catch(err=>{
+          this.changePasswordLoader = false;
+        })
+      }
+    },
+    mounted(){
+      this.name=this.user.name
+      this.rank=this.user.rank
     }
 }
 </script>

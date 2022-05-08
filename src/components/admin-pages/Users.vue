@@ -16,6 +16,7 @@
               <div class="column">
                 <div class="bg-white col q-px-md column justify-between q-pb-md" style="height:300px;border-radius:0 0 4px 4px">
                   <div class = "q-mx-xl">
+                    <q-input label="Name:" v-model="name" />
                     <q-input label="Username:" v-model="username" />
                     <q-input label="Password:" v-model="password"/>
                     <q-input label="Rank:" v-model="rank"/>
@@ -82,6 +83,7 @@ export default {
   setup () {
     return {
       username: ref(''),
+      name: ref(''),
       password: ref(''),
       rank: ref(''),
       role: ref(''),
@@ -127,10 +129,13 @@ export default {
           password: this.password,
           role: this.role,
           rank: this.rank,
-          department: this.department
+          department: this.department,
+          name: this.name
         })
         .then(()=> {
           // this.$router.go();
+          this.fetchUsers();
+          this.onReset();
         })
         .catch(()=>{
           Notify.create({
@@ -146,18 +151,6 @@ export default {
           color: "red"
         })
       }
-    },
-    deleteUser (id) {
-      // console.log(id);
-      this.$q.loading.show();
-      this.$store.dispatch('defencestore/adminDeleteUser', {id})
-      .then(() => {
-        this.$q.loading.hide();
-        this.$router.go();
-      })
-      .catch(err=>{
-        this.$q.loading.hide();
-      })
     },
     editUser (payload) {
       console.log(payload);

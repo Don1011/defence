@@ -643,7 +643,8 @@ export function createUser (context, data) {
         password: data.password,
         role: data.role,
         rank: data.rank,
-        department: data.department
+        department: data.department,
+        name: data.name
       },
       headers: {
         'Authorization': 'Bearer '+localStorage.getItem('adminToken')
@@ -676,6 +677,106 @@ export function createUser (context, data) {
     })
   })
 
+}
+
+export function adminEditUser (context, data) {
+  console.log(data);
+  const {id, name, rank} = data;
+  return new Promise((resolve, reject) => {
+    if (name !== "" && rank !== "") {
+      axios({
+        method: "PATCH",
+        url: baseurl + `/admin/users/${id}/update`,
+        data:{
+          name, rank
+        },
+        headers: {
+          'Authorization': 'Bearer '+localStorage.getItem('adminToken')
+        }
+      })
+      .then(response => {
+        if(response.status === 201){
+          Notify.create({
+              message: "User Edited Successfully.",
+              color: 'blue'
+          })
+          resolve();
+        }else{
+            Notify.create({
+                message: "Error editing user. Please retry.",
+                color: 'red'
+            })
+            reject();
+        }
+      })
+      .catch(err => {
+        if(err.response?.status === 401){
+          context.dispatch("logout")
+        }
+        Notify.create({
+            message: 'Error editing profile.',
+            color: 'red'
+        })
+        reject();
+      })
+    }else{
+      Notify.create({
+        message: "Data fields cannot be empty.",
+        color: 'red'
+      })
+      reject();
+    }
+  })
+}
+
+export function adminEditUserPassword (context, data) {
+  console.log(data);
+  const {id, newPassword, confirmNew} = data;
+  return new Promise((resolve, reject) => {
+    if ((newPassword === confirmNew) && (newPassword !== "" && confirmNew !== "")) {
+      axios({
+        method: "PATCH",
+        url: baseurl + `/admin/users/${id}/password`,
+        data:{
+          newPassword
+        },
+        headers: {
+          'Authorization': 'Bearer '+localStorage.getItem('adminToken')
+        }
+      })
+      .then(response => {
+        if(response.status === 201){
+          Notify.create({
+              message: "Password Changed Successfully.",
+              color: 'blue'
+          })
+          resolve();
+        }else{
+            Notify.create({
+                message: "Error changing password. Please retry.",
+                color: 'red'
+            })
+            reject();
+        }
+      })
+      .catch(err => {
+        if(err.response?.status === 401){
+          context.dispatch("logout")
+        }
+        Notify.create({
+            message: 'Error changing password.',
+            color: 'red'
+        })
+        reject();
+      })
+    }else{
+      Notify.create({
+        message: "Either the passwords either don't correlate or you have left a password field empty.",
+        color: 'red'
+      })
+      reject();
+    }
+  })
 }
 
 export function saveComment (context, data) {
@@ -846,7 +947,6 @@ export function getAllUsersAdmin (context, data) {
 
 }
 
-
 export function getProfile (context, data) {
   // console.log(baseurl);
   return new Promise((resolve, reject) => {
@@ -885,7 +985,6 @@ export function getProfile (context, data) {
 export function logout (context) {
   localStorage.clear();
 }
-
 
 export function editProfile (context, data) {
   // console.log(data);

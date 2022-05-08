@@ -7,7 +7,6 @@
         </div>
         <q-item-section>
           <div class="row justify-evenly">
-            <q-btn @click="editDialog = true" label="Edit" class="bg-negative text-white text-subtitle2" style="width: 40%;"/>
             <q-btn @click="deleteDialog = true" label="Delete" class="bg-red text-white text-subtitle2" style="width: 40%; height:30px"/>
           </div>
         </q-item-section>
@@ -22,28 +21,7 @@
 
                 <q-card-actions align="right">
                 <q-btn flat label="Cancel" color="secondary" v-close-popup />
-                <q-btn flat label="Yes" color="red" v-close-popup @click="deleteDept" />
-                </q-card-actions>
-            </q-card>
-        </q-dialog>
-
-        <!-- Edit Dialog -->
-        <q-dialog v-model="editDialog" persistent>
-            <q-card>
-                <q-card-section class="items-center">
-                    <div class="column q-mt-md">
-                        <div class="bg-white col q-px-md column justify-between q-pb-md" style="height:300px;border-radius:0 0 4px 4px">
-                            <div class = "q-mx-sm">
-                                <q-input label="Department Name:" />
-                                <q-input label="ABBR:" />
-                            </div>
-                        </div>
-                    </div>
-                </q-card-section>
-
-                <q-card-actions align="right">
-                <q-btn flat label="Cancel" color="red" v-close-popup />
-                <q-btn label="Save" color="negative"/>
+                <q-btn flat label="Yes" color="red" v-close-popup @click="() => deleteDept(department._id)" />
                 </q-card-actions>
             </q-card>
         </q-dialog>
@@ -55,16 +33,26 @@
 import { ref } from 'vue'
 
 export default {
-    setup () {
-        const editDialog = ref(false)
-        const deleteDialog = ref(false)
+    data () {
         return {
-            editDialog, deleteDialog
+            deleteDialog: false,
+            deptName: "",
+            deptAbbr: ""
         }
     },
-    props: ['department', 'deleteDept'],
+    props: ['department'],
     methods: {
-
+      deleteDept(id){
+        this.$q.loading.show();
+        this.$store.dispatch('defencestore/adminDeleteDept', {id})
+        .then(() => {
+          this.$q.loading.hide();
+          this.$router.go();
+        })
+        .catch(err=>{
+          this.$q.loading.hide();
+        })
+      }
     }
 }
 </script>

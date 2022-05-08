@@ -23,10 +23,10 @@
         </q-img>
         <q-space/>
       </div>
-      
+
       <!-- Edit form dialog -->
       <q-dialog v-model="editFormShow">
-        <q-card style=" width:30%; height:70vh;">
+        <q-card style=" width:30%;">
             <q-card-section class="row items-center q-pb-none">
               <div class="text-h6">Edit Profile</div>
               <q-space />
