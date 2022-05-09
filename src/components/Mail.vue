@@ -4,14 +4,14 @@
                <q-scroll-area style="height: 72vh;">
                  <div class="text-subtitle2 text-secondary">
                  <!-- Incomings -->
-                  <EmptyList :itemList="inbox" message="No message to display" />
+                  <EmptyList :itemList="conversations" message="No message to display" />
                   <q-item
                       class="message-item bg-white row q-pa-sm q-ma-sm light-border shadow-1"
                       v-ripple
                       clickable
-                      to="/messages/id"
-                      v-for="item in inbox"
-                      :key="item._id"
+                      :to="convo.group == true ? `/messages/${convo._id}/${convo.recipients}` : `/messages/${convo._id}/${convo.alias}` "
+                      v-for="convo in conversations"
+                      :key="convo._id"
                     >
                       <div class="column justify-center">
                         <q-avatar>
@@ -19,14 +19,14 @@
                         </q-avatar>
                       </div>
                       <div class="column justify-center q-mx-md">
-                        <div class="name">{{item.from.username}}</div>
+                        <div class="name">{{convo.alias}}</div>
                         <div class="last-message text-grey-6 text-sm">
-                         {{item.title}}
+                         {{convo.lastMessage}}
                         </div>
                       </div>
                       <q-space />
                       <div class="column justify-center q-mr-lg">
-                        <div class="text-sm">{{item.createdAt.split("T")[1].split(".")[0]}}</div>
+                        <div class="text-sm">{{convo.createdAt.split("T")[1].split(".")[0]}}</div>
                       </div>
                     </q-item>
 
@@ -72,20 +72,20 @@
 
                 <q-separator />
 
-                <q-scroll-area style="height: 50vh" class="scroll">
+                <q-scroll-area style="height: 50vh" class="scroll" v-if="groupMode !== true">
                   <q-item class="message-item row q-pa-sm" v-for="user in usersInDepartment" :key="user._id" >
                     <div class="column justify-center">
                       <q-avatar>
-                        <img src="https://cdn.quasar.dev/img/avatar.png" />
+                        <img :src="`http://192.168.130.132:3000/api/${user.avatar}`" />
                       </q-avatar>
                     </div>
                     <div class="column justify-center q-mx-md">
-                      <div class="name">{{ user }}</div>
+                      <div class="name">{{ user.username }}</div>
                     </div>
                     <q-space />
                     <div class="column justify-center">
                       <q-btn
-                        :to="`/messages/${user}`"
+                        :to="`/messages/${user.convoId?user.convoId:'new'}/${user.username}`"
                         flat
                         round
                         color="secondary"
@@ -95,13 +95,53 @@
                   </q-item>
                 </q-scroll-area>
 
+                <q-scroll-area style="height: 50vh" class="scroll" v-if="groupMode == true">
+                  <div v-for="user in usersInDepartment" :key="user._id">
+                    <q-checkbox v-model="selection" :val="user" color="teal"  >
+                      <q-item class="message-item row q-pa-sm"  >
+                      <div class="column justify-center">
+                        <q-avatar>
+                          <img src="https://cdn.quasar.dev/img/avatar.png" />
+                        </q-avatar>
+                      </div>
+                      <div class="column justify-center q-mx-md">
+                        <div class="name">{{ user.username }}</div>
+                      </div>
+                    </q-item>
+                    </q-checkbox>
+                  </div>
+                </q-scroll-area>
+
                 <q-separator />
 
                 <q-card-actions align="right">
-                  <q-btn flat label="Close" color="primary" class="bg-secondary" v-close-popup />
+                  <q-btn flat :label="groupMode == true ? 'Back': 'Create Group'"  color="primary"  class="bg-secondary" :icon="groupMode !== true ? 'message' : 'chevron_left'" @click="groupMode = !groupMode" />
+                  <q-btn flat v-if="groupMode !== true" label="Close" color="primary" class="bg-secondary" v-close-popup />
+                  <q-btn flat v-if="groupMode == true" label="Create" color="primary" class="bg-secondary" @click="alert = true" />
                 </q-card-actions>
               </q-card>
+
+              <!-- Group Name Dialog -->
+              <q-dialog v-model="alert">
+                <q-card>
+                  <q-card-section>
+                    <div class="text-h6">Please Enter a Group Name</div>
+                  </q-card-section>
+
+                  <q-card-section class="q-pt-none">
+                    <q-input v-model="groupName" outlined  />
+                  </q-card-section>
+
+                  <q-card-actions align="right">
+                    <q-btn flat label="Create" @click="createGroupConvo()" color="primary" class="bg-secondary" />
+                  </q-card-actions>
+                </q-card>
+              </q-dialog>
             </q-dialog>
+
+
+
+
             <!-- Other Depts Dialog -->
             <q-dialog v-model="otherDepts">
               <q-card style="width: 50vw">
@@ -170,18 +210,49 @@ export default {
       comments: ref(""),
       selectedFile: ref(null),
 
-      inbox: [],
       conversations: [],
       departments: [],
       // usersOfDepts:
-      usersInDepartment: []
+      usersInDepartment: [],
+      selection: [],
+      alert: ref(false),
+      groupMode: ref(false),
+      groupName: ref('')
     }
   },
  methods: {
+   createGroupConvo(){
+    //  console.log(this.selection)
+    //  console.log(this.groupName);
+     axios({
+       method: "POST",
+       url: 'http://192.168.130.132:3000/api/user/convo-new-group',
+       headers: {
+         'Authorization': 'Bearer '+localStorage.getItem('userToken')
+       },
+       data: {
+         alias: this.groupName,
+         to: this.selection
+       }
+     })
+     .then((response) =>{
+       this.$router.replace(`/messages`)
+       window.location.reload()
+       this.groupName = ''
+       this.selection = []
+       this.yourDept = false
+       console.log(response.data);
+     })
+     .catch((error) =>{
+       console.log(error);
+     })
+   },
    getConversations(){
      this.$store.dispatch('defencestore/getAllConversation')
      .then((response) =>{
-       console.log('It worked bitchhhhhhhh!!!!!')
+      this.conversations = this.$store.getters['defencestore/getAllConversations']
+      console.log(this.conversations);
+      this.getAllUsersInDepartment()
      })
      .catch((error)=>{
        console.log(error);
@@ -198,7 +269,6 @@ export default {
     .then((response)=>{
       if(response.status === 200 || response.status === 201){
         this.departments = response.data.data
-        console.log(this.departments);
       }
     })
     .catch((error) =>{
@@ -207,8 +277,19 @@ export default {
    },
    getAllUsersInDepartment(){
     this.$store.dispatch('defencestore/getUsersInDepartment')
-    .then((response) =>{
-      this.usersInDepartment = this.$store.getters['defencestore/usersInDept'];
+    .then(() =>{
+      let usersInDepartment = this.$store.getters['defencestore/usersInDeptForForward'];
+      let myId = localStorage.getItem("userId");
+      let newUsersInDept=[];
+      usersInDepartment.forEach(user => {
+        var convoStarted = false;
+        this.conversations.forEach(convo => {
+          if(!(convo.group) && convo.recipients.includes(myId) && convo.recipients.includes(user._id)) convoStarted = convo._id;
+        })
+        newUsersInDept.push({...user, convoId: convoStarted});
+      })
+      // console.log("newUSersInDept", newUsersInDept);
+      this.usersInDepartment = newUsersInDept;
     })
     .catch((error) =>{
       console.log(error);
@@ -216,9 +297,8 @@ export default {
    }
   },
   mounted(){
-    // this.getConversations()
+    this.getConversations()
     this.getAllDepartments()
-    this.getAllUsersInDepartment()
 
   }
 }
@@ -235,6 +315,7 @@ p{
   color: #FE0D0D;
 }
 .message-item{
-  border-radius: 4px
+  border-radius: 4px;
+  width: 100%;
 }
 </style>

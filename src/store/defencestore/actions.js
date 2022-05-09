@@ -1320,7 +1320,7 @@ export function getAllConversation({commit}){
     })
     .then((response)=>{
       if(response.status === 200 || response.status === 201){
-        let data = response.data
+        let data = response.data.data
         // console.log(data);
         commit('setConversations', data)
       }
