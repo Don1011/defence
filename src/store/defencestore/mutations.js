@@ -60,6 +60,7 @@ export function getUsersInDepartment (state, payload) {
   let arr = [];
   let arrForForward=[];
   let username = localStorage.getItem("username");
+  console.log(payload.users);
   payload.users.forEach(item => {
     username !== item.username && arr.push(item.username)
     username !== item.username && arrForForward.push(item)

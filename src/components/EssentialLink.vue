@@ -227,7 +227,7 @@ export default defineComponent({
         this.rank = req.rank;
         this.name = req.name;
         this.avi = `${backend}/${req.avatar}`;
-        // console.log(req.avatar);
+        console.log(req.avatar);
         this.$q.loading.hide();
       })
       .catch(err => this.$q.loading.hide())
