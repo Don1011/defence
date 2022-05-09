@@ -201,8 +201,6 @@ export default {
 
         this.pendingMails = pending;
         this.solvedMails = solved;
-
-        console.log(pending);
       })
       .catch(err => {
         this.$q.loading.hide();

@@ -9,7 +9,7 @@ export function getAllDepartmentsAdmin (state) {
   return state.departments;
 }
 
-export function getRequests (state) {
+export function getRequestsAndMails (state) {
   // console.log(state);
   return ({ incoming: state.incomingRequests, outgoing: state.outgoingRequests });
 }

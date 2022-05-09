@@ -128,7 +128,7 @@ export function sendRequest (context, data) {
   // console.log(data);
   const { formData } = data;
   // const { to, text, files, reference, title } = data;
-  console.log(files);
+  // console.log(files);
   return new Promise((resolve, reject) => {
     axios({
       method: "POST",
@@ -141,7 +141,7 @@ export function sendRequest (context, data) {
       }
     })
     .then(response => {
-      // console.log(response);
+      console.log(response);
       if(response.status === 201){
         Notify.create({
             message: "Request successfully sent.",
@@ -234,114 +234,215 @@ export function getAllUserDepartments (context, data) {
 
 }
 
-export function getRequests (context, data) {
+export function getRequestsAndMails (context, data) {
   console.log(context);
-    return new Promise((resolve, reject) => {
-      axios({
+  return new Promise(async (resolve, reject) => {
+    try {
+      // Fetching Requests sent to other departmentss
+      let response = await axios({
         method: "GET",
         url: baseurl + '/user/request',
         headers: {
           'Authorization': 'Bearer '+localStorage.getItem('userToken')
         }
       })
-      .then(response => {
-        // console.log(response);
-        if(response.status === 201 || response.status === 200){
-            let outgoing = [];
-            let incoming = [];
-            let userDeptId = localStorage.getItem('userDeptId');
-            let username = localStorage.getItem('username');
-            let userId = localStorage.getItem('userId');
-            let requests = response.data.data;
-            requests.forEach(item => {
-              if(item.metaData.status !== "Completed"){
-                if(item.from._id === userDeptId || item.to._id === userDeptId){
-                  console.log("If statement crossed");
-                  let seenByIds = [];
-                  item.metaData.seen.forEach(element => {
-                    seenByIds.push(element.by);
-                  });
-                  console.log(seenByIds);
-                  if(username.split('@')[0] === "reg" || seenByIds.includes(userId)){
-                    if(item.from._id === userDeptId){
-                      // if(seenByIds[seenByIds.length-1] === userId){
-                        outgoing.push(item);
-                      // }else{
-                      //   outgoing.push(item);
-                      // }
-                    }else{
-                     incoming.push(item);
-                    }
-                  }
+      console.log(response);
+      if(response.status === 201 || response.status === 200){
+        let outgoing = [];
+        let incoming = [];
+        let userDeptId = localStorage.getItem('userDeptId');
+        let username = localStorage.getItem('username');
+        let userId = localStorage.getItem('userId');
+        let requests = response.data.data;
+        requests.forEach(item => {
+          // Check only tasks that are completed.
+          if(item.metaData.status !== "Completed"){
+            // Check only tasks that are coming from or coming to the user's department.
+            if(item.from._id === userDeptId || item.to._id === userDeptId){
+              console.log("If statement crossed 1");
+              let seenByIds = [];
+              // Fetching ids of all users that this particular request has been forwarded to.
+              item.metaData.seen.forEach(element => {
+                console.log(element);
+                seenByIds.push(element.by);
+              });
+              console.log(seenByIds);
+              // Checking id user is a registry or user if the request has been forwarded to the user.
+              if(username.split('@')[0] === "reg" || seenByIds.includes(userId)){
+                // Checking if the request is coming from or coming to the user's department.
+                if(item.from._id === userDeptId){
+                  outgoing.push(item);
+                }else{
+                  incoming.push(item);
                 }
               }
+            }
+          }
+        });
+        console.log(outgoing);
+        console.log(incoming);
+        try {
+          response = await axios({
+            method: "GET",
+            url: baseurl + '/user/mail',
+            headers: {
+              'Authorization': 'Bearer '+localStorage.getItem('userToken')
+            }
+          })
+          console.log(response);
+          if(response.status === 201 || response.status === 200){
+            let sent = [];
+            let inbox = [];
+            let username = localStorage.getItem('username');
+            let requests = response.data.data;
+            requests.forEach(item => {
+                if(item.from.username === username){
+                    sent.push(item);
+                }else{
+                    inbox.push(item);
+                }
             });
-            context.commit('setRequests', {outgoing, incoming})
-            resolve();
-        }else{
-            Notify.create({
-                message: "Error fetching requests.",
-                color: 'red'
-            })
-            reject();
-        }
-      })
-      .catch(err => {
-        if(err.response?.status === 401){
-          context.dispatch("logout")
-        }
-        // console.log(err);
+            outgoing = outgoing.concat(sent);
+            incoming = incoming.concat(inbox);
 
+            outgoing.sort(function(a,b){
+              return new Date(b.createdAt) - new Date(a.createdAt);
+            });
+
+            incoming.sort(function(a,b){
+              return new Date(b.createdAt) - new Date(a.createdAt);
+            });
+
+            console.log("Outgoing", outgoing);
+            console.log("Incoming", incoming);
+
+            context.commit('setRequestsAndMails', {outgoing, incoming})
+            resolve();
+          }else{
+              Notify.create({
+                  message: "Error fetching users in your department.",
+                  color: 'red'
+              })
+              reject();
+          }
+        }catch(err){
+          if(err.response?.status === 401){
+            context.dispatch("logout")
+          }
+          Notify.create({
+              message: 'Error fetching mails.',
+              color: 'red'
+          })
+        }
+
+        // resolve();
+      }else{
         Notify.create({
-            message: 'Error fetching requests.',
+            message: "Error fetching requests.",
             color: 'red'
         })
         reject();
+      }
+    } catch (error) {
+      if(error.response?.status === 401){
+        context.dispatch("logout")
+      }
+      Notify.create({
+          message: 'Error fetching requests.',
+          color: 'red'
       })
-    })
+      reject();
+    }
+  })
+
+}
+
+export function getMails (context, data) {
+  return new Promise((resolve, reject) => {
+
+    // .then(response => {
+      if(response.status === 201 || response.status === 200){
+        let sent = [];
+        let inbox = [];
+        let username = localStorage.getItem('username');
+        // console.log(username);
+        let requests = response.data.data;
+        requests.forEach(item => {
+            if(item.from.username === username){
+                sent.push(item);
+            }else{
+                inbox.push(item);
+            }
+        });
+        context.commit('setMails', {sent, inbox});
+        resolve();
+      }else{
+          Notify.create({
+              message: "Error fetching users in your department.",
+              color: 'red'
+          })
+          reject();
+      }
+  //   })
+  //   .catch(err => {
+      // if(err.response?.status === 401){
+      //   context.dispatch("logout")
+      // }
+      // Notify.create({
+      //     message: 'Error fetching mails.',
+      //     color: 'red'
+      // })
+  //   })
+  })
 
 }
 
 export function sendMail (context, data) {
-    // const { to, text, reference, title } = data;
-    // console.log(data);
     const { to, text, files, title } = data;
 
     return new Promise((resolve, reject) => {
-      axios({
-        method: "POST",
-        url: baseurl + '/user/mail',
-        data: { to, text, files, title },
-        headers: {
-          'Authorization': 'Bearer '+localStorage.getItem('userToken')
-        }
-      })
-      .then(response => {
-        // console.log(response);
-        if(response.status === 201){
-          Notify.create({
-              message: "Mail successfully sent.",
-              color: 'blue'
-          })
-          resolve();
-        }else{
+      if(to !== "" && text !== "" && title !== "" ){
+        axios({
+          method: "POST",
+          url: baseurl + '/user/mail',
+          data: { to, text, files, title },
+          headers: {
+            'Authorization': 'Bearer '+localStorage.getItem('userToken')
+          }
+        })
+        .then(response => {
+          // console.log(response);
+          if(response.status === 201){
             Notify.create({
-                message: "Error sending mail. Please retry.",
+                message: "Mail successfully sent.",
+                color: 'blue'
+            })
+            resolve();
+          }else{
+              Notify.create({
+                  message: "Error sending mail. Please retry.",
+                  color: 'red'
+              })
+              reject();
+          }
+        })
+        .catch(err => {
+          if(err.response?.status === 401){
+      context.dispatch("logout")
+          }
+            Notify.create({
+                message: 'Error sending mail. Please retry.',
                 color: 'red'
             })
             reject();
-        }
-      })
-      .catch(err => {
-        if(err.response?.status === 401){
-    context.dispatch("logout")
-        }
-          Notify.create({
-              message: 'Error sending mail. Please retry.',
-              color: 'red'
-          })
-          reject();
-      })
+        })
+      }else{
+        Notify.create({
+          message: 'You can\'t leave the "to", "title" and "Comments" fields empty.',
+          color: 'red'
+        })
+        reject();
+      }
     })
 
 }
@@ -459,52 +560,6 @@ export function getUsersInDepartment (context, data) {
 
 }
 
-export function getMails (context, data) {
-    return new Promise((resolve, reject) => {
-      axios({
-        method: "GET",
-        url: baseurl + '/user/mail',
-        headers: {
-          'Authorization': 'Bearer '+localStorage.getItem('userToken')
-        }
-      })
-      .then(response => {
-        if(response.status === 201 || response.status === 200){
-          let sent = [];
-          let inbox = [];
-          let username = localStorage.getItem('username');
-          // console.log(username);
-          let requests = response.data.data;
-          requests.forEach(item => {
-              if(item.from.username === username){
-                  sent.push(item);
-              }else{
-                  inbox.push(item);
-              }
-          });
-          context.commit('setMails', {sent, inbox});
-          resolve();
-        }else{
-            Notify.create({
-                message: "Error fetching users in your department.",
-                color: 'red'
-            })
-            reject();
-        }
-      })
-      .catch(err => {
-        if(err.response?.status === 401){
-    context.dispatch("logout")
-        }
-          Notify.create({
-              message: 'Error fetching mails.',
-              color: 'red'
-          })
-      })
-    })
-
-}
-
 export function getLogs (context, data) {
     return new Promise((resolve, reject) => {
       axios({
@@ -538,7 +593,6 @@ export function getLogs (context, data) {
       })
     })
 }
-
 
 export function forwardRequest (context, data) {
   // const { to, text, reference, title } = data;
@@ -1308,7 +1362,6 @@ export function sendAdminMail (context, data) {
 
 }
 
-
 export function getAllConversation({commit}){
   return new Promise((resolve, reject) => {
     axios({
@@ -1331,7 +1384,6 @@ export function getAllConversation({commit}){
     })
   })
 }
-
 
 export function allDepartmentsWithUsers ({commit}){
   return new Promise((resolve, reject) => {
