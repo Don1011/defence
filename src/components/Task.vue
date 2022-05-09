@@ -35,7 +35,7 @@
                   <q-list separator v-for="incomingRequest in incomingRequests" :key="incomingRequest._id" >
                     <q-item clickable class="row text-center q-mb-sm bg-white" style="border-radius: 4px">
                       <div  class="row col-9" @click="this.$router.push(`/request-message/${incomingRequest._id}`)">
-                        <q-item-section  >Request from {{incomingRequest.from.abbr}}</q-item-section>
+                        <q-item-section  >Request from {{!!incomingRequest.from?.abbr ? incomingRequest.from?.abbr:incomingRequest.from?.username}}</q-item-section>
                         <q-item-section>{{incomingRequest.title}} </q-item-section>
                         <q-item-section>{{incomingRequest.createdAt.split("T")[0]}}, {{incomingRequest.createdAt.split("T")[1].split(".")[0]}}</q-item-section>
                       </div>
@@ -63,7 +63,7 @@
                   <q-list v-show="(outgoingRequests.length>0)" separator v-for="outgoingRequest in outgoingRequests" :key="outgoingRequest._id" >
                     <q-item class="row text-center q-mb-sm bg-white" style="border-radius: 4px">
                       <div class="row col-9" @click="this.$router.push(`/request-message/${outgoingRequest._id}`)">
-                        <q-item-section  >Request to {{outgoingRequest.to.abbr}}</q-item-section>
+                        <q-item-section  >Request to {{!!outgoingRequest.to?.abbr ? outgoingRequest.to?.abbr : outgoingRequest.to?.username}}</q-item-section>
                         <q-item-section>{{outgoingRequest.title}} </q-item-section>
                         <q-item-section>{{outgoingRequest.createdAt.split("T")[0]}}, {{outgoingRequest.createdAt.split("T")[1].split(".")[0]}}</q-item-section>
                       </div>
@@ -84,7 +84,7 @@
       </div>
 
 <!-- Add Mail Button  -->
-      <q-page-sticky position="bottom-right" :offset="[18, 18]">
+      <!-- <q-page-sticky position="bottom-right" :offset="[18, 18]">
         <q-btn
         round
         size="1.3rem"
@@ -93,83 +93,170 @@
           color="positive"
           @click="bar = true"
         />
-
+      </q-page-sticky> -->
+      <q-page-sticky position="bottom-right" :offset="[18, 18]">
+        <q-fab color="positive" icon="message" direction="up" class="fab">
+          <q-fab-action
+            external-label
+            label-position="left"
+            label="Other Departments"
+            color="secondary"
+            @click="otherDepts = true"
+            icon="apartment"
+          />
+          <q-fab-action
+            external-label
+            label-position="left"
+            label="Your Department"
+            color="secondary"
+            @click="yourDept = true"
+            icon="house"
+          />
+        </q-fab>
       </q-page-sticky>
 
-    <!-- Dialog for Request  -->
-     <q-dialog v-model="bar" persistent>
-          <q-card style="width: 1200px; max-width: 90vw;margin-left: 20%">
-            <q-bar class="bg-secondary text-white" style="height:60px">
-              <p class="text-h6 q-my-auto">New Request</p>
 
-              <q-space />
+    <!-- Dialog for Other Depts  -->
+      <q-dialog v-model="otherDepts" persistent>
+        <q-card class="column" style="width: 1200px; max-width: 90vw;margin-left: 20%">
+          <q-bar class="bg-secondary text-white" style="height:60px">
+            <p class="text-h6 q-my-auto">New Request</p>
 
-              <q-btn dense flat icon="close" v-close-popup>
-                <q-tooltip>Close</q-tooltip>
-              </q-btn>
-            </q-bar>
+            <q-space />
 
-            <q-card-section>
-                <div class="column">
-                  <div class="bg-white col q-px-md column justify-between q-pb-md" style="height:300px;border-radius:0 0 4px 4px">
-                    <div class="" >
-                      <q-select  v-model="to" :options="departments" use-input input-debounce="0" label="Select Department To"  >
-                        <template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                No results
-                              </q-item-section>
-                            </q-item>
-                          </template>
-                      </q-select>
-                    </div>
-                    <div class="" >
-                      <q-input v-model="title" label="Title:" />
-                    </div>
-                    <div class="" >
-                      <q-input v-model="comments" type="textarea" placeholder="Add Comments" />
-                    </div>
-                    <!-- <q-file  @change="fileSelected" ref="selectImageFile" type = "file"  /> -->
-                    <div class="" >
-                      <q-file
-                        v-model="selectedFile"
-                        label="Attach File"
-                        square
-                        flat
-                        use-chips
-                        clearable
-                        accept=".csv,.txt,.xls,.xlsx,.doc,.docx,.pdf,.dbf,.zip,.rar,.7z,.jpg,.png,.gif"
-                        max-files="1"
-                        max-file-size="5120000"
+            <q-btn dense flat icon="close" v-close-popup>
+              <q-tooltip>Close</q-tooltip>
+            </q-btn>
+          </q-bar>
 
-                      >
-                        <template v-slot:prepend>
-                          <q-icon name="attach_file" />
+          <q-card-section>
+              <div class="column">
+                <div class="bg-white col q-px-md column justify-between q-pb-md" style="min-height:300px;border-radius:0 0 4px 4px">
+                  <div class="" >
+                    <q-select  v-model="to" :options="departments" use-input input-debounce="0" label="Select Department To"  >
+                      <template v-slot:no-option>
+                          <q-item>
+                            <q-item-section class="text-grey">
+                              No results
+                            </q-item-section>
+                          </q-item>
                         </template>
-                      </q-file>
+                    </q-select>
+                  </div>
+                  <div class="" >
+                    <q-input v-model="title" label="Title:" />
+                  </div>
+                  <div class="" >
+                    <q-input v-model="comments" type="textarea" placeholder="Add Comments" />
+                  </div>
+                  <!-- <q-file  @change="fileSelected" ref="selectImageFile" type = "file"  /> -->
+                  <div class="" >
+                    <q-file
+                      v-model="selectedFile"
+                      label="Attach File"
+                      square
+                      flat
+                      use-chips
+                      clearable
+                      accept=".csv,.txt,.xls,.xlsx,.doc,.docx,.pdf,.dbf,.zip,.rar,.7z,.jpg,.png,.gif"
+                      max-files="1"
+                      max-file-size="5120000"
+
+                    >
+                      <template v-slot:prepend>
+                        <q-icon name="attach_file" />
+                      </template>
+                    </q-file>
+                  </div>
+                  <div class="row justify-center q-mt-xl " style="height:40px">
+                    <div style="width:20%" class="row">
+                      <q-btn @click="submitRequest" label="send" style="width: 50%;" color="negative"/>
                     </div>
-                    <div class="row justify-between q-mt-xl " style="height:40px">
-                      <div style="width:20%" class="row">
-                        <q-btn @click="submitRequest" label="send" style="width: 50%;" color="negative"/>
-                      </div>
-                      <!--
-                      <div style="width:13%" class="row justify-evenly">
-                        <q-btn round color="secondary" icon="attach_file" @click="selectFile" />
-                      </div>
-                      -->
+                    <!--
+                    <div style="width:13%" class="row justify-evenly">
+                      <q-btn round color="secondary" icon="attach_file" @click="selectFile" />
                     </div>
+                    -->
                   </div>
                 </div>
+              </div>
 
-            </q-card-section>
-          </q-card>
-        </q-dialog>
+          </q-card-section>
+        </q-card>
+      </q-dialog>
+
+      <!-- Dialog for Your Dept  -->
+      <q-dialog v-model="yourDept" persistent>
+        <q-card class="column" style="width: 1200px; max-width: 90vw;margin-left: 20%">
+          <q-bar class="bg-secondary text-white" style="height:60px">
+            <p class="text-h6 q-my-auto">New Request</p>
+            <q-space />
+            <q-btn dense flat icon="close" v-close-popup>
+              <q-tooltip>Close</q-tooltip>
+            </q-btn>
+          </q-bar>
+
+          <q-card-section>
+              <div class="column">
+                <div class="bg-white col q-px-md column justify-between q-pb-md" style="min-height:300px;border-radius:0 0 4px 4px">
+                  <div class="" >
+                    <q-select  v-model="userTo" :options="usersInDepartment" use-input input-debounce="0" label="Select Receiver"  >
+                      <template v-slot:no-option>
+                          <q-item>
+                            <q-item-section class="text-grey">
+                              No results
+                            </q-item-section>
+                          </q-item>
+                        </template>
+                    </q-select>
+                  </div>
+                  <div class="" >
+                    <q-input v-model="userTitle" label="Title:" />
+                  </div>
+                  <div class="" >
+                    <q-input v-model="userComments" type="textarea" placeholder="Add Comments" />
+                  </div>
+                  <!-- <q-file  @change="fileSelected" ref="selectImageFile" type = "file"  /> -->
+                  <div class="" >
+                    <q-file
+                      v-model="userSelectedFile"
+                      label="Attach File"
+                      square
+                      flat
+                      use-chips
+                      clearable
+                      accept=".csv,.txt,.xls,.xlsx,.doc,.docx,.pdf,.dbf,.zip,.rar,.7z,.jpg,.png,.gif"
+                      max-files="1"
+                      max-file-size="5120000"
+
+                    >
+                      <template v-slot:prepend>
+                        <q-icon name="attach_file" />
+                      </template>
+                    </q-file>
+                  </div>
+                  <div class="row justify-center q-mt-xl " style="height:40px">
+                    <div style="width:20%" class="row">
+                      <q-btn @click="submitMail" label="send" style="width: 50%;" color="negative"/>
+                    </div>
+                    <!--
+                    <div style="width:13%" class="row justify-evenly">
+                      <q-btn round color="secondary" icon="attach_file" @click="selectFile" />
+                    </div>
+                    -->
+                  </div>
+                </div>
+              </div>
+
+          </q-card-section>
+        </q-card>
+      </q-dialog>
 
   </div>
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref } from 'vue';
 import Watermark from 'components/Watermark.vue'
 import EmptyList from './EmptyList';
 
@@ -181,7 +268,8 @@ export default {
   setup () {
     return {
       label: ref('To-do'),
-      bar: ref(false),
+      otherDepts: ref(false),
+      yourDept: ref(false),
       model1: ref(null),
       selected: "To-do",
 
@@ -190,9 +278,18 @@ export default {
       comments: ref(""),
       selectedFile: ref(null),
 
+      userTo: ref(""),
+      userTitle: ref(""),
+      userComments: ref(""),
+      userSelectedFile: ref(null),
+
+
       departments: [],
       incomingRequests: [],
       outgoingRequests: [],
+
+      usersInDepartment: [],
+      userTo: ref(""),
 
     }
   },
@@ -231,17 +328,34 @@ export default {
         })
       }
     },
+    submitMail(){
+      this.$q.loading.show();
+      this.$store.dispatch('defencestore/sendMail', {
+        to: this.userTo,
+        title: this.userTitle,
+        text: this.userComments,
+        files: this.userSelectedFile
+      })
+      .then(()=>{
+        window.location.reload();
+        this.$q.loading.hide();
+      })
+      .catch(()=>{
+        this.$q.loading.hide();
+      })
+    },
     fetchDepartments(){
       this.$store.dispatch('defencestore/getDepartments')
       .then(() => {
         this.departments = this.$store.getters['defencestore/getDepartments']
+        console.log(this.departments);
       });
     },
     fetchRequests(){
       this.$q.loading.show();
-      this.$store.dispatch('defencestore/getRequests')
+      this.$store.dispatch('defencestore/getRequestsAndMails')
       .then(()=>{
-        let req = this.$store.getters['defencestore/getRequests'];
+        let req = this.$store.getters['defencestore/getRequestsAndMails'];
         console.log(req);
         if(req.incoming.length===0){
           this.incomingText = "No Incoming Request.";
@@ -255,11 +369,20 @@ export default {
         this.$q.loading.hide();
       })
       .catch(err=>this.$q.loading.hide())
+    },
+    fetchUsersInDept(){
+      this.$store.dispatch('defencestore/getUsersInDepartment')
+      .then(()=>{
+        let req = this.$store.getters['defencestore/usersInDept'];
+        this.usersInDepartment = req;
+        console.log(this.usersInDepartment)
+      })
     }
   },
   mounted(){
     this.fetchDepartments();
     this.fetchRequests();
+    this.fetchUsersInDept()
   }
 }
 </script>

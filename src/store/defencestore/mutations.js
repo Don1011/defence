@@ -46,7 +46,7 @@ export function getAllRawDepartments (state, payload) {
   state.rawDepartments = arr
 }
 
-export function setRequests (state, payload) {
+export function setRequestsAndMails (state, payload) {
   state.outgoingRequests = payload.outgoing;
   state.incomingRequests = payload.incoming;
 }
